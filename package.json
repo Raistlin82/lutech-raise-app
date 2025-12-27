@@ -1,8 +1,23 @@
 {
   "name": "raise-app",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
+  "description": "RAISE - Sales Opportunity Management System with ATP/ATS/ATC workflow",
+  "author": "Lutech Professional Services",
+  "homepage": "https://raistlin82.github.io/lutech-raise-app/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Raistlin82/lutech-raise-app.git"
+  },
+  "keywords": [
+    "sales",
+    "opportunity-management",
+    "workflow",
+    "compliance",
+    "react",
+    "typescript"
+  ],
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
