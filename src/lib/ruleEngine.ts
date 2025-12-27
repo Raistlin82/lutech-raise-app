@@ -1,0 +1,215 @@
+import type { Opportunity } from '../types';
+
+/**
+ * Safe rule evaluation engine
+ * Replaces dangerous new Function() approach with declarative rules
+ */
+
+// Predefined safe operators
+const SAFE_OPERATORS = {
+  equals: (a: any, b: any) => a === b,
+  notEquals: (a: any, b: any) => a !== b,
+  greaterThan: (a: number, b: number) => a > b,
+  lessThan: (a: number, b: number) => a < b,
+  greaterThanOrEqual: (a: number, b: number) => a >= b,
+  lessThanOrEqual: (a: number, b: number) => a <= b,
+  includes: (arr: any[], val: any) => arr.includes(val),
+  in: (val: any, arr: any[]) => arr.includes(val),
+};
+
+export interface ConditionRule {
+  field: keyof Opportunity;
+  operator: keyof typeof SAFE_OPERATORS;
+  value: any;
+}
+
+export interface CompoundCondition {
+  all?: ConditionRule[];
+  any?: ConditionRule[];
+}
+
+/**
+ * Parse legacy string conditions to safe rule objects
+ * Examples:
+ *   "opp.raiseLevel === 'L1'" -> { field: 'raiseLevel', operator: 'equals', value: 'L1' }
+ *   "opp.tcv > 1000000" -> { field: 'tcv', operator: 'greaterThan', value: 1000000 }
+ */
+export function parseLegacyCondition(condition: string): CompoundCondition | null {
+  if (!condition || condition.trim() === '') return null;
+
+  // Remove 'opp.' prefix
+  const cleaned = condition.replace(/opp\./g, '');
+
+  // Simple pattern matching for common conditions
+  // This is a migration helper - new conditions should use rule objects directly
+
+  // Pattern: field === 'value'
+  const equalsMatch = cleaned.match(/^(\w+)\s*===\s*["'](.+?)["']$/);
+  if (equalsMatch) {
+    return {
+      all: [{
+        field: equalsMatch[1] as keyof Opportunity,
+        operator: 'equals',
+        value: equalsMatch[2]
+      }]
+    };
+  }
+
+  // Pattern: field === true/false
+  const boolMatch = cleaned.match(/^(\w+)\s*===\s*(true|false)$/);
+  if (boolMatch) {
+    return {
+      all: [{
+        field: boolMatch[1] as keyof Opportunity,
+        operator: 'equals',
+        value: boolMatch[2] === 'true'
+      }]
+    };
+  }
+
+  // Pattern: field > number
+  const gtMatch = cleaned.match(/^(\w+)\s*>\s*(\d+)$/);
+  if (gtMatch) {
+    return {
+      all: [{
+        field: gtMatch[1] as keyof Opportunity,
+        operator: 'greaterThan',
+        value: parseInt(gtMatch[2], 10)
+      }]
+    };
+  }
+
+  // Pattern: field >= number
+  const gteMatch = cleaned.match(/^(\w+)\s*>=\s*(\d+)$/);
+  if (gteMatch) {
+    return {
+      all: [{
+        field: gteMatch[1] as keyof Opportunity,
+        operator: 'greaterThanOrEqual',
+        value: parseInt(gteMatch[2], 10)
+      }]
+    };
+  }
+
+  // Pattern: field < number
+  const ltMatch = cleaned.match(/^(\w+)\s*<\s*(\d+)$/);
+  if (ltMatch) {
+    return {
+      all: [{
+        field: ltMatch[1] as keyof Opportunity,
+        operator: 'lessThan',
+        value: parseInt(ltMatch[2], 10)
+      }]
+    };
+  }
+
+  // Pattern: field <= number
+  const lteMatch = cleaned.match(/^(\w+)\s*<=\s*(\d+)$/);
+  if (lteMatch) {
+    return {
+      all: [{
+        field: lteMatch[1] as keyof Opportunity,
+        operator: 'lessThanOrEqual',
+        value: parseInt(lteMatch[2], 10)
+      }]
+    };
+  }
+
+  // Pattern: field1 === 'val1' && field2 === 'val2' && field3 === 'val3' (with or without parentheses)
+  // Handle compound AND conditions with multiple clauses
+  if (cleaned.includes('&&')) {
+    // Remove outer parentheses if present
+    const withoutParens = cleaned.replace(/^\((.+)\)$/, '$1');
+    // Split by && and parse each part
+    const parts = withoutParens.split('&&').map(p => p.trim());
+    const conditions: ConditionRule[] = [];
+
+    for (const part of parts) {
+      const parsed = parseLegacyCondition(part);
+      if (parsed?.all) {
+        conditions.push(...parsed.all);
+      }
+    }
+
+    if (conditions.length > 0) {
+      return {
+        all: conditions
+      };
+    }
+  }
+
+  // Pattern: field1 === 'val1' || field2 === 'val2' || field3 === 'val3' (with or without parentheses)
+  // Handle compound OR conditions with multiple clauses
+  if (cleaned.includes('||')) {
+    // Remove outer parentheses if present
+    const withoutParens = cleaned.replace(/^\((.+)\)$/, '$1');
+    // Split by || and parse each part
+    const parts = withoutParens.split('||').map(p => p.trim());
+    const conditions: ConditionRule[] = [];
+
+    for (const part of parts) {
+      const parsed = parseLegacyCondition(part);
+      if (parsed?.all) {
+        conditions.push(...parsed.all);
+      }
+    }
+
+    if (conditions.length > 0) {
+      return {
+        any: conditions
+      };
+    }
+  }
+
+  console.warn('Could not parse legacy condition:', condition);
+  return null;
+}
+
+/**
+ * Evaluate a condition safely
+ */
+export function evaluateCondition(
+  condition: string | CompoundCondition | null | undefined,
+  opp: Opportunity
+): boolean {
+  if (!condition) return true;
+
+  let rules: CompoundCondition;
+
+  // Parse legacy string conditions
+  if (typeof condition === 'string') {
+    const parsed = parseLegacyCondition(condition);
+    if (!parsed) return false;
+    rules = parsed;
+  } else {
+    rules = condition;
+  }
+
+  // Evaluate 'all' conditions (AND)
+  if (rules.all) {
+    return rules.all.every(rule => {
+      const fieldValue = opp[rule.field];
+      const operator = SAFE_OPERATORS[rule.operator];
+      if (!operator) {
+        console.error('Unknown operator:', rule.operator);
+        return false;
+      }
+      return operator(fieldValue, rule.value);
+    });
+  }
+
+  // Evaluate 'any' conditions (OR)
+  if (rules.any) {
+    return rules.any.some(rule => {
+      const fieldValue = opp[rule.field];
+      const operator = SAFE_OPERATORS[rule.operator];
+      if (!operator) {
+        console.error('Unknown operator:', rule.operator);
+        return false;
+      }
+      return operator(fieldValue, rule.value);
+    });
+  }
+
+  return true;
+}

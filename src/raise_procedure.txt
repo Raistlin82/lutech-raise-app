@@ -1,0 +1,2873 @@
+Procedura
+
+Codice documento
+
+RAISE - Gestione Opportunità di vendita
+
+Versione
+
+PSQ-003
+
+17
+
+PSQ-003
+RAISE - GESTIONE OPPORTUNITÀ DI VENDITA
+PROCEDURA
+
+IDENTIFICAZIONE
+Categoria:
+
+SQ – Sistema Qualità
+GS - Gestione del Servizio,
+
+Procedura
+
+PSQ-003 - RAISE - Gestione Opportunità di vendita
+
+Versione
+
+17
+
+PC - Prevenzione della Corruzione
+
+Del:
+
+24/10/2025
+
+RESPONSABILITÀ
+Nome
+
+Funzione
+
+Elaborato da:
+
+Francesco Licciardi
+
+Bid Risk Manager
+
+Verificato da:
+
+Cristina Rossato
+
+Chief Compliance Officer
+
+Approvato da:
+
+Mauro Grimoldi
+
+Head of Sales Excellence
+
+PSQ-003 v17 del 24/10/2025
+Uso Interno
+
+Pagina 1 di 30
+
+Procedura
+
+RAISE - Gestione Opportunità di vendita
+
+Codice documento
+
+PSQ-003
+
+Versione
+
+17
+
+CLASSIFICAZIONE
+Uso Interno
+
+SOMMARIO MODIFICHE
+Ver.
+
+Data
+
+00
+01
+02
+03
+04
+05
+06
+07
+08
+09
+10
+11
+12
+13
+14
+15
+16
+17
+
+08/11/2002
+30/04/2004
+30/12/2005
+27/04/2007
+09/04/2009
+23/10/2009
+14/05/2011
+30/09/2011
+30/09/2013
+11/11/2022
+16/10/2023
+29/11/2023
+17/04/2024
+01/08/2024
+21/10/2024
+21/03/2025
+24/06/2025
+24/10/2025
+
+Descrizione Modifiche
+Emissione iniziale
+Variazioni per nuova organizzazione
+§5.1 Eliminati riferimenti a comitato PSM e a documenti non utilizzati da tutti
+§5.3: inseriti riferimenti a TMP-034 e TMP-035
+Modifiche per inserimento nuovo ruolo District Manager
+§5.2: Inserito riferimento a procedura PO-501; §5.5: nuovo
+Inseriti riferimenti a Practice Executives e BU Open Market
+Eliminati i riferimenti ai Practice Executives, corrette le denominazioni organizzative
+Eliminato riferimento a BU; inserito Presales Services e riferimento a TOO-033
+Revisione completa documento e integrazione ISO 37001
+Completa revisione per adozione nuovo processo RAISE
+Revisione per inserire aggiornamenti sul processo
+Revisione per aggiornamento processo
+Revisione per fusione Lutech-LAS. Richiamo a PDL integrata MOD-001 (RCP Revenue Cost Plan)
+Revisione completa documento con rimandi alla infografica VCA-005 per soglie e tabelle
+Introduzione CDE, cambiamenti organizzativi, coinvolgimento Expert e Sub-Industry
+Aggiornamento margini. Revisione regole livelli approvati. Aggiornamento KCP; nuovi moduli
+Revisione Anticipo d’Ordine, cambiamenti organizzativi, semplificazione regole, nuovi moduli
+
+PSQ-003 v17 del 24/10/2025
+Uso Interno
+
+Pagina 2 di 30
+
+Procedura
+
+RAISE - Gestione Opportunità di vendita
+
+Codice documento
+
+PSQ-003
+
+Versione
+
+17
+
+INDICE
+1
+2
+3
+4
+
+SCOPO ......................................................................................................................................................................................................................................................... 4
+CAMPO DI APPLICAZIONE ................................................................................................................................................................................................................... 5
+DEFINIZIONI E ABBREVIAZIONI ......................................................................................................................................................................................................... 5
+RESPONSABILITÀ ..................................................................................................................................................................................................................................... 6
+4.1 ACCOUNT MANAGER ................................................................................................................................................................................................................ 6
+4.2 BID MANAGER............................................................................................................................................................................................................................. 8
+4.3 SOLUTION MANAGER ............................................................................................................................................................................................................... 8
+4.4 BID SOLUTION TEAM ................................................................................................................................................................................................................ 8
+4.5 TENDER OFFICE .......................................................................................................................................................................................................................... 9
+4.6 RAISE MANAGER ...................................................................................................................................................................................................................... 9
+4.7 EXPERTS ......................................................................................................................................................................................................................................... 9
+4.8 APPROVATORI ........................................................................................................................................................................................................................... 10
+4.9 CONVOCAZIONE E GESTIONE DELLE RIUNIONI DI APPROVAZIONE ..................................................................................................................... 10
+5
+PROCESSO RAISE ................................................................................................................................................................................................................................ 12
+5.1
+CICLO DI VITA: FASI, REVIEW, LIVELLI DI AUTORIZZAZIONE...................................................................................................................................... 12
+5.2 TOTAL CONTRACT VALUE (RAISE TCV) E VALORE OPPORTUNITÀ (TCV) ........................................................................................................ 14
+5.3 KEY CONTRACT PRINCIPLES ................................................................................................................................................................................................ 15
+5.3.1
+RESERVED MATTERS.............................................................................................................................................................................................. 16
+5.3.2 KEY FINANCIAL TARGETS ..................................................................................................................................................................................... 17
+5.4 MATRICE DI AUTORIZZAZIONE ............................................................................................................................................................................................ 18
+5.5 FAST-TRACK ............................................................................................................................................................................................................................... 19
+5.6 OPPORTUNITÀ DI VENDITA INNOVAZIONE R&D ........................................................................................................................................................ 20
+5.7 OPPORTUNITÀ DI VENDITA LARGE DEALS .................................................................................................................................................................... 20
+5.8 CICLO DI VITA DELL’OPPORTUNITÀ: SALES PLANNING............................................................................................................................................. 21
+5.8.1
+GESTIONE INGAGGIO ATTIVITÀ DELLE STRUTTURE DI SUPPORTO ........................................................................................................ 21
+5.8.2 OPPORTUNITY LAB (OL) ...................................................................................................................................................................................... 21
+5.9 CICLO DI VITA DELL’OPPORTUNITÀ: DEAL GENERATION ........................................................................................................................................ 22
+5.9.1
+AUTHORIZATION TO PROCEED (ATP) ........................................................................................................................................................... 22
+5.9.2 ALTRI CONTROLLI ....................................................................................................................................................................................................23
+5.10 CICLO DI VITA DELL’OPPORTUNITÀ: SOLUTION & QUOTE ...................................................................................................................................... 24
+5.10.1 AUTHORIZATION TO SUBMIT (ATS)................................................................................................................................................................. 24
+5.11 CICLO DI VITA DELL’OPPORTUNITÀ: CONTRACTING .................................................................................................................................................. 25
+5.11.1 AUTHORIZATION TO COMMIT (ATC)............................................................................................................................................................... 25
+5.12 CICLO DI VITA DELL’OPPORTUNITÀ: CHIUSURA DELLE OPPORTUNITÀ ............................................................................................................. 27
+5.12.1 HANDOVER MEETING (HND) ........................................................................................................................................................................... 28
+5.12.2 WIN-LOSS REVIEW ............................................................................................................................................................................................... 28
+5.12.3 SCHEDA REFERENZA ............................................................................................................................................................................................ 28
+6
+PROCESSO WLR.................................................................................................................................................................................................................................. 29
+RIFERIMENTI E DOCUMENTI DI SUPPORTO ............................................................................................................................................................................................ 30
+
+PSQ-003 v17 del 24/10/2025
+Uso Interno
+
+Pagina 3 di 30
+
+Procedura
+
+RAISE - Gestione Opportunità di vendita
+
+1
+
+Codice documento
+
+Versione
+
+PSQ-003
+
+17
+
+SCOPO
+
+La presente procedura ha lo scopo di definire il processo di gestione delle opportunità di vendita nel gruppo
+Lutech, con specificazione delle fasi e dei punti di controllo. Il processo è denominato RA2ISE (Risk
+Assessment and Authorization In Sales Execution), nel seguito del documento indicato anche come “RAISE”.
+Obiettivo del processo RAISE è eseguire le attività di Sales in maniera controllata, per minimizzare
+l’esposizione aziendale in caso di eventuali problemi, garantire il mantenimento delle certificazioni aziendali,
+focalizzare le attività di Sales su opportunità “vincenti” e “attrattive” per il business del Gruppo Lutech,
+bilanciando i rischi, riusando le esperienze precedenti e aderendo ai target di Gruppo.
+La Direzione a suo insindacabile giudizio potrà non considerare ai fini del calcolo degli MBO le opportunità
+non gestite in conformità col processo.
+Come verrà illustrato nel seguito del documento:
+❑
+
+Tutte le opportunità che possono portare a un ordine o contratto per il Gruppo devono essere tracciate
+e gestite nel CRM Salesforce Lutech, nel seguito del documento indicato anche come SFDC (TOO-033
+Piattaforma di gestione vendite)
+
+❑
+
+Tutti i documenti prodotti nelle fasi di vendita devono essere conservati sul sito SharePoint specifico
+dell'opportunità; tale repository, denominato Opportunity Site, dovrà essere condiviso con la Delivery
+per le opportunità vinte, e la delivery lo alimenterà con i documenti prodotti durante del contratto
+
+❑
+
+Con l’introduzione di “Lutech BrAin” (Soluzione di Intelligenza Artificiale Generativa del gruppo Lutech),
+gli Opportunity Site diventano parte integrante del programma BrAin, quali repository con cui
+aumentare la base di conoscenza del motore AI generativo a supporto della vendita, ad esempio, per
+ottenere informazioni utili a compilare la risposta di gara
+
+❑
+
+Il processo RAISE prevede iter approvativi basati su una specifica Matrice di Autorizzazione, e richiede
+il coinvolgimento di Expert qualora vi siano deviazioni o punti di attenzione rispetto agli standard di
+Gruppo (ad esempio margini, rischi, legali, data privacy, compliance, etc.).
+
+❑
+
+Il processo viene eseguito in modo controllato per fasi, con template di documenti specifici in ogni fase.
+Al termine di ciascuna fase è prevista una Review, gestita in base al livello e complessità dell'opportunità:
+o
+
+ATP (Autorizzazione a procedere): in cui si definisce la strategia e posizionamento sul Cliente, e si
+ottiene autorizzazione al budget di spesa necessario per la produzione dell’offerta
+
+o
+
+ATS (autorizzazione all'invio offerta tecnico commerciale al cliente): in cui si approva la soluzione
+individuata e la relativa P&L (Profit & Lost – dettaglio dei costi, rischi, ricavi, e quindi margini) per la
+produzione di una offerta vincente,
+
+o
+
+ATC (Autorizzazione all’impegno alla ricezione contratto): in cui si verifica il contratto/ordine ricevuto,
+analizzando eventuali differenze rispetto all’offerta, per autorizzazione alla firma del contratto,
+coinvolgendo Finance per validazione del TCV da registrare su INFOR e Delivery per condivisione
+della P&L e dell’Opportunity Site col team che seguirà l’erogazione del contratto
+
+o
+
+HND (Handover): solo in caso di BID complessi, “non standard” che richiedano particolare attenzione
+alla fase di avvio della delivery del contratto
+
+❑
+
+Esistono semplificazioni del processo, ad esempio cicli approvativi più veloci per estensioni o change
+request di contratti precedentemente approvati, purché rispettino o migliorino le autorizzazioni
+precedentemente ottenute; tali semplificazioni vengono in ogni caso tracciate e monitorate
+
+PSQ-003 v17 del 24/10/2025
+Uso Interno
+
+Pagina 4 di 30
+
+Procedura
+
+RAISE - Gestione Opportunità di vendita
+
+2
+
+Codice documento
+
+Versione
+
+PSQ-003
+
+17
+
+CAMPO DI APPLICAZIONE
+
+Le indicazioni contenute nel presente documento si applicano a tutte le linee di business e alle attività svolte
+dalla Direzione Sales di Lutech e delle sue controllate.
+Ad oggi le società a cui si applica il processo RAISE sono: Lutech, TENENIGEN, ICTeam, Lutech ICT Solution,
+Lutech Digital Airport, EUSTEMA. SAPIMSA, ConsulThink.
+Al momento RAISE non è applicabile alle Legal Entity (LE) che usano un differente CRM e/o ERP (tali società
+sono: CDM, Pivotal, Softjam, Cimworks, Know-How, Stain, Abex, Sinergetica e Kronotech); le opportunità di
+tali società sono gestite (processo di approvazioni e documentazione) sui propri sistemi con le procedure in
+vigore presso ciascuna società, ed importate poi nel CRM di Lutech in modo da avere una visione unitaria
+del business di Gruppo. Sulle opportunità con TCV > 1M€ si applica un processo denominato “Light RA2ISE“:
+in aggiunta alle regole di ciascuna società, il titolare opportunità dovrà chiedere a DealGovernance@lutech.it
+l’organizzazione di una call di 30’ con gli autorizzatori di Lutech Spa, a cui dovrà seguire mail formale di
+approvazione, da conservare sui sistemi della società che emette offerta; non è richiesta l’adozione dei
+template RAISE purché le informazioni presentate nella call siano equivalenti quelle previste da RAISE.
+
+3
+
+DEFINIZIONI E ABBREVIAZIONI
+
+Di seguito sono indicate le abbreviazioni utilizzate all'interno del documento.
+TERMINE/SIGLA
+
+DEFINIZIONE
+
+AM
+
+Account Manager (termine generico che individua il Sales Manager o Client Executive o Client
+Manager o Sales Specialist, ovvero il titolare dell’opportunità di vendita)
+
+BM
+
+Bid Manager
+
+CCO
+
+Chief Compliance Officer
+
+CDE
+
+Client Delivery Executive
+
+CE
+
+Client Executive
+
+CFO
+
+Chief Financial Officer
+
+CoE
+
+Center of Excellence
+
+CDO
+
+Chief Delivery Officer
+
+COO
+
+Chief Operating Officer
+
+CMCIO
+
+Chief Marketing, Communication & Innovation Officer
+
+CR
+
+Change Request
+
+DPM
+
+Data Privacy Manager
+
+EBITDA
+
+Earnings Before Interests Taxes Depreciation and Amortization (MOL - Margine Operativo Lordo)
+
+FA
+
+Framework agreement (accordo quadro)
+
+HSE
+
+Health, Safety & Environment
+
+KCP
+
+Key Contracting Principles
+
+Opportunity Site
+
+Repository documentale unico (Sales e Delivery) generato direttamente dal tool SFDC
+
+ONBD
+
+DC, DWP & Large Deals and Offering Integration ONBD
+
+PDL
+
+Altro nome per MOD-001 Revenue Cost Plan (RCP)
+
+P&L
+
+Profit & Loss – indica MOD-001 Revenue Cost Plan (RCP) / PDL
+
+PO
+
+Purchase Order
+
+RFI
+
+Request for Information
+
+PSQ-003 v17 del 24/10/2025
+Uso Interno
+
+Pagina 5 di 30
+
+Procedura
+
+RAISE - Gestione Opportunità di vendita
+TERMINE/SIGLA
+Research & Development
+
+RTI
+
+Raggruppamento temporaneo di imprese
+
+SUBCO
+
+4
+
+Versione
+
+PSQ-003
+
+17
+
+DEFINIZIONE
+
+R&D
+SFDC (o CRM)
+
+Codice documento
+
+Tool per gestione opportunità di vendita – TOO-033
+Subfornitore / subcontractor
+
+TCV
+
+Total contract value
+
+VAR
+
+Value-Added Resale
+
+RESPONSABILITÀ
+
+La tabella seguente indica per il processo in oggetto la funzione responsabile e le funzioni partecipanti.
+FUNZIONE
+Sales Excellence
+
+RESP.
+
+PART.
+
+x
+
+Head of Industry / Head of Territory
+
+x
+
+Sales Manager / Client Executive / Client Manager / Sales Specialist
+
+x
+
+Chief Delivery Officer / Capabilities / Practice Leader
+
+x
+
+Experts
+
+x
+
+Tender Officer / Bid Management & Deal Qualification / DC, DWP & Large Deals and Offering
+Integration ONBD
+
+x
+
+4.1
+
+Account Manager
+
+L’Account Manager (ovvero Sales Manager / Client Executive / Client Manager / Sales Specialist) ha la
+responsabilità end-to-end sull'opportunità di vendita, compresa la gestione di SFDC (TOO-033 Piattaforma
+di gestione vendite), in particolare deve provvedere a:
+❑
+
+creazione dell'opportunità di vendita e dell’Opportunity Site
+
+❑
+
+verifica dell'aderenza ai Key Contracting Principles (Reserved Matter e Key Financial Target)
+
+❑
+
+ottenimento dell'approvazione del budget per la preparazione dell'offerta (ove necessario)
+
+❑
+
+finalizzazione della PdL/RCP con ricavi (e quindi margini, sulla base dei costi e rischi ricevuti dal BID o
+Solution Manager) per una offerta in linea con le esigenze di business
+
+❑
+
+creazione richieste di approvazione e loro autorizzazione (sulla base del workflow di processo definito)
+
+❑
+
+negoziazione con il cliente e ricezione dell'ordine/contratto.
+
+Si ricorda che in caso di RTI a cui partecipano più aziende del gruppo ed altre aziende esterne, le opportunità
+devono essere gestite come segue:
+❑
+
+RTI tra due aziende del gruppo (ed eventuali altre aziende) in cui entrambe le aziende del gruppo
+abbiamo una quota parte prodotti / servizi ed una delle due sia la mandataria: devono essere create due
+opportunità ognuna con la propria quota parte di TCV e TCV RAISE come somma dei due TCV
+sull’opportunità della mandataria. Le approvazioni RAISE devono essere effettuate solo sull’opportunità
+della società mandataria, mentre l’altra opportunità va gestita in esenzione
+
+❑
+
+RTI tra due aziende del gruppo (ed eventuali altre aziende) con entrambe le aziende del gruppo
+abbiamo une propria quota parte prodotti / servizi ed entrambe siano mandanti: devono essere create
+
+PSQ-003 v17 del 24/10/2025
+Uso Interno
+
+Pagina 6 di 30
+
+Procedura
+
+RAISE - Gestione Opportunità di vendita
+
+Codice documento
+
+Versione
+
+PSQ-003
+
+17
+
+due opportunità ognuna con la propria quota parte di TCV e TCV RAISE, le approvazioni RAISE devono
+essere effettuate su entrambe le opportunità
+
+❑ RTI tra due aziende del gruppo (ed eventuali altre aziende) in cui una delle due società del gruppo non
+sia operativa ma contribuisca solo ai requisiti tecnici economici: in questo caso si crea una sola
+opportunità per il totale TCV e TCV RAISE per la sola società operativa (per la società che fornisce solo i
+requisiti non va gestita alcuna opportunità).
+
+❑ Qualora Lutech agisca come mandataria dell’RTI, è responsabilità dell’Account Manager (o del titolare
+dell’opportunità) la raccolta del "MOD-512 - Dichiarazione Anticorruzione ISO 37001 - Soci in Affari"
+compilato e firmato dalle mandanti ed altresì del "MOD-513 - Dichiarazione Conflitti di Interesse"
+compilato e firmato dalla funzione interna che propone l’RTI; tali moduli dovranno essere inviati al Team
+di Ethical Risk (ethicalrisk@lutech.it) che provvederà a restituire al titolare dell’opportunità il MOD-511 Due Diligence Soci in Affari con la relativa valutazione sul Partner RTI. Tutta la documentazione (MOD512, MOD-513 e MOD-511) dovrà quindi essere memorizzata nell’Opportunity Site.
+❑
+
+Per qualunque tipologia di RTI è responsabilità dell’Account Manager (o del titolare dell’opportunità) la
+memorizzazione nell’Opportunity Site dei patti parasociali controfirmati.
+
+In caso vi siano fornitori è responsabilità del Account Manager assicurarsi che:
+❑
+
+tali fornitori siano già presenti nell’albo fornitori certificati Lutech e, qualora non lo siano, avviare il
+processo di certificazione che deve concludersi prima dell’offerta al Cliente
+
+❑
+
+l’offerta ricevuta dai fornitori sia “Back To Back” rispetto alle condizioni imposte dal cliente, oppure che
+siano ribaltate al cliente le condizioni imposte dal vendor/distributore (sia in termini di condizioni d’uso
+che in generale per il regime di responsabilità e penali)
+
+❑
+
+qualora il ruolo contrattuale Lutech sia limitato alla rivendita di prodotti o licenze terze parti, è
+fondamentale prevedere contrattualmente il ribaltamento al Cliente delle condizioni imposte dal
+vendor e/o dal distributore (sia in termini di condizioni d’uso che in generale per il regime di
+responsabilità e penali); inoltre è fondamentale, in tal senso, che il Cliente finale a cui saranno rivenduti
+i servizi/prodotti sia posto a conoscenza delle condizioni e dei termini generali contenuti nell’agreement
+e che accetti integralmente, ad esempio, l’End User License Agreement (EULA) del fornitore
+
+❑
+
+qualora vi siano disallineamenti tra condizioni del fornitore e quelle del cliente, è responsabilità
+dell’Account Manager predisporre il “MOD-103 Tabella per Reselling di prodotti” da discutere con Legal
+e Procurement, e poi presentare nelle richieste di approvazione agli autorizzatori.
+
+Si ribadisce che:
+❑
+
+La documentazione inerente alle varie fasi del ciclo di vita deve essere caricata per tempo (prima dei vari
+momenti approvativi) nell’Opportunity Site.
+
+❑
+
+Per le opportunità WON, è responsabilità del titolare dell’opportunità:
+o
+
+Verificare che tutta la documentazione sia presente nell’Opportunity Site.
+
+o
+
+Trasferire le informazioni inerenti all’opportunità al team di Delivery dando supporto alla
+compilazione dell’HANDOVER CHECK-LIST.
+
+o
+
+Condividere l’Opportunity Site con il team di Delivery che seguirà l’erogazione del contratto,
+che da quel momento in poi avrà la responsabilità di mantenere aggiornato il sito con tutti
+i documenti contrattualmente rilevanti.
+
+Per le opportunità di vendita che non richiedano il supporto di altre strutture aziendali, l’Account Manager
+agisce anche come Bid Manager.
+PSQ-003 v17 del 24/10/2025
+Uso Interno
+
+Pagina 7 di 30
+
+Procedura
+
+RAISE - Gestione Opportunità di vendita
+
+4.2
+
+Codice documento
+
+Versione
+
+PSQ-003
+
+17
+
+Bid Manager
+
+Il BID manager ha le seguenti responsabilità:
+❑
+
+verifica dell'aderenza al processo dell'opportunità di vendita
+
+❑
+
+pianificazione tempestiva delle revisioni e dei relativi documenti obbligatori
+
+❑
+
+rispetto del budget BID (se presente)
+
+❑
+
+definizione della strategia di gestione dei rischi inclusa la finalizzazione del Risk Register
+
+❑
+
+guida dell'intero BID team per ottenere l'approvazione degli Experts (ove applicabile)
+
+❑
+
+produzione e consegna dell'offerta, assicurandosi di avere i deliverable "autorizzati" prima di inviare i
+documenti al cliente e che tutti i documenti interni/esterni siano in linea con la Win Strategy definita
+
+❑
+
+predisporre i verbali di review (nel caso in cui le review siano effettuate via call), trasmetterlo via mail con
+testo in chiaro (non come allegato) rispondendo alla mail di convocazione della call ed archiviare nel
+folder BID dell’Opportunity Site la mail di trasmissione dei verbali di review
+
+Per le opportunità di vendita "standard", può anche agire come Solution Manager, ed in alcune circostanze,
+può supportare direttamente la stesura di alcuni contributi metodologici/organizzativi dell'offerta tecnica.
+
+4.3
+
+Solution Manager
+
+Il Solution Manager può appartenere alla funzione DC, DWP & Large Deals and Offering Integration ONBD
+o Delivery ed ha la responsabilità di:
+❑
+
+identificazione della soluzione e dei suoi dettagli tecnici
+
+❑
+
+definizione dei relativi costi e dei potenziali rischi tecnici, della prima stima della tempistica, della
+garanzia che la soluzione corrisponda ai requisiti del cliente, in linea con la Win Strategy concordata
+
+❑
+
+condivisione delle stime con Delivery, della ricezione delle quotazioni da parte del fornitore/subco (se
+presente) in allineamento con il Procurement, della produzione di giustificazioni in caso di margine
+inferiore all'obiettivo specifico della practice.
+
+❑
+
+produzione della PdL/RCP e del Risk Register (nella cui compilazione bisogna tener conto di quanto
+riportato nel documento “CATALOGO RISCHI GENERALI IN AMBITO COMMESSA– Risk Management” e
+nella Procedura “PSQ-028 Gestione del Rischio”)
+
+Per le opportunità di vendita "standard" o di offerta singola, può anche agire come Bid Manager.
+
+4.4
+
+Bid Solution Team
+
+Il gruppo di lavoro BID Solution team è composto da risorse del Bid Management & Deal Qualification, DC,
+DWP & Large Deals and Offering Integration ONBD e Delivery o altre strutture coinvolte nella elaborazione
+della proposta commerciale. Il team è deputato a:
+❑
+
+supportare la definizione della proposta
+
+❑
+
+provvedere alla stesura della documentazione tecnica
+
+Tutte queste attività devono essere eseguite sotto la supervisione del Solution Manager e del Bid Manager.
+
+PSQ-003 v17 del 24/10/2025
+Uso Interno
+
+Pagina 8 di 30
+
+Procedura
+
+RAISE - Gestione Opportunità di vendita
+
+4.5
+
+Codice documento
+
+Versione
+
+PSQ-003
+
+17
+
+Tender Office
+
+Il Tender Office si occupa della gestione amministrativa dell’offerta e della predisposizione dei plichi di
+risposta alla gara da consegnare.
+
+4.6
+
+RAISE Manager
+
+Il ruolo di RAISE Manager (in carico alla funzione BID Risk Management) è specifico del processo RAISE ed
+ha la responsabilità di:
+❑
+
+supervisionare e monitorare il processo
+
+❑
+
+mantenere aggiornato il Management tramite dei report
+
+❑
+
+erogare la formazione sul processo (ove necessario)
+
+Il RAISE Manager deve essere invitato a tutte le riunioni decisionali sulle opportunità di vendita complesse
+e tenuto in copia delle richieste di approvazione per le altre opportunità di vendita.
+
+4.7
+
+Experts
+
+Gli Experts sono risorse che hanno competenze su temi specifici (Finance, Legal, Compliance, BID RIsk, Data
+Privacy, Procurement, ...) e sono coinvolti quando è necessario il loro parere, nel proprio ambito di
+competenza, su opportunità complesse e/o in caso di deviazioni rispetto agli standard aziendali.
+È responsabilità del BID Manager (o dell’Account Manager nel caso in cui il BID Manager non sia stato
+nominato) contattare per tempo gli Experts da coinvolgere, inviando documentazione e richieste
+circostanziate e fornendo l’accesso in lettura all’Opportunity Site. Qualora l’Expert sia stato contattato nelle
+fasi preliminari si richiede, al momento dell’ingaggio ufficiale tramite il tool Salesforce, che nel testo della
+richiesta di parere si inserisca una frase con i riferimenti del parere già ricevuto (ad esempio: «si richiede
+conferma del parere già espresso tramite mail in data xx/xx/xxxx in riferimento all’Opportunità XY»).
+Prima di ogni review, se coinvolti, gli Experts rilevanti di ciascuna area coinvolta esaminano in anticipo gli
+aspetti inerenti alla propria area di competenza ed esprimono il loro parere (con eventuali prescrizioni), che
+deve essere riportato nella documentazione di BID, tipicamente espresso sotto forma di semaforo:
+•
+
+VERDE: l'esperto da parere positivo all'offerta e la considera accettabile con rischi probabili che possono
+essere facilmente mitigati; inoltre, l'esperto può assegnare al BID Team azioni (es. negoziare termini di
+pagamento migliori) e/o avvertire gli Authorizers (e il futuro Delivery Team) di alcuni aspetti critici che
+dovrebbero essere gestiti e monitorati (prima della firma del contratto o durante la sua esecuzione).
+
+•
+
+ROSSO: l'esperto da parere negativo all'offerta perché c'è un rischio o una mitigazione molto critica. In
+caso di semaforo ROSSO, il BID team può rielaborare la soluzione proposta, rimuovendo il problema
+segnalato e ripresentando l'offerta per una nuova richiesta di approvazione, oppure proseguire nell’iter
+della richiesta agli autorizzatori che prenderanno decisioni tenendo conto dei pareri ricevuti dagli Expert
+
+In genere gli Expert vengono coinvolti in ATS/ATC da L3 in su, e nei livelli inferiori in caso deviazioni KCP;
+Finance, in aggiunta al ruolo Expert, è coinvolta su opportunità vinte per la validazione degli «economics».
+Per la definizione degli Expert di ciascuna area vedasi VCA-005 RAISE infografica, slide “Experts’ table”.
+
+PSQ-003 v17 del 24/10/2025
+Uso Interno
+
+Pagina 9 di 30
+
+Procedura
+
+RAISE - Gestione Opportunità di vendita
+
+4.8
+
+Codice documento
+
+PSQ-003
+
+Versione
+
+17
+
+Approvatori
+
+Il processo RAISE viene eseguito in maniera controllata facendo avanzare l’opportunità di vendita attraverso
+le varie fasi previste. Ciascuna fase si conclude con un momento di verifica ed autorizzazione (nel seguito
+anche indicate come “review”) prima di poter passare alla fase successiva. Le review sono riunioni decisionali,
+basate sull’analisi della documentazione predisposta dal BID team e del contributo di Experts coinvolti.
+Gli approvatori (il cui livello dipende dalla complessità dell’opportunità di vendita come di seguito
+dettagliato) hanno la responsabilità di esaminare la documentazione ed i pareri Experts, ed autorizzare o
+meno la prosecuzione delle attività di vendita sull’opportunità, la presentazione dell’offerta al cliente e, in
+caso di aggiudica, l’accettazione del contratto/ordine ricevuto. Qualora uno o più approvatori non
+autorizzino la proposta loro presentata, il BID team deve rielaborare la soluzione proposta, rimuovendo il
+problema bloccante e ripresentando una nuova richiesta di approvazione. Tutte le decisioni prese devono
+essere tracciate e memorizzate nell’Opportunity Site dell’opportunità di vendita, unitamente alla
+documentazione preparata del BID Team ed ai pareri degli Experts qualora coinvolti.
+Come previsto dal documento “Delegation of Authority”, presente sulla pagina intranet di Legal, si
+raccomanda di non confondere i poteri autorizzativi “interni” (ad esempio dare benestare all’emissione di
+un’offerta in fase di ATS) definiti in base al ruolo aziendale dalla matrice autorizzativa di cui al paragrafo 5.4,
+con i poteri di impegnare l’azienda nei confronti di "esterni" (ad esempio apporre la propria firma su offerta
+da inviare al cliente) definiti nella DIS-001 Offerte: ciclo di approvazione e poteri di firma.
+
+4.9
+
+Convocazione e Gestione delle riunioni di approvazione
+
+Il processo RAISE prevede che ciascuna fase del ciclo di vita si concluda con un momento di verifica ed
+autorizzazione (nel seguito anche indicate come “review”) prima di poter passare alla fase successiva.
+È responsabilità dell'Account Manager schedulare per tempo la review (vedasi seguito del documento per i
+dettagli per le specifiche review) che può essere gestita (in base alla complessità dell’opportunità) via mail o
+tramite meeting; nel caso meeting, bisogna inviare una mail a DealGovernance@lutech.it indicando:
+❑
+
+Legal Entity che emetterà offerta
+
+❑
+
+Oggetto [Livello autorizzativo - review ATP/ATS/ATC - Nome Cliente - Titolo Opportunità]
+
+❑
+
+Codice Offerta (da SFDC)
+
+❑
+
+Data e slot desiderato per il meeting
+
+❑
+
+Link all’ Opportunity Site (su cui prima del meeting devono essere inseriti i documenti previsti dalla fase)
+
+❑
+
+Elenco delle persone da invitare
+
+Alle riunioni partecipano, oltre al titolare delle opportunità ed al BID manager, gli approvatori Sales e
+Delivery, il CDE, il RAISE Manager, eventuali Expert se coinvolti, altre figure in funzione della tipologia di
+opportunità e, comunque, non superando il limite di 10 partecipanti; qualora vi siano più persone coinvolte
+rispetto al limite indicato è necessario definire un delegato che parteciperà alla riunione (ad esempio nei
+caso in cui vi siano più Capability / Practice coinvolte, andrà assegnata delega alla Capability maggiormente
+
+PSQ-003 v17 del 24/10/2025
+Uso Interno
+
+Pagina 10 di 30
+
+Procedura
+
+RAISE - Gestione Opportunità di vendita
+
+Codice documento
+
+Versione
+
+PSQ-003
+
+17
+
+impattata). È facoltà degli approvatori richiedere che al momento della discussione del prezzo (ad esempio
+per motivazioni di riservatezza in ATS) abbandonino la riunione le persone non necessarie.
+È responsabilità della funzione Sales Operation schedulare la riunione inserendo nell’oggetto della
+convocazione il livello autorizzativo, il nome dell’opportunità ed altre informazioni necessarie.
+Qualora vi sia un tema di riservatezza sui prezzi che si discutono per le gare (soprattutto quelle pubbliche) si
+consiglia di ridurre al minimo i partecipanti alle review, ad esempio solo titolare opportunità, BID Manager,
+autorizzatori del primo livello aziendale (Head of Industry, COO, CDO, CEO), Finance e RAISE Manager.
+La tabella segue riporta una linea guida per l’individuazione dei partecipanti (nelle parentesi quadre sono
+indicati quelli opzionali).
+
+Livello
+
+SALES
+
+L1
+
+CEO / Head of Industry / [Sales
+Manager] / Client Executive
+
+L2
+L3
+L4
+L5
+
+DELIVERY
+
+ALTRI
+
+COO / CDO / Capability Leader /
+Industry Op. Leader
+RAISE Manager
+COO / CDO / Capability Leader
+Head of Industry / [Sales Manager] /
+Finance
+/ Industry Op. Leader / CDE /
+Client Executive
+[Practice-CoE Leader]
+Bid Manager /
+Head of Industry / Sales Manager /
+CDE / Capability Leader / Industry Solution Manager
+Client Executive
+Op. Leader / Practice-CoE Leader
+CDE / [Capability Leader] /
+Expert se coinvolti e
+Head of [sub]Industry / Sales Manager /
+[sub]Industry Op. Leader /
+se non abbiano già
+Client Executive
+Practice-CoE Leader
+espresso il proprio
+parere
+Sales Manager / Client Executive
+CDE / Practice-CoE Leader
+
+L6
+
+N/A
+
+N/A
+
+Si ricorda che per opportunità L1/L2/L3 deve partecipare alla call (indipendentemente se abbia già espresso
+proprio parere) Expert Finance e Legal, se vi sono acquisti esterni Expert Procurement, e nel caso di rivendita
+prodotti anche Expert CMCIO anche per esprimere parere su eventuali “rebate” specifici.
+Per opportunità con volume superiore ai 10 M€ non sono ammessi delegati (salvo per casi eccezionali di
+indisponibilità), ed è responsabilità del BID manager assicurarsi che i convocati partecipino.
+Si ricorda che, per qualunque livello approvativo, è responsabilità del BID manager:
+❑
+
+assicurarsi che tutta la documentazione necessaria sia caricata nell’Opportunity Site prima della review
+
+❑
+
+distribuire il verbale di review (con testo in chiaro NO allegati) rispondendo alla mail di convocazione call
+
+❑
+
+archiviare nel folder BID dell’Opportunity Site la mail di trasmissione del verbale di review
+
+❑
+
+contattare il RAISE Manager per la chiusura della review nel sistema
+
+PSQ-003 v17 del 24/10/2025
+Uso Interno
+
+Pagina 11 di 30
+
+Procedura
+
+RAISE - Gestione Opportunità di vendita
+
+5
+
+Codice documento
+
+Versione
+
+PSQ-003
+
+17
+
+PROCESSO RAISE
+
+Di seguito è rappresentato il framework di riferimento per il processo di gestione delle opportunità di
+vendita RAISE (Risk Assessment and Authorization In Sales Execution). Ulteriori dettagli sono riportati in
+PSQ-002 Gestione degli ordini e delle offerte e PSQ-026 Gestione Gare, a cui si rimanda.
+
+5.1
+
+Ciclo di vita: fasi, review, livelli di autorizzazione
+
+Obiettivo del processo è focalizzare le attività di Sales su opportunità “vincenti” e “attrattive” per il Gruppo,
+minimizzare l’esposizione aziendale in caso di problemi, eseguire le attività di Sales in maniera controllata,
+garantire il mantenimento delle certificazioni, riusando le esperienze e aderendo ai target di Gruppo.
+Tutte le opportunità che possono portare a un ordine o contratto per il Gruppo devono essere tracciate e
+gestite nel CRM Salesforce Lutech (denominato anche SFDC - TOO-033 Piattaforma di gestione vendite).
+Tutti i documenti prodotti nelle fasi di vendita devono essere conservati sul sito SharePoint specifico (creato
+dal CRM e denominato Opportunity Site) per ciascuna opportunità; per le opportunità vinte, tale sito dovrà
+essere condiviso con la delivery, e la delivery lo alimenterà con i documenti rilevanti prodotti durante
+l’erogazione del contratto.
+Le opportunità sono classificate in vari livelli approvativi in base alla loro complessità, misurata in termini
+di volume economico potenziale (TCV RAISE) e presenza di deviazioni ai target/standard di gruppo.
+Il processo RAISE prevede iter approvativi basati su una specifica Matrice di Autorizzazione (con approvatori
+via via più in alto sulla scala gerarchica dell’organizzazione all’aumentare del livello di complessità
+dell’opportunità) e richiede il coinvolgimento Expert qualora vi siano deviazioni o punti di attenzione
+rispetto agli standard di Gruppo (ad esempio margini, rischi, legali, privacy, compliance, etc.).
+Il processo viene eseguito in modo controllato per fasi, con template di documenti specifici in ogni fase del
+ciclo di vita dell’opportunità; al termine di ciascuna fase è prevista una Review, gestita in base al livello e
+complessità dell'opportunità come definito nella Matrice di Autorizzazione di vigore al momento:
+❑
+
+ATP (Authorization to proceed): per richiedere l’autorizzazione a procedere sull’opportunità di vendita
+ed autorizzazione ad eventuale BID Budget (effort necessario per produzione offerta).
+
+❑
+
+ATS (Authorization to Submit): per verificare l’offerta tecnica-economica predisposta, analizzare
+eventuali scostamenti rispetto ai target di Gruppo, ottenere autorizzazione per inviare offerta al Cliente.
+
+❑
+
+ATC (Authorization to Commit): per verificare eventuali scostamenti tra il contratto/ordine ricevuto e
+l’offerta fatta, consolidare e rendere definitivi documenti quali PdL (validando con Finance TCV, Order
+Entry ed altri parametri finanziari), ottenendo autorizzazione all’accettazione del contratto/ordine ed
+avvio delivery, trasferendo tutte le informazioni al team che seguirà l’erogazione del contratto.
+
+❑
+
+HND (Handover): si effettua solo nel caso di opportunità di vendita vinte su offerte particolarmente
+complesse o non standard. Lo scopo è quello di verificare che il team di delivery sia staffato, che tutta la
+documentazione e le assunzioni siano state trasferite dal Bid team al Delivery team, per consentire la
+corretta esecuzione del contratto nel rispetto delle specifiche autorizzazioni e con soddisfazione del
+cliente, che sia stato eseguito il set-up iniziale contratto sui tool aziendali
+
+PSQ-003 v17 del 24/10/2025
+Uso Interno
+
+Pagina 12 di 30
+
+Procedura
+
+RAISE - Gestione Opportunità di vendita
+
+Sales stage
+
+Start
+•
+
+Opportunity
+Interception
+
+•
+
+Opening the
+Opportunity in
+Salesforce CRM
+
+•
+
+Opening Case
+vs Tender and
+BID Mngt
+
+•
+
+SharePoint
+Opportunity
+Site creation
+and grants set
+
+Sales Planning
+
+Codice documento
+
+Versione
+
+PSQ-003
+
+17
+
+Position ourselves with the
+Client and prepare to Bid
+
+Define & agree our Winning
+Solution to Offer
+
+Convince, negotiate &
+sign the Contract
+
+Handover from Bid
+to Delivery &
+terminate Bid
+
+Deal
+Generation
+
+Solution & Quote
+
+Contracting
+
+Handover
+
+Touchpoint
+Opportunity
+Lab:
+prequalification
+
+Engagement of Tender
+Mngt / BID Mngt /
+Offer & Sol / industry
+
+< 250k
+
+< 1M
+
+Optional
+(only for key bid)
+
+> 1M
+
+According to
+Engagement
+Model rules
+
+I
+
+ATP - Authorization To
+proceed: BID Budget,
+Qualification & Strategy
+
+II
+
+ATS - Authorization
+To Submit: SolutionOffer approval
+
+III ATC - Authorization
+
+To Commit: Contract
+approval
+
+< 250K No
+(if no KCP deviation)
+
+< 250K No
+(if no KCP deviation)
+
+< 250k Fast-Track
+(if no KCP deviation)
+
+< 1M Simplified
+(if no KCP deviation)
+
+< 1M Simplified
+(if no KCP deviation)
+
+< 1M Simplified
+(if no KCP deviation)
+
+> 1M Classic
+
+> 1M Classic
+
+> 1M Classic
+
+Win-Loss
+review
+
+IV HND Closure
+for not
+standard BID
+
+<1 M
+Optional
+
+> 1M
+Mandatory
+
+Only for
+complex
+bid
+
+Ogni review è organizzata e gestita in base al livello di complessità dell’offerta, ogni fase deve essere
+completata prima di poter passare a quella successiva. Per ogni review è prodotta della documentazione
+che contiene tutte le informazioni necessarie utilizzate per prendere le decisioni.
+Il processo prevede semplificazioni ai momenti approvativi e/o alla documentazione da produrre in
+determinate condizioni che saranno illustrate nel seguito del documento: il processo prevede 3 tipologie di
+workflow approvativo (fast-track, semplificato, classico) con momenti approvativi e produzione di
+documenti diversi a seconda della tipologia di review e di workflow approvativo.
+Per maggior dettagli (definizione delle fasi e dei livelli, Matrice Autorizzativa in vigore, documentazione da
+produrre) si rimanda al seguito del documento ed all’ultima versione di VCA-005 RAISE infografica.
+Si ribadisce che all’avvio delle attività di vendita deve essere creato l’Opportunity Site, e successivamente:
+❑
+
+per ogni opportunità di vendita deve essere verificato e tracciato negli opportuni campi del tool SFDC
+se vi sono deviazioni ai KCP(Key Contracting Principle, illustrati nel seguito), se l’opportunità è eleggibile
+per finanziamenti R&D (vedi paragrafo dedicato), se vi è la possibilità di utilizzo del Competence Center
+Albania (oppure giustificare perché ciò non sia possibile) utilizzando il campo “Ingaggio near/off-shore
+
+❑
+
+prima dell’ATP deve essere generata il “Codice Offerta” tramite le funzioni del CRM e compilato il campo
+"Bid Budget" (prima con il valore richiesto, ed a valle dell'ATP con il valore autorizzato)
+
+❑
+
+nel caso di deviazioni marginalità deve essere richiesta autorizzazione preventiva a Finance
+
+❑
+
+il campo “IFRS15 evaluation” ed il TCV inserito nel tool SFDC (TOO-033 Piattaforma di gestione vendite)
+e nel sistema economico/gestionale devono essere validati da Finance prima della fase di ATC
+
+Per l’elenco e definizione delle fasi commerciali del ciclo di vita dell’opportunità da riportare nel tool SFDC
+(TOO-033 Piattaforma di gestione vendite) si rimanda al VCA-005 RAISE infografica slide “Fasi commerciali”.
+Per la documentazione da produrre in ciascuna fase/review si rimanda a VCA-005 RAISE infografica, slide
+“RA2ISE and documentation required”. Si ricorda che è responsabilità del BID Manager controllare e
+memorizzare per tempo la documentazione nell’Opportunity Site prima di ciascuna review richiesta,
+verificando che tutti gli Autorizzatori ed Expert abbiano accesso all’Opportunity Site almeno in lettura.
+PSQ-003 v17 del 24/10/2025
+Uso Interno
+
+Pagina 13 di 30
+
+Procedura
+
+RAISE - Gestione Opportunità di vendita
+
+Codice documento
+
+Versione
+
+PSQ-003
+
+17
+
+Nell’ambito del programma Lutech BrAin gli Opportunity Site sono il repository da cui attingere per
+aumentare la base di conoscenza del motore AI generativo a supporto delle attività di Sales.: l’utilizzo di
+BrAIn consente di ottenere dai principali documenti della gara una serie di informazioni utili a compilare
+parte della documentazione dell’opportunità corrente con modalità descritte nelle apposite comunicazioni.
+A tal fine è mandatorio che il titolare dell'opportunità popoli due attributi per ciascun documento caricato:
+❑
+
+il flag "BrAIn" (per richieste offerta, bando di gara, offerta tecnica ed allegati, contratti/ordini, referenze)
+che indica al motore di AI prendere in esame il documento ai fini delle funzionalità di AI generativa.
+
+❑
+
+l’attributo "Tipologia documento" che consente di specificare la tipologia per una migliore
+catalogazione da parte di "BrAIn" e di maggiore aderenza al processo RAISE.
+
+Per la creazione di opportunità con RTI in cui vi siano più aziende del Gruppo, si rimanda al paragrafo 4.1
+Nel caso di RTI (o altra forma di raggruppamento) con Lutech mandataria, la modulistica su
+anticorruzione e conflitti di interesse deve essere obbligatoriamente presentata dal titolare
+dell’opportunità prima della review di ATS (vedasi paragrafo 5.9.2). Per qualunque tipologia di RTI è
+responsabilità del titolare dell’opportunità coinvolgere da subito Tender Management e Compliance per i
+dovuti controlli, e memorizzare nell’Opportunity Site prima dell’ATS i patti parasociali controfirmati.
+In fase di ATS, prima dell'emissione dell'offerta, se la stessa prevede fornitori "vincolati" (ovvero il cliente o
+l'opportunità richiede di usare specifici fornitori) è necessario verificare la presenza di tali fornitori nell’albo
+fornitori certificati Lutech e, in caso contrario, qualificarli e solo dopo procedere con l'emissione dell'offerta.
+Per le opportunità in cui vengano veicolate componenti di altre società del gruppo (non in RTI) oltre alla PdL
+da cui si evinca il prezzo offerto dalla consociata ed il margine standard inter-company, va inserito
+nell’Opportunity Site anche l’offerta della consociata e prospetto da cui si evinca il margine totale del gruppo.
+Per tutte le opportunità in qualunque fase, è responsabilità del Sales pianificare le Revenue delle
+opportunità al meglio delle loro conoscenze (e mantenerle aggiornate nel tempo) poiché questa sarà
+utilizzata per il Forecast di Gruppo. Inoltre, prima di richiede un ATC il Sales deve coinvolgere:
+❑
+
+Finance (Industry Controlling e Order Processing) e Delivery (responsabili di Practice) per validare il
+TCV da registrare e relativa marginalità/rischi come da ultima PdL nel folder BID dell’Opportunity site
+
+❑
+
+Delivery coinvolte nell’opportunità per validare le Practice/Prodotti inseriti nel CRM (righe
+dell’opportunità) che determineranno la struttura di commesse/fasi da aprire sul sistema ERP
+
+Per ulteriori dettagli si rimanda a VCA-005 RAISE infografica slide “handover alla Delivery su BID won”.
+
+5.2
+
+Total contract Value (RAISE TCV) e valore opportunità (TCV)
+
+TCV RAISE è il valore contrattuale potenziale totale dell'opportunità ed è il parametro principale per
+determinare il livello di autorizzazione RAISE appropriato e i corrispondenti autorizzatori, in quanto
+rappresenta una misura dell'impegno esterno (e quindi della potenziale responsabilità, tra cui, ad esempio,
+la liability) a cui Lutech Group è esposto presentando una proposta. TCV RAISE è quindi definito come il
+valore contrattuale per Lutech Group proiettato/previsto per l'intera durata contrattuale, compreso:
+❑
+
+ricavi da prodotti/servizi/attività di terze parti (ad esempio subcontractors e suppliers)
+
+❑
+
+parti “committed” e “not committed” del contratto, incluse eventuali opzioni di rinnovo o estensioni
+
+❑
+
+nel caso di RFI, offerte budgettarie non vincolanti od Accordi Quadro (detti anche (AQ o FA) senza parti
+“committed” RAISE TCV è il valore dell'offerta mentre il valore dell’opportunità è considerato 1 euro.
+
+PSQ-003 v17 del 24/10/2025
+Uso Interno
+
+Pagina 14 di 30
+
+Procedura
+
+RAISE - Gestione Opportunità di vendita
+
+❑
+
+Codice documento
+
+PSQ-003
+
+Versione
+
+17
+
+qualora l'opportunità non sia un Accordo Quadro, sia senza parte opzionali e Lutech sia fornitore unico,
+impostare TCV RAISE e Valore Opportunità al valore economico dell’offerta fatta e poi ordine ricevuto.
+
+TCV o Valore Opportunità (ossia Order Intake) è l'importo totale degli Ordini di Acquisto (PO) con
+consegna immediata e futura per i quali le date di consegna e la quantità siano confermate o abbiano valore
+impegnativo. In caso di Accordo Quadro (AQ o FA) il TCV convenzionale per la parte non “committed” è di 1
+euro (salvo casi particolari, concordati con Finance) fino alla registrazione dei primi PO; ogni PO ricevuto
+dovrà essere gestito con una opportunità «child» per l'importo del PO stesso. Il TCV viene definito dal BID
+team durante le varie fasi del BID, in base allo stato della valutazione economica, ma il TCV finale (ed il valore
+del campo IFRS15) riconosciuto per SFDC e INFOR prima dell'ATC deve essere validato da Finance (se non
+diversamente concordato con COO, Sales Excellence, Head of Industry, CFO).
+Nel CRM il TCV (e relativo margine) è dato dalla somma degli item di offerta selezionati dal «catalogo
+prodotti», indicando per ciascuno tipologia (external product, fee, services), valore di vendita, margine rischi
+inclusi, vendor («No Vendor» per servizi erogati da personale interno), supply chain (non per servizi interni).
+Per i dettagli si rimanda a VCA-005 RAISE infografica, slide “TCV definition” e “TCV Recognition rules”.
+Gli Accordi Quadro (FA o "Accordi Quadro") sono gestiti attraverso la funzionalità SFDC Master-Child.
+Applicando questo metodo, sarà possibile mettere in relazione il contratto quadro e i successivi PO:
+❑
+
+l'opportunità Master deve essere gestita con un ciclo di approvazione completo,
+
+❑
+
+i nuovi PO (eccedenti il valore opportunità dichiarato nella Master) verranno registrati come Child, gestiti
+con approvazione semplificata (vedi “Fast-Track”) se in linea con le condizioni di approvazione del Master
+
+❑
+
+i Child condividono l’Opportunity Site del Master (dove vi sono i documenti del contratto principale), e
+per miglior fruibilità si consiglia di creare all’interno del folder BID una sottocartella per ciascun Child
+
+❑
+
+nel caso in cui l'importo totale dei PO ricevuti superi il TCV RAISE dell’opportunità master, il TCV RAISE
+della Master deve essere aggiornato.
+
+❑
+
+le autorizzazioni sulle opportunità Child possono essere richieste solo dopo che sia stato effettuato un
+ciclo approvativo completo fino all’ATC sull’opportunità Master
+
+Per i dettagli si rimanda a VCA-005 RAISE infografica, slide “TCV and OE on Framework Agreements”.
+A fine esemplificativo alcuni esempi:
+
+5.3
+
+Key Contract Principles
+
+I Key Contracting Principles (KCP) rappresentano le linee guida contrattuali per impegni commerciali,
+fondamentali come presupposto per lo svolgimento del business e tutelare il Gruppo Lutech in caso di
+controversie con il cliente o con terzi durante l'esecuzione di un contratto.
+
+PSQ-003 v17 del 24/10/2025
+Uso Interno
+
+Pagina 15 di 30
+
+Procedura
+
+RAISE - Gestione Opportunità di vendita
+
+Codice documento
+
+Versione
+
+PSQ-003
+
+17
+
+I KCP si applicano a tutte le opportunità di vendita ed è responsabilità del BID team (supportato dagli Expert
+e funzioni di supporto) assicurarsi che siano rispettati e che eventuali deviazioni siano adeguatamente
+evidenziate durante le fasi e review del BID. I KCP riguardano aspetti di:
+❑
+
+Compliance (check nuovi clienti, anticorruzione, assesment fornitori o partner, data privacy)
+
+❑
+
+Legal (ad esempio penali, liability, condizioni di terminazione di un contratto)
+
+❑
+
+Financial (ad esempio termini di pagamento, protezione per possibili rischi di cambio ed inflazione)
+
+❑
+
+Procurement (ad esempio verifica che non vi siano disallineamenti tra le condizioni del cliente e quelle
+di acquisto da fornitori/distributori)
+
+❑
+
+Operation (ad esempio clausola sociale, benchmarking, delivery location, certificazioni aziendali)
+
+Per dettagli si rimanda alle procedure specifiche. Per il processo BID questi aspetti sono raggruppati in
+❑
+
+Reserved Matters / Contractual Aspects
+
+❑
+
+Key Financial Targets
+
+I livelli autorizzativi sono basati sul TCV RAISE, ma in caso di deviazione ai Key Contracting Principle:
+❑
+
+è necessario parere di un Expert nominato dalla Funzione di competenza (Compliance, Legal,
+Finance, Risk, Procurement, ...)
+
+❑
+
+Il livello autorizzativo viene aumentato al successivo (ad esempio da L6 a L5) per i livelli L6/L5/L4 (i
+livelli L3/L2/L1 rimangono inalterati)
+
+La decisione di discostarsi dai KCP è prerogativa degli Autorizzatori (tranne nel caso in cui vi sia un NO GO
+mandatorio dell’Expert); per informare gli Autorizzatori su tali aspetti, nei template RAISE è presente una
+sezione dedicata con le deviazioni dai KCP, se presenti, ed i pareri degli Expert
+
+5.3.1
+
+Reserved Matters
+
+Le Reserved Matter sono un sottoinsieme degli aspetti "critici" gestiti nei processi di Compliance / Legal /
+Finance (ad esempio, l'apertura di una nuova sede, o Terms & Condition non in linea con le politiche di
+Gruppo) che devono essere portati all'attenzione degli Autorizzatori (e degli Experts) non appena identificati.
+Il loro stato deve essere segnalato tramite l'apposito campo «Deviazione ai Key Contracting Principles» nel
+CRM e specifica slide nelle presentazioni per le review sulla quale dovranno essere riportate le
+approvazioni pervenute via e-mail (o altre modalità previste dagli specifici processi), ma la deviazione deve
+essere gestita (eliminata, mitigata o accettata) al di fuori del processo RAISE.
+La corretta gestione e approvazione da parte delle funzioni competenti di tutte le Reserved Matter
+costituisce un prerequisito per qualsiasi decisione nel corso del processo di BID e nessuna parte interessata
+(compresi gli Autorizzatori) ha il diritto di ignorarle.
+Una prima check-list per l’individuazione della presenza o meno di deviazioni rispetto a tali aspetti (con
+indicazione degli Expert da contattare) è presente nella sezione 2 del “MOD-092 Deal qualification” che deve
+essere compilata a cura del titolare dell’opportunità e/o del Bid Manager fin dalle prime fasi dell’opportunità.
+Per i dettagli si rimanda a VCA-005 RAISE infografica slide “Reserved Matters”.
+
+PSQ-003 v17 del 24/10/2025
+Uso Interno
+
+Pagina 16 di 30
+
+Procedura
+
+RAISE - Gestione Opportunità di vendita
+
+Codice documento
+
+PSQ-003
+
+Versione
+
+17
+
+5.3.2 Key Financial Targets
+I principali target finanziari da considerare sono:
+CASH FLOW (Payback Targets):
+❑
+
+I termini di pagamento non possono essere superiori a 120 giorni, o in linea con le precedenti
+approvazioni sullo specifico cliente
+
+❑
+
+Su VAR ed in generale rivendita prodotti, il flusso di cassa deve essere cash neutrale: col fornitore devono
+essere presenti gli stessi (o migliori) termini di fatturazione e pagamento del cliente, o factoring
+
+❑
+
+Sui SERVIZI il payback deve essere al massimo di 18 mesi
+
+MARGINS (First Margin Targets):
+❑
+
+Come linea guida generale, la profittabilità non deve essere diminutiva dell’EBITDA
+
+❑
+
+Si ricorda che la marginalità indicata nel CRM e sulle slide delle review deve essere comprensiva di
+eventuali rischi
+
+❑
+
+Su VAR, ed in generale rivendita di prodotti, il margine minimo è 16% comprensivo di eventuali rischi
+o
+
+Per i dettagli sulle regole aggiuntive per l’autorizzazione su margini inferiori, si rimanda
+all’ultima versione pubblicata di VCA-005 RAISE infografica slide “Under-margin request VAR”
+
+❑
+
+Su SERVIZI il margine (comprensivo di eventuali rischi) di ciascuna Practice coinvolta deve essere
+maggiore od uguale del margine minimo specifico della Practice
+o
+
+Per i dettagli sulle marginalità minime per Practice e su regole per l’autorizzazione su margini
+inferiori, si rimanda a VCA-005 RAISE infografica slide “Under-margin request Services”
+
+❑
+
+Su EXTENSIONI, CRs, Opportunità Child, il margine deve essere maggiore od uguale dei target aziendali
+o di quello approvato sul contratto principale di riferimento per l’opportunità corrente
+o
+
+nelle approvazioni su questo tipo di opportunità il margine approvato sul contratto principale
+deve essere chiaramente indicato
+
+o
+
+Se il margine dell’opportunità corrente è inferiore al margine approvato sull’opportunità Master,
+una autorizzazione specifica per l’under-margin deve essere richiesta e tracciata.
+
+In caso di scostamenti su flusso di cassa, margine o altri aspetti finanziari
+❑
+
+deve essere impostato il campo “Deviazione ai Key Contracting Principles” e coinvolto Expert Finance
+
+❑
+
+il livello autorizzativo viene aumentato di 1 (es: da L6 a L5) per I livelli L6/L5/L4 (mentre i livelli L3/L2/L1
+rimangono inalterati in quanto già gestiti ai più alti livelli nell’organizzazione)
+
+❑
+
+la deviazione deve essere esplicitamente indicata e giustificata nei documenti di BID e sottomessa agli
+approvatori assieme al parere Expert Finance
+
+❑
+
+in caso di parere negative di Finance, il processo può essere interrotto in attesa di nuova PdL, oppure si
+può proseguire nella richiesta agli autorizzatori finali che prenderanno una decisione informata in
+funzione delle esigenze di business, del parere Expert e della documentazione nell’Opportunity Site
+
+Tutta la documentazione sugli aspetti finanziari (P&L, pareri Finance, esito eventuali richieste under-margin,
+risk register e quanto altro) deve essere memorizzata nell’Opportunity Site prima delle review. In casi di
+urgenza, il parere Finance può essere espresso durante la review e memorizzato in apposito verbale.
+
+PSQ-003 v17 del 24/10/2025
+Uso Interno
+
+Pagina 17 di 30
+
+Procedura
+
+RAISE - Gestione Opportunità di vendita
+
+5.4
+
+Codice documento
+
+PSQ-003
+
+Versione
+
+17
+
+Matrice di Autorizzazione
+
+Le opportunità sono classificate in vari livelli approvativi in base alla loro complessità, misurata in termini
+di volume economico potenziale (TCV RAISE) ed al rispetto/deviazioni Key Contracting Principle (KCP).
+Il processo RAISE prevede iter approvativi basati su una specifica Matrice di Autorizzazione (con approvatori
+via via più in alto sulla scala gerarchica dell’organizzazione all’aumentare della complessità dell’opportunità),
+e richiede il coinvolgimento Expert qualora vi siano deviazioni o punti di attenzione rispetto agli KCP.
+Nella matrice di autorizzazione i livelli sono individuati in base al TCV RAISE ed alla presenza di deviazioni.
+In caso di nuovo cliente o deviazione dai KCP l'autorizzazione viene spostata di 1 livello (ad esempio da
+L6 a L5) fino a L4 (i livelli L3, L2 ed L1 rimangono inalterati essendo gli autorizzatori già ai massimi livelli
+organizzativi) ed è necessario coinvolgere gli Expert. Qualora nell’opportunità vi siano Clausole sociali
+(obbligo per l’aggiudicatario di assorbire il personale già impiegato nella commessa precedente) o attività
+NON nel core business Lutech (ad esempio rivendita di materiali non strettamente IT, esecuzione di lavori
+di edilizia o altro, BPO, etc.), il livello passa a L1. Per le opportunità in cui i servizi abbiano valore >= 200k€
+e alcune delle componenti di servizi abbiano rischi < 3%, il livello viene aumentato a L2.
+Per tutte le opportunità “small ticket” con valore inferiore a 5K€ (ad esclusione dei rinnovi di manutenzioni
+HW/SW, automatici e non) prima di avviare il processo RAISE deve essere ottenuta autorizzazione preventiva
+dell’Head of Industry: in caso di esito positivo il titolare dell’opportunità potrà proseguire nel processo di
+vendita, viceversa l’opportunità dovrà essere chiusa senza procedere nell’emissione offerta al Cliente.
+Autorizzatori delle review sono definiti nella seguente Matrice Autorizzativa, ove i nomi dipendono dal
+cliente/Industry per Sales e dai prodotti per Delivery.
+Level
+
+TCV range
+
+Authorizers ATP
+/ bid budget
+
+L6
+
+0-250 K€
+
+n.a.
+
+L5
+
+L4
+
+L3
+L2
+L1
+
+Authorizers
+ATS, ATC (*), HND
+
+Workflow type
+
+Client Executive / Manager / Sales Fast Track (con tracking) se
+Specialist (titolare dell’opportunità) nessuna deviazione ai KCP
+
+Sales Manager (responsabile del
+Simplified: autorizzazioni
+titolare opportunità) + Practice/CoE
+via e-mail (a meno di
+Leader(s)(**) + CDE
+richieste di meeting) e
+Head of [sub] Industry + Capability senza intervento di Expert
+500-1000 K€
+Industry Head
+Leader(s) + [sub] Industry Operation (a meno che non vi siano
+deviazioni KCP)
+Leader + CDE
+Head of Industry + Capability
+Classic: autorizzazioni con
+1-10 M€
+Leader(s) + Industry Operation
+meeting,
+con autorizzatori
+Leader + CDE
+di
+Lutech
+S.p.A. per tutte le
+Head of Industry +
+10-20 M€
+Head of Industry + COO + CDO + CDE
+Legal
+Entity, e con
+COO + CDO
+intervento di Expert
+> 20 M€
+CEO + COO
+CEO + COO
+250-500 K€
+
+(*) su ATC ove non vi siano variazioni rispetto a quanto approvato in ATS, è possibile gestire ATC in autoapprovazione del titolare opportunità, fermo restando l’obbligo della documentazione mandatoria per livello
+(**) in L5, per opportunità con più prodotti appartenenti a Practice/CoEdiverse, sono coinvolti nel processo
+approvativo solo i Practice/CoELeader di prodotti con valore >100k€; qualora tutti i prodotti abbiano valore
+<100k€, approva solo [sub] Industry Operation Leader.
+La Matrice Autorizzativa in vigore è riportata su VCA-005 RAISE infografica slide “Authorization Matrix”.
+Qualora non sia stato ancora nominato un CDE per il Cliente, l’approvatore è Industry Operation Leader.
+PSQ-003 v17 del 24/10/2025
+Uso Interno
+
+Pagina 18 di 30
+
+Procedura
+
+RAISE - Gestione Opportunità di vendita
+
+Codice documento
+
+Versione
+
+PSQ-003
+
+17
+
+In aggiunta alle autorizzazioni di cui sopra, specifiche autorizzazioni sono richieste nel caso di under-margin,
+per i cui dettagli si rimanda al paragrafo 5.3.2 ed a VCA-005 RAISE infografica slide “Under-margin request”.
+In caso di rivendita prodotti (senza servizi o con servizi minimali <50k€) per livello L5 non è obbligatoria la
+review ATP, e per livelli L5-L2 gli approvatori ATS/ATC sono Sales e il CDE del cliente.
+In caso di opportunità di vendita in cui il cliente diretto non è quello finale, gli approvatori Sales vengono
+individuati in base all’Industry del cliente finale e non quello diretto, tranne in alcuni casi particolari gestiti
+come eccezioni (con tabelle configurate nel sistema SalesForce dalla funzione Sales Operation).
+Se il titolare opportunità ha un ruolo "Client Executive" la logica approvativa è la seguente:
+❑
+
+se la Industry del cliente finale, inserito nell'opportunità, è diversa da quella di pertinenza del titolare
+opportunità, le approvazioni per review di livello L5-L4-L3 devono essere indirizzate all' Head of Industry
+dell’Industry del cliente finale (questo porterà ad escludere dall'approvazione i Sales Manager per L5)
+
+❑
+
+se la Industry del cliente finale, inserito nell'opportunità, è uguale a quella di pertinenza del titolare
+opportunità, gli approvatori saranno trovati seguendo i responsabili gerarchici dell'utente (passando
+quindi anche dal Sales Manager, se presente, per le autorizzazioni L5).
+
+Qualora il titolare opportunità sia un Sales dell’organizzazione del Territory:
+❑
+
+se il cliente finale è di tipo “Named” oppure “Offering-Led”, negli autorizzatori va considerato il Territory
+(Head of Industry e Industry Op leader) e non l’Industry del cliente
+
+❑
+
+se il cliente finale è di tipo “Major”, nel calcolo degli autorizzatori bisogna considerare Industry del cliente
+e bisogna aggiungere ulteriori approvatori Head of Industry ed Industry Operation Leader del Territory
+
+Infine, qualora il cliente finale sia estero ricompreso nell’area «ENEL & International Markets», autorizzatori
+saranno Industry Head ed Industry Operation Leader dell’International Market.
+Gli autorizzatori sono coinvolti in tutte le review al giusto livello di gerarchia in base all’organizzazione
+corrente; le Review sono momenti decisionali, basati sulla documentazione prodotta dal BID team e sul
+contributo di Expert di ciascuna area coinvolta. Gli Expert esaminano preventivamente gli aspetti e danno il
+loro parere positivo (condizionato o meno) oppure negativo; gli autorizzatori riceveranno i pareri degli Expert
+per prendere una decisione informata in base alle esigenze di business. Finance, in aggiunta al ruolo Expert,
+deve essere coinvolta sulle opportunità vinte per validazione «economics» da registrare sia in Salesforce che
+in INFOR, come dettagliato in VCA-005 RAISE infografica slide “handover alla Delivery su BID won”.
+
+5.5
+
+Fast-Track
+
+Il processo non si applica in tutte le sue fasi ai seguenti tipi di offerte:
+❑
+
+Time & Material (puro “body-leasing”) con TCV<250K€, con Termini e Condizioni esistenti o standard, e
+margine in linea con i target aziendali
+
+❑
+
+Contratto/Ordine con TCV<250K€ con Termini e Condizioni standard, che soddisfano/superano gli
+obiettivi finanziari aziendali o accordi già in essere con il cliente per quella tipologia di contratto
+
+❑
+
+Contratto per prodotti/servizi standard con TCV<250K€ ed in linea con obiettivi aziendali e SLA standard
+
+❑
+
+Estensioni di contratto già approvato senza nuovi impegni o modifiche all’offerta approvata (soluzione,
+luogo e termini di consegna, livelli di qualità del servizio, termini di pagamento, prezzi unitari) e con
+marginalità migliore o in linea con quanto approvato nel contratto principale; non ricadono in questo
+caso le emissioni di un nuovo contratto (ad esempio di rinnovo tramite gara) da parte del cliente
+
+PSQ-003 v17 del 24/10/2025
+Uso Interno
+
+Pagina 19 di 30
+
+Procedura
+
+RAISE - Gestione Opportunità di vendita
+
+Codice documento
+
+PSQ-003
+
+Versione
+
+17
+
+Richieste di modifica (CR) o ordine (PO) ricevuto su Accordo Quadro che soddisfano/superano i target
+
+❑
+
+finanziari aziendali e le condizioni approvate nel contratto principale.
+In caso di opportunità che abbiano le suddette caratteristiche, il processo è gestito nel seguente modo:
+❑
+
+L'opportunità è gestita come livello L6 e contrassegnata come "Fast-Track” con la causale specifica
+
+❑
+
+Solo la review di ATC è obbligatoria, con documentazione minimale da produrre (calcolo P&L, offerta,
+ordine/contratto e, per le opportunità di vendita dei servizi, anche handover checklist)
+
+❑
+
+La documentazione deve essere archiviata nell’Opportunity Site associato all'opportunità di vendita
+
+❑
+
+Per richieste di modifica (CR) o proroghe contrattuali (su cui vi era una precedente opportunità “Master”
+con ciclo di approvazione completo), nel campo “Master Opportunity” del tool SFDC dell’opportunità
+corrente va indicato ID Opportunità di vendita del contratto precedentemente approvato
+Le opportunità di valore inferiore a 250k€ aventi come Ufficio Vendite “Renewal” vengono gestite come
+
+❑
+
+L6 anche in caso di sotto margine, con l’impegno a cura dell’Ufficio Vendite di verificare che il margine
+proposto nel rinnovo sia maggiore od uguale a quello dell’anno precedente.
+Il RAISE Manager o l’Head of Industry hanno la possibilità di richiedere la completa applicabilità del processo
+anche in questi casi; in ogni caso, il Fast-Track non è applicabile ove vi siano deviazioni dai Key
+Contracting Principle (ad esempio CR dove sia richiesto un viaggio all'estero verso paesi a rischio).
+
+5.6
+
+Opportunità di vendita Innovazione R&D
+
+Nel caso in cui l’opportunità di vendita contenga elementi di innovazioni, deve essere contattato Head of
+Innovation of Offering & Sales per la valutazione di un possibile effetto migliorativo tramite fondi di ricerca e
+sviluppo innovazioni, finanziamenti R&D o di crediti agevolati.
+In caso di conferma, marcare il campo "Innovazione" in SFDC (TOO-033 Piattaforma di gestione vendite), e
+per le opportunità di vendita vinte predisporre in modo opportuno la struttura commessa nel sistema
+gestionale, seguendo le istruzioni fornite da Innovation of Offering & Sales.
+Nella seguente tabella sono riportate le aree tecnologiche innovative:
+LEVE PER LA CREAZIONE DI MARGINE
+DALL'INNOVAZIONE
+
+OPPORTUNITÀ GENERATE DA INIZIATIVE DI INNOVAZIONE
+•
+•
+•
+•
+•
+•
+•
+
+Lutech Campus
+Open Innovation Programs
+Collaborazione con startup, Università e centri di ricerca
+Partner tecnologici (ad es. SFDC)
+Partnerships strategiche (ad es. MOST)
+Eventi (ad es. colloqui Lutech)
+Pubblicazioni (es. studio Ambrosetti)
+
+5.7
+
+Opportunità di vendita Large Deals
+
+•
+•
+•
+
+Contenuti mappabili su attività di ricerca
+Contenuti mappabili come Ricerca e
+Sviluppo (definizione dell'Agenzia delle
+Entrate per i crediti d'imposta)
+Contenuti mappabili come l'Innovazione
+Tecnologica (definizione dell'Agenzia delle
+Entrate per i crediti d'imposta)
+
+Per tutte le opportunità con TCV RAISE >= 10 M€, l’Account Manager dovrà impostare il campo “Large Deal”
+in SFDC, per rendere visibile l’opportunità alla unità organizzativa “Institutional Relations & BD”, da
+contattare per avere istruzioni e supporto. La richiesta deve essere validata a cura della unità “Institutional
+Relations & BD”, da coinvolgere fin dalle prime fasi e da includere negli autorizzatori in sede di ATP, per
+tracciare la decisione in maniera strutturata.
+Il campo “Large Deal” può assumere questi stati:
+❑
+
+“N.A.” (default per tutte le opportunità con TCV RAISE <10M),
+
+PSQ-003 v17 del 24/10/2025
+Uso Interno
+
+Pagina 20 di 30
+
+Procedura
+
+RAISE - Gestione Opportunità di vendita
+
+Codice documento
+
+Versione
+
+PSQ-003
+
+17
+
+❑
+
+“Required” oppure “Not required” (campo obbligatorio e selezionabile solo per le opportunità >=10M),
+
+❑
+
+“Confirmed” oppure “Rejected” (selezionabile solo dopo ATP in funzione della decisione presa per le
+opportunità con Large Deal=”Required”; se decisione negativa “Rejected”, se positiva “Confirmed”).
+
+Gli stati dovranno essere gestiti direttamente dal titolare dell’opportunità.
+Per quanto riguarda la visibilità su queste opportunità assegnate ai Large Deal sarà sufficiente che il titolare
+dell’opportunità condivida l’opportunità stessa con "Head of Institutional Relations & BD".
+Per quanto riguarda le review del processo RAISE, per tutte le opportunità individuate come Large Deals,
+l'"Head of Institutional Relations & BD" sarà considerato come ulteriore autorizzatore dell'ATP e dovrà essere
+invitato alle review ATS ed ATC.
+
+5.8
+
+Ciclo di Vita dell’opportunità: Sales Planning
+
+Il mercato viene presidiato dalle strutture preposte per Industry e cliente:
+❑
+
+L’Head of Industry è responsabile della esecuzione della strategia di crescita organica della società,
+sviluppando il mercato che presidiano (nuovi potenziali Clienti e Clienti esistenti);
+
+❑
+
+Sales Manager, Client Executive, Client Manager hanno il compito di sviluppare i Clienti assegnati e
+promuovere prodotti e servizi Lutech con il supporto operativo delle altre strutture aziendali.
+
+L'individuazione di potenziali opportunità di vendita può seguire diversi approcci, quali contatti
+professionali, gare di appalto pubbliche e private, attività promozionali. Nell’ambito delle ordinarie prassi
+nelle relazioni di affari, è permesso promuovere l’immagine della Società mediante l’organizzazione di eventi
+promozionali e/o conferimento di omaggi e gadget, facendo sempre riferimento alla policy PSQ-500 Politica
+per la Prevenzione della Corruzione e al PO-501 Gestione Eventi Promozionali e Conferimento Omaggi.
+Una volta individuata una opportunità, l’Account Manager raccoglie tutte le informazioni necessarie per la
+corretta valutazione dell’opportunità di vendita. L’opportunità individuata deve essere censita su TOO-033
+Piattaforma di Gestione Vendite (SFDC) e, qualora sia richiesto il coinvolgimento di BID Management &
+Deal Quaification e DC, DWP & Large Deals and Offering Integration ONBD, sul medesimo tool dovrà essere
+aperto un “Case” verso la struttura di prevendita. Al termine di questa fase, se necessario, si effettua il primo
+step di verifica previsto dal processo RAISE che consiste nell’Opportunity Lab.
+
+5.8.1
+
+Gestione ingaggio attività delle strutture di supporto
+
+In dipendenza della complessità dell’opportunità è responsabilità dell’Account Manager ingaggiare le
+strutture di DC, DWP & Large Deals and Offering Integration ONBD, BID Management & Deal Quaification
+o altre secondo le regole riportate in VCA-005 RAISE infografica slide “Ingaggi Presales”. La struttura
+ingaggiata deve esprimere il BID Manager. Nel caso in cui, nelle aree da coinvolgere, non ci siano sufficienti
+risorse per fornire il supporto richiesto devono essere coinvolti il CRO per decidere le priorità da assegnare
+alle singole opportunità di vendita. Su opportunità standard potrebbe non essere necessario ingaggiare una
+struttura di presales, ed in tal caso il titolare dell’opportunità agirà anche come BID Manager.
+
+5.8.2 Opportunity Lab (OL)
+Qualora necessario, l’Account Manager può richiedere una riunione denominata Opportunity Lab (OL),
+durante il quale vengono discusse le nuove opportunità di vendita significative per l’azienda col fine di:
+PSQ-003 v17 del 24/10/2025
+Uso Interno
+
+Pagina 21 di 30
+
+Procedura
+
+Codice documento
+
+RAISE - Gestione Opportunità di vendita
+
+Versione
+
+PSQ-003
+
+17
+
+❑
+
+presentare una qualificazione puntuale dell’opportunità di vendita
+
+❑
+
+consentire di assegnare una priorità alle opportunità e richiedere eventuale supporto per vincerla
+
+❑
+
+Individuare e verbalizzare azioni da perseguire preparatorie alla gara
+
+La documentazione deve essere inviata ai partecipanti alla riunione almeno 24 ore prima dell’incontro
+stesso; la schedulazione dell’incontro va richiesta mediante mail a DealGovernance@lutech.it specificando:
+❑
+
+Oggetto della OL [Nome Cliente - Titolo Opportunità di vendita]
+
+❑
+
+Opportunity ID (da SFDC) e Data e slot desiderato
+
+❑
+
+Link all’ Opportunity Site su cui devono essere memorizzate le slide MOD-090 OL prima della review
+
+Al meeting partecipano, a seconda della necessità:
+SALES
+•
+•
+
+Head of Industry / Head of Sub Industry
+Account Manager (Titolare opportunità)
+
+DELIVERY [facoltativi]
+•
+•
+•
+
+Chief Delivery Officer
+Capability Leader
+Practice Leader
+
+ALTRI [facoltativi]
+•
+•
+
+RAISE Manager
+Eventuali altre figure in base
+alla tipologia di opportunità
+
+Trattandosi di meeting opzionale, e non essendo previste autorizzazioni, per OL non è previsto tracciamento
+in SFDC, ma solo archiviazione di documentazione ed eventuali verbali nell’Opportunity Site.
+
+5.9
+
+Ciclo di Vita dell’opportunità: Deal Generation
+
+La fase si focalizza sulla definizione di:
+❑
+
+Value Statement, ovvero che valore siamo in grado di fornire al cliente
+
+❑
+
+definizione del business case ad alto livello (tipicamente budget del cliente e valori di gare pregresse)
+
+Al termine di questa fase è previsto un momento autorizzativo consistente nella riunione ATP.
+
+5.9.1
+
+Authorization To Proceed (ATP)
+
+Le risultanze emerse durante l’analisi preliminare della gara sono presentate dall’Account Manager durante
+il meeting di Authorization to Proceed (ATP), con l’obiettivo di determinare se vi sono le condizioni per
+poter proseguire con l’opportunità di vendita, definire il posizionamento sul cliente, ottenere autorizzazione
+dal Management all’avvio gara ed al BID Budget (spesa per le attività di gestione dell’offerta).
+Gli approvatori per la fase di ATP sono definiti in base alle regole riportate al paragrafo 5.4
+Ove previsto l’autorizzazione può essere richiesta via mail, oppure deve essere ottenuta durante la riunione
+ATP, la cui schedulazione deve essere richiesta entro 7 gg lavorativi dalla data di ricezione richiesta di offerta
+(o pubblicazione della gara), inviando una mail a DealGovernance@lutech.it specificando:
+❑
+
+Oggetto dell’ATP [Nome Cliente - Titolo Opportunità di vendita] e Legal Entity che emetterà offerta
+
+❑
+
+Opportunity ID (da SFDC), Data e slot desiderato
+
+❑
+
+Link all’ Opportunity Site su cui devono essere inseriti prima del meeting i documenti richiesti dalla fase
+
+Al meeting di ATP partecipano, a seconda della necessità, tipologia opportunità e del livello di approvazione:
+SALES
+•
+•
+•
+•
+•
+
+Head of Industry
+Head of Institutional Relations & BD
+Account Manager (Titolare opportunità)
+BID Management & Deal Quaification
+Offering Leader / Presales Team Leader
+
+DELIVERY
+•
+•
+•
+•
+•
+
+Chief Operating Officer
+Chief Delivery Officer
+Capability Leader
+Practice Leader
+CDE
+
+ALTRI
+•
+•
+•
+
+RAISE Manager (obbligatorio)
+Finance (obbligatorio per deal >
+300K€ o con deviazioni KCP)
+Eventuali Expert o altre figure in
+base alla tipologia opportunità
+
+La documentazione deve essere inserita nell’Opportunity site almeno 1 giorno lavorativo prima dell’incontro.
+PSQ-003 v17 del 24/10/2025
+Uso Interno
+
+Pagina 22 di 30
+
+Procedura
+
+RAISE - Gestione Opportunità di vendita
+
+Codice documento
+
+Versione
+
+PSQ-003
+
+17
+
+In fase di ATP devono essere chiaramente indicati in SFDC (TOO-033 Piattaforma di gestione vendite) i
+campi "Bid Budget" (prima con il valore richiesto, ed a valle dell'ATP con il valore autorizzato)
+La documentazione da produrre in questa fase è la seguente:
+❑
+
+Richiesta Offerta se presente (Richiesta del cliente, bando di gara, ecc.)
+
+❑
+
+MOD-105 ATP-ATS-ATC compilato per le parti necessarie all’ATP (Authorization to proceed)
+
+❑
+
+MOD-092 Deal qualification, in questa fase da compilare solo sezioni Cover, 1, 2 e 4 (BID Budget)
+
+❑
+
+Evidenze delle autorizzazioni ricevute o verbale della call, distribuito ai partecipanti, se ATP via call
+
+Per dettagli ed eventuali semplificazioni nella documentazione in funzione dei livelli autorizzativi si rimanda
+all’ultima versione pubblicata di VCA-005 RAISE infografica slide “RA2ISE and documentation required”.
+
+5.9.2 Altri controlli
+In caso di creazione opportunità su nuovo potenziale Cliente, per passare alla fase successiva è necessario
+creare l’anagrafica Cliente nel tool SFDC TOO-033 Piattaforma di gestione vendite; il tool, dopo la
+valorizzazione del valore dell’opportunità in stato “prospecting” o “qualification”, inoltra a Finance e Ethical
+Risk un messaggio di alert per comunicare la presenza di un cliente prospect su cui avviare i controlli.
+Finance conduce la verifica del cliente (solvibilità e, in caso di clienti esteri, presenza nelle Sanction List o
+appartenenza a nazioni soggette ad embargo) e in caso di esito dubbio inserisce sulla scheda del cliente
+presente in TOO-033 Piattaforma di gestione vendite un limite di fido oppure – nei casi più critici - procede
+al “blocco” del cliente, impedendone l’utilizzo sia sulla piattaforma SFDC che sull’ERP. Il “blocco” può essere
+effettuato in qualsiasi momento, non solo al momento della creazione di una nuova scheda cliente.
+Compliance esegue controlli su codice etico, anticorruzione, etc. Ai fini della prevenzione della corruzione,
+TOO-033 Piattaforma di gestione vendite ha funzionalità di controllo segnalate mediante alert e semafori:
+❑
+
+Conflitti di Interesse: Tutte le risorse che lavorano su un cliente - in qualità di titolare opportunità, titolare
+cliente, Head of Industry, Head of Territory - sono tenute a dichiarare la presenza o meno di situazioni di
+conflitto come espresso nella scheda del cliente stesso sulla piattaforma TOO-033 Piattaforma di
+gestione vendite. Tali dichiarazioni devono essere rinnovate su base annuale.
+La piattaforma segnala mediante appositi alert e semafori la situazione di ciascuna risorsa.
+
+❑
+
+Verifica anticorruzione Ethical Risk monitora periodicamente su SFDC (TOO-033 Piattaforma di
+gestione vendite) la presenza di Clienti:
+•
+
+di recente introduzione;
+
+•
+
+preesistenti non ancora sottoposti a Due Diligence e con nuove opportunità.
+
+La verifica viene svolta tramite i servizi dedicati come riportato in LG-501 Linee Guida Controlli ISO 37001
+(a cui si rimanda per i dettagli); ove vengano riscontrate situazioni dubbie, criticità o vi sia necessità di
+chiarimenti Ethical Risk può richiedere al Titolare Cliente di sottoporre al cliente - direttamente o
+mediante l’apposito pulsante “Invia Form” disponibile sulla scheda cliente in piattaforma – la
+compilazione del modulo MOD-512 Dichiarazione Anticorruzione ISO 37001 - Soci in Affari. Tale modulo
+dovrà essere quindi inoltrato all’Ethical Risk Team (EthicalRisk@lutech.it) che provvederà all’analisi delle
+informazioni raccolte e alla redazione della conseguente Due Diligence.
+
+PSQ-003 v17 del 24/10/2025
+Uso Interno
+
+Pagina 23 di 30
+
+Procedura
+
+Codice documento
+
+RAISE - Gestione Opportunità di vendita
+
+PSQ-003
+
+Versione
+
+17
+
+Per dettagli si rimanda a MOG-000B Modello di Organizzazione, Gestione e Controllo ex D.Lgs. 231/01 - Parte
+Speciale, PSQ-500 Politica per la Prevenzione della Corruzione e LG-501 Linee Guida Controlli ISO 37001.
+Si ricorda che, in caso di RTI con Lutech mandataria, è responsabilità dell’Account Manager (o del titolare
+dell’opportunità) la raccolta del MOD-512 Dichiarazione Anticorruzione ISO 37001 - Soci in Affari compilato
+e firmato dalle mandanti ed altresì del MOD-513 Dichiarazione Conflitti di Interesse firmato dalla funzione
+interna che propone l’RTI; tali moduli dovranno essere inviati al Team Ethical Risk (ethicalrisk@lutech.it) che
+provvederà a restituire al titolare dell’opportunità il MOD-511 - Due Diligence Soci in Affari con la relativa
+valutazione sul Partner RTI. Tutta la documentazione dovrà quindi essere memorizzata nell’Opportunity Site.
+In caso di RTI di qualunque tipo bisogna coinvolgere da subito Ethical Risk per i controlli sull’RTI prima della
+review di ATS, e devono essere inseriti nell’Opportunity Site i patti parasociali firmati.
+Per le opportunità, se la soluzione individuata prevede fornitori "vincolati" (ovvero il cliente o l'opportunità
+richiede di usare specifici fornitori) è necessario verificare la presenza di tali fornitori nell’albo fornitori
+certificati Lutech e in caso contrario qualificarli e solo dopo procedere con l'emissione dell'offerta. In ogni
+caso, le offerte di eventuali fornitori devono essere memorizzate nell’Opportunity Site prima dell’ATS.
+
+5.10
+
+Ciclo di Vita dell’opportunità: Solution & Quote
+
+La fase si focalizza sulla definizione di:
+❑
+
+Value Proposition, con indicazione di vantaggi e benefici della proposta a confronto con i competitor
+
+❑
+
+Valore dell’opportunità di vendita e definizione business case (PdL con costi, ricavi, rischi, marginalità)
+
+❑
+
+Matrice decisionale del cliente
+
+Si rimanda alle procedure PSQ-002 Gestione delle Offerte e degli Ordini e PSQ-026 Gestione Gare per i
+dettagli operativi relativamente a tale fase.
+
+5.10.1 Authorization to Submit (ATS)
+Al termine della fase è prevista la review Authorization to Submit (ATS) che ha l’obiettivo di approfondire la
+Value Proposition, la griglia decisionale, il Business Case (Pdl), gli elementi di competitività in modo da
+ottenere autorizzazione all’invio dell’offerta al Cliente.
+Gli approvatori per la fase di ATS sono definiti in base alle regole riportate al paragrafo 5.4 ed eventuali Expert
+da coinvolgere sono definiti in base a quanto indicato al paragrafo 5.3 (in particolare va prestata attenzione
+alle ulteriori autorizzazioni necessarie in caso di deviazioni sulla marginalità)
+Ove previsto l’autorizzazione può essere richiesta via mail, oppure deve essere ottenuta durante la riunione
+la cui schedulazione deve essere richiesta almeno 5 giorni lavorativi prima dalla data di consegna della
+Gara / Offerta, inviando a DealGovernance@lutech.it specificando:
+❑
+
+Oggetto dell’ATS [Nome Cliente - Titolo Opportunità di vendita], Legal Entity che emetterà offerta
+
+❑
+
+Opportunity ID (da SFDC) Data e slot desiderato
+
+❑
+
+Link all’Opportunity Site su cui devono essere inseriti prima del meeting slide ATS e documenti necessari
+
+Nel meeting ATS partecipano, a seconda della necessità, tipologia opportunità e del livello di approvazione:
+SALES
+•
+
+Head of Institutional Relations & BD
+
+PSQ-003 v17 del 24/10/2025
+Uso Interno
+
+DELIVERY
+•
+
+Chief Operating Officer
+
+ALTRI
+•
+
+RAISE Manager
+Pagina 24 di 30
+
+Procedura
+
+Codice documento
+
+RAISE - Gestione Opportunità di vendita
+
+SALES
+•
+•
+•
+•
+•
+
+Head of Industry/Head of Sub Industry
+Sales Manager
+Account Manager (Titolare o opportunità)
+BID Management & Deal Qualification
+Offering Leader / Presales team leader
+
+DELIVERY
+•
+•
+•
+•
+
+Chief Delivery Officer
+Capability Leader
+Practice Leader
+CDE
+
+Versione
+
+PSQ-003
+
+17
+
+ALTRI
+•
+•
+
+Finance (obbligatorio per deal >
+300K€ o con deviazioni KCP)
+Eventuali Expert o altre figure in
+funzione della tipologia di
+opportunità
+
+La documentazione deve essere inserita nell’Opportunity Site almeno 1 giorno lavorativo prima dell’incontro.
+La documentazione obbligatoria da produrre in questa fase è la seguente:
+❑
+
+Richiesta Offerta (Richiesta del cliente, bando di gara, ecc.)
+
+❑
+
+MOD-001 Revenue Cost Plan (RCP)
+
+❑
+
+MOD-092 Deal Qualification (aggiornare sezioni 1, 2 e 4 se necessario, compilare sezione 6 Privacy)
+
+❑
+
+MOD-093 Risk Register
+
+❑
+
+MOD-105 ATP-ATS-ATC compilato per le parti necessarie all’ATS (Authorization To Submit)
+
+❑
+
+Patti parasociali in caso di raggruppamento temporaneo di imprese (RTI o altre forme associazione)
+
+❑
+
+Offerte ricevute da terze parti (se presenti), e MOD-103 Tabella per Reselling di prodotti qualora vi siano
+disallineamenti tra le condizioni tecnico-commerciali dei fornitori/distributori e quelle del cliente
+
+❑
+
+Offerta tecnica-economica da inviare al cliente
+
+❑
+
+Parere degli Expert se coinvolti
+
+❑
+
+Evidenze delle autorizzazioni ricevute o verbale della call, distribuito ai partecipanti, se ATS via call
+
+Per dettagli ed eventuali semplificazioni nella documentazione in funzione dei livelli autorizzativi si rimanda
+all’ultima versione pubblicata di VCA-005 RAISE infografica slide “RA2ISE and documentation required”.
+Al termine della fase di ATS e di consegna dell’offerta/risposta alla gara è necessario valutare se e quali
+documenti (tipicamente i principali documenti di gara e i relativi deliverable di risposta tecnica) devono
+essere sottoposti a ingestion su Lutech BrAIn utilizzando le apposite funzionalità di tagging documenti.
+
+5.11
+
+Ciclo di Vita dell’opportunità: Contracting
+
+La fase si focalizza nella gestione dell’offerta inviata, e negoziazione con il Cliente in modo da finalizzare
+Contratti / Ordini per il gruppo.
+In caso di aggiudica, deve essere effettuata una riunione per presentare quanto concordato ed ottenere
+l’autorizzazione a procedere con l’accettazione contratto, registrazione ordinato ed avvio della delivery.
+
+5.11.1 Authorization to Commit (ATC)
+L’ATC ha l’obiettivo di presentare eventuali scostamenti tra il contratto/ordine ricevuto e l’offerta presentata,
+consolidare e rendere definitivi documenti quali PdL (validando con Finance TCV, Order Entry ed altri
+parametri finanziari), ottenendo autorizzazione all’accettazione del contratto/ordine ed avvio delivery,
+trasferendo tutte le informazioni al team che seguirà l’erogazione del contratto.
+Gli approvatori per la fase di ATC sono definiti in base alle regole riportate al paragrafo 5.4 ed eventuali Expert
+da coinvolgere sono definiti in base a quanto indicato al paragrafo 5.3 (in particolare va prestata attenzione
+alle ulteriori autorizzazioni necessarie in caso di deviazioni sulla marginalità).
+
+PSQ-003 v17 del 24/10/2025
+Uso Interno
+
+Pagina 25 di 30
+
+Procedura
+
+Codice documento
+
+RAISE - Gestione Opportunità di vendita
+
+Versione
+
+PSQ-003
+
+17
+
+Ove previsto l’autorizzazione può essere richiesta via mail, oppure deve essere ottenuta durante una
+riunione la cui schedulazione va richiesta almeno 5 giorni lavorativi prima dalla data di avvio del contratto
+(o prima in caso di specifici vincoli contrattuali), inviando mail a DealGovernance@lutech.it specificando:
+❑
+
+Oggetto dell’ATC [Nome Cliente - Titolo Opportunità], Legal Entity che riceve il contratto/ordine
+
+❑
+
+Opportunity ID (da SFDC) Data e slot desiderato
+
+❑
+
+Link all’ Opportunity Site su cui devono essere inseriti prima del meeting slide ATC documenti necessari
+
+Nella riunione ATC sono coinvolte le seguenti figure:
+SALES
+•
+•
+•
+•
+•
+•
+
+Head of Institutional Relations & BD
+Head of Industry / Head of Sub Industry
+Sales Manager
+Account Manager (titolare opportunità)
+Resp. BID Management & Deal
+Quaification e/o BID Manager
+Offering Leader / Presales team leader
+
+DELIVERY
+•
+•
+•
+•
+•
+•
+
+Chief Operating Officer
+Chief Delivery Officer
+Capability Leader
+Practice Leader
+Engagement Manager (se
+nominato) che seguirà
+l’erogazione del contratto
+CDE
+
+ALTRI
+•
+•
+•
+
+RAISE Manager
+Finance (per validare TCV da
+registrare su Infor)
+Eventuali Expert o altre figure
+in funzione tipologia di
+opportunità
+
+La documentazione deve essere inserita nell’Opportunity Site almeno 1 giorno lavorativo prima dell’incontro.
+La documentazione obbligatoria da produrre in questa fase è la seguente:
+❑
+
+MOD-105 ATP-ATS-ATC compilato per le parti necessarie ATC (Authorization To Commit) con esplicite
+indicazioni eventuali variazioni rispetto ATS
+
+❑
+
+MOD-092 Deal Qualification aggiornato nelle sezioni 1, 2 e 4 (se necessario) e 6 “Rischi Privacy”
+
+❑
+
+MOD-001 Revenue Cost Plan (RCP) aggiornato sul contratto ricevuto
+
+❑
+
+MOD-093 Risk Register aggiornato sul contratto ricevuto e P&L di cui sopra
+
+❑
+
+Patti parasociali in caso di raggruppamento temporaneo di imprese (RTI o altre forme associazione)
+
+❑
+
+Offerte ricevute da terze parti (se presenti), e MOD-103 Tabella per Reselling di prodotti qualora vi siano
+disallineamenti tra le condizioni tecnico-commerciali dei fornitori/distributori e quelle del cliente
+
+❑
+
+Richiesta Offerta (Richiesta del cliente, bando di gara, ecc.) se non ancora inserita nell’Opportunity Site
+
+❑
+
+Offerta tecnica-economica in precedenza inviata al cliente se non ancora inserita nell’Opportunity Site
+
+❑
+
+Evidenze del parere degli Expert se coinvolti
+
+❑
+
+Contratto / Accordo Quadro / Ordine ricevuto
+
+❑
+
+Evidenze delle autorizzazioni ricevute e/o verbali delle review effettuate via call
+
+❑
+
+MOD-096B HND Handover checklist prodotto dall’Engagement Manager per livelli da L4 in su
+
+❑
+
+MOD-101 Lutech_Scheda Referenza_Descrizione e MOD-102 Lutech_Scheda Referenza Dati Economici.
+
+Per dettagli ed eventuali semplificazioni nella documentazione in funzione dei livelli autorizzativi si rimanda
+all’ultima versione pubblicata di VCA-005 RAISE infografica slide “RA2ISE and documentation required”.
+Nel momento in cui si richiede un ATC (Authorization to Commit) il Sales deve coinvolgere:
+❑
+
+Finance (Controller di Industry e Order Processing) e Delivery (Practice Leader) per validare il TCV da
+registrare e relativa marginalità/rischi come da ultima PdL e Risk Register nell’Opportunity Site
+
+❑
+
+e Delivery per validare le Practice/Prodotti inseriti nel CRM che determineranno la struttura di
+commesse/fasi da aprire sul sistema ERP
+
+Queste informazioni verranno utilizzate da Order Processing per aprire la Commessa nel sistema ERP Infor:
+❑
+
+deve essere aperta una sola commessa per ciascuna opportunità, con relative Fasi (una per
+Practice/Tipe Of Work
+
+❑
+
+recependo il Codice Offerta del CRM da riportare su INFOR nell’anagrafica della Commessa/Fasi.
+
+PSQ-003 v17 del 24/10/2025
+Uso Interno
+
+Pagina 26 di 30
+
+Procedura
+
+RAISE - Gestione Opportunità di vendita
+
+Codice documento
+
+PSQ-003
+
+Versione
+
+17
+
+Tutti gli Account Manager, per tutte le opportunità in qualunque fase, dovranno:
+❑
+
+pianificare e mantenere nel tempo sul CRM le Revenue di opportunità con ToW ‘Fees’ ed ‘External
+Products’ al meglio delle loro conoscenze poiché questa sarà la pianificazione utilizzata per il Forecast
+
+❑
+
+pianificare e mantenere nel tempo sul CRM, col supporto della Delivery (Practice Manager, CDE, PM,) le
+Revenue di opportunità con ToW ‘Services’, che sarà la pianificazione utilizzata per il Forecast
+
+❑
+
+per le opportunità WON, collaborare con Practice Manager, CDE, PM ogni due settimane per permettere
+loro di pianificare le Revenue di opportunità ToW ‘Services’ sui sistemi di pianificazione Lutech.
+
+È responsabilità dell’Account Manager che tutta la documentazione del BID sia nell’Opportunity Site, e
+condividere con la Delivery che seguirà il contratto le informazioni sul WON BID ed i permessi di accesso
+all’Opportunity Site. CDE e Engagement Manager devono assicurarsi di aver ricevuto informazioni e grant
+all’Opportunity Site, e compilare “MOD-096B Handover Check-list” in ATC, e da quel momento aggiornare
+l’Opportunity Site come da PO-004 con tutta la documentazione prodotta nell’esecuzione del contratto.
+In caso di richiesta di Anticipo d’Ordine, sul CRM Salesforce:
+❑
+
+è necessario caricare nel folder BID/ATC dell’Opportunity Site la Lettera d’Intenti o altra comunicazione
+con impegno ad ordinare ricevuta dal cliente
+
+❑
+
+sull’opportunità va impostato flag “Anticipo d'Ordine”, e deve essere effettuata la review ATC sulla base
+della Lettera di Intenti o altra comunicazione ricevuta dal cliente
+
+❑
+
+una volta approvata ATC, l’opportunità va messa come Forecast category = Commit e Stage = Pending
+
+❑
+
+l’opportunità potrà essere messa in “WON Closed” soltanto alla ricezione del contratto/ordine (purché
+le condizioni del contratto/ordine siano consistenti con le assunzioni fatte in ATC, qualora vi siano
+discrepanze va effettuata nuova ATC).
+
+Per la richiesta di creazione commessa sui sistemi ERP (sia in caso di “WON BID” che per Anticipi d’Ordine)
+si rimanda alla PSQ-002 Gestione delle Offerte e degli Ordini.
+Nei casi in cui il "Rischio Privacy" sia "Alto" o "Molto Alto", l'Account Manager dovrà avviare l'ATC entro
+massimo 48 ore dalla ricezione della comunicazione di aggiudica e convocare una call (da tenersi prima
+della data prevista per ATC) con ROA/RO delivery, DPM e Ufficio Legale per le attività preliminari alla
+negoziazione del contratto.
+
+5.12
+
+Ciclo di Vita dell’opportunità: Chiusura delle opportunità
+
+La fase di chiusura ha modalità differenti a seconda se l’opportunità abbia portato ad un contratto o meno.
+Nel caso di Opportunità che abbiano portato un contratto/ordine per Lutech, prima di portare
+l’opportunità in fase WON su SFDC bisogna valutare se è necessaria review Handover, ed in ogni caso è
+obbligatorio che tutta la documentazione del BID sia presente nell’Opportunity Site, e che sia stata trasferito
+al team di Delivery la responsabilità di mantenere aggiornato il sito con tutti i documenti contrattualmente
+rilevanti prodotti durante il ciclo di esecuzione delle attività (esempio verbali di riunione interne o col cliente,
+ordini di acquisto, piani di lavoro, documentazione fornitori, deliverable e relativi verbali di consegna, …).
+Nel caso di Opportunità che NON abbiano portato un contratto/ordine per Lutech (ad esempio gara
+bandita dal cliente e poi annullata, rinuncia di Lutech a presentare offerta dopo le fasi di analisi, contratto
+assegnato a competitor), su SFDC bisogna portare l’opportunità nell’opportuna fase (Cancelled, No Decision,
+Qualified Out, Lost) ed inserire nel campo “Motivazione chiusura opportunità” la motivazione specifica; su
+
+PSQ-003 v17 del 24/10/2025
+Uso Interno
+
+Pagina 27 di 30
+
+Procedura
+
+Codice documento
+
+RAISE - Gestione Opportunità di vendita
+
+PSQ-003
+
+Versione
+
+17
+
+richiesta del Head of Industry può essere schedulato un meeting Win-Loss per analizzare tali motivazioni ed
+individuare lesson learned e miglioramenti necessari per aumentare il successo nelle future gare
+
+5.12.1 HandOver meeting (HND)
+La riunione HND è un incontro opzionale, previsto solo nel caso di BID complessi o non standard, che ha
+l’obiettivo di verificare che il team di delivery sia staffato, che la documentazione e le assunzioni siano state
+trasferite al Delivery team per consentire la corretta esecuzione del contratto nel rispetto delle specifiche
+autorizzazioni e con soddisfazione del cliente, che sia stato eseguito il set-up iniziale sui tool aziendali
+La schedulazione della riunione va richiesta almeno 5 gg lavorativi prima dalla data di avvio della delivery
+del contratto, inviando una mail a DealGovernance@lutech.it specificando:
+❑
+
+Oggetto dell’HND [Nome Cliente - Titolo Opportunità], Legal Entity che ha ricevuto il contratto/ordine
+
+❑
+
+Opportunity ID (da SFDC) e Codice Commessa Infor, Data e slot desiderato
+
+❑
+
+Link all’ Opportunity Site su cui devono essere inseriti prima del meeting i documenti necessari
+
+Nel meeting HND sono coinvolte le seguenti figure:
+SALES
+•
+•
+•
+•
+
+Head of Industry / Head of Sub Industry
+Resp. BID Management & Deal
+Quaification e/o BID Manager
+Account Manager (Titolare opportunità)
+Offering Leader / Presales team leader
+
+DELIVERY
+•
+•
+•
+•
+•
+
+Chief Operating Officer
+Chief Delivery Officer
+Capability Leader
+Practice Leader
+CDE, PM, SDM ed EM
+
+ALTRI
+•
+•
+•
+
+RAISE Manager (obbligatorio)
+Finance (per validare setup
+degli economics nei sistemi)
+Eventuali Expert in funzione
+della tipologia di opportunità
+
+La documentazione deve essere inserita nell’Opportunity site almeno 1 giorno lavorativo prima dell’incontro.
+La Documentazione obbligatoria da produrre in questa fase è:
+❑
+
+MOD-096A HND (Handover) con esplicite indicazioni eventuali variazioni rispetto ATS/ATC, Engagement
+Manager nominato, struttura delle commesse create (wbs, strumenti gestione fondi innovazione)
+
+❑
+
+MOD-096B HND checklist (aggiornata dall’Engagement Manager al termine del set-up su INFOR)
+
+5.12.2 Win-Loss Review
+A fronte di particolari situazioni che non hanno portato alla concretizzazione dell’opportunità, l’Head of
+Industry potrà richiedere la revisione Win-Loss che vedrà coinvolto il team che ha partecipato alla stesura
+dell’offerta. Trattandosi di meeting opzionale, e non essendo previste autorizzazioni, non è previsto
+tracciamento in SFDC, ma solo archiviazione del documento MOD-097 - WIN-LOSS review e del verbale
+riunione nell’Opportunity Site dell’opportunità su cui viene effettuata tale riunione.
+
+5.12.3 Scheda Referenza
+Per mantenere costantemente aggiornate le referenze del Gruppo Lutech, per tutte le opportunità WON
+L1/L2/L3 (e per quelle L4/L5 per le quali si ritiene che ci sia un significativo interesse di business e/o
+tecnologico) è necessario creare la Scheda Referenza atta a riportare i dati identificativi e la descrizione di
+dettaglio dell'iniziativa (challenge, soluzione proposta, risultati raggiunti, etc.).
+È responsabilità del titolare dell’opportunità, con il supporto del Bid Manager e del CDE, caricare nel folder
+BID dell’Opportunity Site e taggare per Brain il MOD-101 (scheda descrittiva) e MOD-102 (Dati economici),
+
+PSQ-003 v17 del 24/10/2025
+Uso Interno
+
+Pagina 28 di 30
+
+Procedura
+
+RAISE - Gestione Opportunità di vendita
+
+Codice documento
+
+PSQ-003
+
+Versione
+
+17
+
+entro la conclusione dell’ATC. Nel caso in cui l’opportunità WON sia un’estensione/upgrade di un deal di cui
+è già disponibile la Scheda Referenza, il processo va inteso come aggiornamento della scheda esistente.
+
+6
+
+PROCESSO WLR
+
+Il processo WLR (Win Loss Review), gestito da Sales Excellence organizzato su due livelli
+❑
+
+A livello di opportunità mensilmente l’Account Manager, il CDE ed il Bid Manager devono raccogliere
+e analizzare le informazioni del Bid, i feedback del cliente e del Bid Team, compilare ed inviare a Sales
+Excellence la scheda MOD-097B Win-Loss Review Questionnaire per tutte le opportunità > 1M€
+WON o LOSS nel mese (escluse le opportunità senza supporto prevendite, ONBD, Capability support)
+
+❑
+
+A livello aziendale, dove trimestralmente i dati consolidati sono presentati al top management e
+discussi per Industry nelle riunioni Sales Review, analizzando le tendenze e le lesson learned, e
+definendo piani d'azione con CEO, COO ed Industry Head
+
+Il processo prevede la seguente timeline e matrice RACI:
+
+PSQ-003 v17 del 24/10/2025
+Uso Interno
+
+Pagina 29 di 30
+
+Procedura
+
+RAISE - Gestione Opportunità di vendita
+
+Codice documento
+
+PSQ-003
+
+Versione
+
+17
+
+RIFERIMENTI E DOCUMENTI DI SUPPORTO
+RIFERIMENTI
+DIS-001
+LG-501
+MOG-000B
+PO-004
+PO-501
+PSQ-002
+PSQ-026
+PSQ-028
+PSQ-500
+VCA-005
+
+Offerte: ciclo di approvazione e poteri di firma
+Linee Guida Controlli ISO 37001
+Modello di Organizzazione, Gestione e Controllo ex D.Lgs. 231/01 - Parte Speciale
+Gestione repository commesse (Opportunity Site)
+Gestione Eventi Promozionali e Conferimento Omaggi
+Gestione delle offerte e degli ordini
+Gestione Gare
+Gestione del Rischio
+Politica per la Prevenzione della Corruzione
+Infografica RAISE
+
+REGISTRAZIONI
+MOD-001
+MOD-090
+MOD-092
+MOD-093
+MOD-096A
+MOD-096B
+MOD-097
+MOD-097B
+MOD-101
+MOD-102
+MOD-103
+MOD-105
+MOD-511
+MOD-512
+MOD-513
+
+Revenue Cost Plan (RCP)
+OL (Opportunity Lab)
+Deal qualification
+Risk Register
+HND (Handover)
+HND (Handover)- Checklist
+WIN-LOSS review
+Win-Loss Review Questionnaire
+Lutech_Scheda Referenza_Descrizione Iniziativa
+Lutech_Scheda Referenza_Dati Economici
+Tabella per Reselling di prodotti
+Slide ATP-ATS-ATC
+Due Diligence Soci in Affari
+Dichiarazione Anticorruzione ISO 37001 - Soci in Affari
+Dichiarazione Conflitti di Interesse
+
+STRUMENTI
+TOO-010
+TOO-033
+
+Sistema gestionale Lutech
+Piattaforma di gestione vendite
+
+PSQ-003 v17 del 24/10/2025
+Uso Interno
+
+Pagina 30 di 30
+
+
