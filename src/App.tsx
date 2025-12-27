@@ -72,7 +72,7 @@ function App() {
   return (
     <ErrorBoundary>
       <Toaster />
-      <BrowserRouter>
+      <BrowserRouter basename="/lutech-raise-app">
         <Layout>
           <AppRoutes />
         </Layout>
