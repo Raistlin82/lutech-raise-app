@@ -87,7 +87,29 @@ export const Sidebar = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => v
                         <span>Operational</span>
                     </div>
                     <div className="mt-4 pt-4 border-t border-slate-800/50">
-                        <div className="text-[10px] text-slate-600 uppercase font-semibold tracking-wider">Version 2.1.0</div>
+                        <div className="text-[10px] text-slate-600 uppercase font-semibold tracking-wider mb-3">Version 1.1.0</div>
+
+                        {/* Footer Logo & Copyright */}
+                        <div className="flex items-center justify-between pt-3 border-t border-slate-800/30">
+                            <div className="flex items-center gap-2">
+                                <img
+                                    src="/assets/lutech-logo.png"
+                                    alt="Lutech"
+                                    className="h-4 object-contain opacity-50"
+                                    onError={(e) => {
+                                        e.currentTarget.style.display = 'none';
+                                        const fallback = e.currentTarget.nextElementSibling as HTMLElement;
+                                        if (fallback) fallback.style.display = 'block';
+                                    }}
+                                />
+                                <span className="text-slate-500 font-bold text-[10px] hidden" style={{display: 'none'}}>
+                                    Lutech
+                                </span>
+                            </div>
+                            <span className="text-[9px] text-slate-600 font-medium">
+                                © {new Date().getFullYear()}
+                            </span>
+                        </div>
                     </div>
                 </div>
             </nav>
