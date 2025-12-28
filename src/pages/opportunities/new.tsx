@@ -1,9 +1,10 @@
 import { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useOpportunities } from '../../stores/OpportunitiesStore';
+import { useCustomers } from '../../stores/CustomerStore';
 import type { Opportunity } from '../../types';
 import { calculateRaiseLevel } from '../../lib/raiseLogic';
-import { ArrowLeft, Save, Building2, DollarSign, Briefcase } from 'lucide-react';
+import { ArrowLeft, Save, Building2, DollarSign, Briefcase, Lock, Plus } from 'lucide-react';
 import { showToast } from '../../lib/toast';
 import { LoadingSpinner } from '../../components/common/LoadingSpinner';
 import { FormField } from '../../components/common/FormField';
@@ -12,16 +13,15 @@ import { ErrorSummary } from '../../components/common/ErrorSummary';
 export const NewOpportunityPage = () => {
     const navigate = useNavigate();
     const { addOpportunity, selectOpportunity } = useOpportunities();
+    const { customers } = useCustomers();
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [formErrors, setFormErrors] = useState<Array<{ field: string; message: string }>>([]);
 
     const [formData, setFormData] = useState({
         title: '',
-        clientName: '',
+        customerId: '',
         tcv: '',
         raiseTcv: '',
-        industry: 'Technology',
-        isPublicSector: false,
         isRti: false,
         isMandataria: false,
         hasKcpDeviations: false,
@@ -29,16 +29,19 @@ export const NewOpportunityPage = () => {
         marginPercent: '20',
     });
 
+    // Get selected customer details
+    const selectedCustomer = customers.find(c => c.id === formData.customerId);
+
     // Field-level errors
     const [fieldErrors, setFieldErrors] = useState({
         title: '',
-        clientName: '',
+        customerId: '',
         tcv: '',
     });
 
     const [touched, setTouched] = useState({
         title: false,
-        clientName: false,
+        customerId: false,
         tcv: false,
     });
 
@@ -50,9 +53,8 @@ export const NewOpportunityPage = () => {
         return '';
     }, []);
 
-    const validateClientName = useCallback((value: string) => {
-        if (!value.trim()) return 'Il nome del cliente è obbligatorio';
-        if (value.length < 2) return 'Il nome deve contenere almeno 2 caratteri';
+    const validateCustomerId = useCallback((value: string) => {
+        if (!value) return 'Seleziona un cliente';
         return '';
     }, []);
 
@@ -64,12 +66,12 @@ export const NewOpportunityPage = () => {
         return '';
     }, []);
 
-    const handleBlur = (field: 'title' | 'clientName' | 'tcv') => {
+    const handleBlur = (field: 'title' | 'customerId' | 'tcv') => {
         setTouched(prev => ({ ...prev, [field]: true }));
 
         let error = '';
         if (field === 'title') error = validateTitle(formData.title);
-        if (field === 'clientName') error = validateClientName(formData.clientName);
+        if (field === 'customerId') error = validateCustomerId(formData.customerId);
         if (field === 'tcv') error = validateTcv(formData.tcv);
 
         setFieldErrors(prev => ({ ...prev, [field]: error }));
@@ -80,25 +82,25 @@ export const NewOpportunityPage = () => {
 
         // Validate all fields
         const titleError = validateTitle(formData.title);
-        const clientNameError = validateClientName(formData.clientName);
+        const customerIdError = validateCustomerId(formData.customerId);
         const tcvError = validateTcv(formData.tcv);
 
         setFieldErrors({
             title: titleError,
-            clientName: clientNameError,
+            customerId: customerIdError,
             tcv: tcvError,
         });
 
         setTouched({
             title: true,
-            clientName: true,
+            customerId: true,
             tcv: true,
         });
 
         // Collect errors for summary
         const errors: Array<{ field: string; message: string }> = [];
         if (titleError) errors.push({ field: 'title', message: titleError });
-        if (clientNameError) errors.push({ field: 'clientName', message: clientNameError });
+        if (customerIdError) errors.push({ field: 'customerId', message: customerIdError });
         if (tcvError) errors.push({ field: 'tcv', message: tcvError });
 
         setFormErrors(errors);
@@ -122,16 +124,15 @@ export const NewOpportunityPage = () => {
             const newOpp: Opportunity = {
                 id: `OPP-${new Date().getFullYear()}-${Date.now().toString().slice(-4)}`,
                 title: formData.title,
-                clientName: formData.clientName,
+                customerId: formData.customerId,
                 tcv: tcvValue,
                 raiseTcv: raiseTcvValue,
-                industry: formData.industry,
                 currentPhase: 'Planning',
                 hasKcpDeviations: formData.hasKcpDeviations,
                 isFastTrack: tcvValue < 250000 && !formData.hasKcpDeviations,
                 isRti: formData.isRti,
                 isMandataria: formData.isMandataria,
-                isPublicSector: formData.isPublicSector,
+                isPublicSector: selectedCustomer?.isPublicSector || false,
                 raiseLevel: 'L6', // Temporary, will be calculated next
                 deviations: [],
                 checkpoints: {},
@@ -198,40 +199,71 @@ export const NewOpportunityPage = () => {
                             helpText="Inserisci un titolo descrittivo per l'opportunità"
                         />
 
-                        <FormField
-                            id="clientName"
-                            name="clientName"
-                            label="Client Name"
-                            type="text"
-                            value={formData.clientName}
-                            onChange={(value) => setFormData({ ...formData, clientName: value as string })}
-                            onBlur={() => handleBlur('clientName')}
-                            error={touched.clientName ? fieldErrors.clientName : ''}
-                            required
-                            placeholder="e.g., Acme Corporation"
-                            helpText="Nome dell'azienda o ente cliente"
-                        />
-
                         <div>
                             <label className="block text-sm font-semibold text-slate-700 mb-2">
-                                Industry *
+                                Customer *
                             </label>
-                            <select
-                                value={formData.industry}
-                                onChange={e => setFormData({ ...formData, industry: e.target.value })}
-                                className="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 outline-none transition-all"
-                            >
-                                <option value="Technology">Technology</option>
-                                <option value="Finance">Finance</option>
-                                <option value="Healthcare">Healthcare</option>
-                                <option value="Manufacturing">Manufacturing</option>
-                                <option value="Retail">Retail</option>
-                                <option value="Public Sector">Public Sector</option>
-                                <option value="Energy">Energy</option>
-                                <option value="Telecommunications">Telecommunications</option>
-                                <option value="Other">Other</option>
-                            </select>
+                            <div className="flex gap-2">
+                                <select
+                                    value={formData.customerId}
+                                    onChange={e => setFormData({ ...formData, customerId: e.target.value })}
+                                    onBlur={() => handleBlur('customerId')}
+                                    className={`flex-1 px-4 py-3 border-2 rounded-xl focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 outline-none transition-all ${
+                                        touched.customerId && fieldErrors.customerId
+                                            ? 'border-red-500 focus:border-red-500 focus:ring-red-500/20'
+                                            : 'border-slate-200'
+                                    }`}
+                                >
+                                    <option value="">Select Customer...</option>
+                                    {customers
+                                        .sort((a, b) => a.name.localeCompare(b.name))
+                                        .map(c => (
+                                            <option key={c.id} value={c.id}>
+                                                {c.name}
+                                            </option>
+                                        ))
+                                    }
+                                </select>
+                                <button
+                                    type="button"
+                                    onClick={() => {/* TODO: Task 12 - Quick add modal */}}
+                                    className="px-4 py-3 bg-green-600 text-white rounded-xl hover:bg-green-700 transition-colors flex items-center gap-2"
+                                    title="Quick Add Customer"
+                                >
+                                    <Plus size={20} />
+                                </button>
+                            </div>
+                            {touched.customerId && fieldErrors.customerId && (
+                                <p className="mt-1 text-sm text-red-600">{fieldErrors.customerId}</p>
+                            )}
+                            <p className="text-xs text-slate-500 mt-1">Select existing customer or quick add new</p>
                         </div>
+
+                        {selectedCustomer && (
+                            <>
+                                <div>
+                                    <label className="block text-sm font-semibold text-slate-700 mb-2">
+                                        Industry
+                                    </label>
+                                    <div className="flex items-center gap-2 px-4 py-3 bg-slate-50 border-2 border-slate-200 rounded-xl">
+                                        <Lock size={16} className="text-slate-400" />
+                                        <span className="text-slate-700">{selectedCustomer.industry}</span>
+                                    </div>
+                                    <p className="text-xs text-slate-500 mt-1">Auto-filled from customer</p>
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-semibold text-slate-700 mb-2">
+                                        Public Sector
+                                    </label>
+                                    <div className="flex items-center gap-2 px-4 py-3 bg-slate-50 border-2 border-slate-200 rounded-xl">
+                                        <Lock size={16} className="text-slate-400" />
+                                        <span className="text-slate-700">{selectedCustomer.isPublicSector ? 'Yes' : 'No'}</span>
+                                    </div>
+                                    <p className="text-xs text-slate-500 mt-1">Auto-filled from customer</p>
+                                </div>
+                            </>
+                        )}
                     </div>
                 </div>
 
@@ -298,18 +330,7 @@ export const NewOpportunityPage = () => {
                     </h2>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <label className="flex items-center gap-3 p-4 border-2 border-slate-200 rounded-xl hover:border-cyan-300 cursor-pointer transition-colors">
-                            <input
-                                type="checkbox"
-                                checked={formData.isPublicSector}
-                                onChange={e => setFormData({ ...formData, isPublicSector: e.target.checked })}
-                                className="w-5 h-5 text-cyan-600 border-slate-300 rounded focus:ring-cyan-500"
-                            />
-                            <div>
-                                <div className="font-semibold text-slate-900">Public Sector</div>
-                                <div className="text-xs text-slate-500">Government or public entity</div>
-                            </div>
-                        </label>
+                        {/* Public Sector is now auto-filled from customer selection */}
 
                         <label className="flex items-center gap-3 p-4 border-2 border-slate-200 rounded-xl hover:border-cyan-300 cursor-pointer transition-colors">
                             <input
