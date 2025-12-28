@@ -4,10 +4,16 @@ import { z } from 'zod';
 export const OpportunitySchema = z.object({
   id: z.string().min(1, 'ID is required'),
   title: z.string().min(3, 'Title must be at least 3 characters').max(200, 'Title too long'),
-  clientName: z.string().min(2, 'Client name is required').max(200, 'Client name too long'),
+
+  // Customer relationship (v1.1.0)
+  customerId: z.string().uuid().optional(),
+
+  // Deprecated fields (backward compatibility)
+  clientName: z.string().min(2, 'Client name is required').max(200, 'Client name too long').optional(),
+  industry: z.string().min(1, 'Industry is required').optional(),
+
   tcv: z.number().min(0, 'TCV must be positive').max(1000000000, 'TCV exceeds maximum'),
   raiseTcv: z.number().min(0, 'RAISE TCV must be positive').max(1000000000, 'RAISE TCV exceeds maximum'),
-  industry: z.string().min(1, 'Industry is required'),
   currentPhase: z.enum(['Planning', 'ATP', 'ATS', 'ATC', 'Won', 'Lost', 'Handover']),
 
   // Flags
