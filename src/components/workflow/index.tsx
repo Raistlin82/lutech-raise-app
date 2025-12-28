@@ -475,6 +475,13 @@ const CheckpointItem = ({ cp, onToggle }: { cp: Checkpoint, onToggle: () => void
             cp.checked ? "border-emerald-200 bg-emerald-50/30" : "border-slate-200"
         )}>
             <div className="flex items-start gap-4">
+                {/* Order number badge */}
+                {cp.order && (
+                    <span className="mt-1 inline-flex items-center justify-center w-6 h-6 rounded-full bg-slate-100 text-slate-700 font-bold text-xs flex-shrink-0">
+                        {cp.order}
+                    </span>
+                )}
+
                 <button
                     onClick={onToggle}
                     className={clsx(

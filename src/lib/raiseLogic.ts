@@ -99,6 +99,7 @@ export const getRequiredCheckpoints = (
             description: cfg.description,
             required: cfg.isMandatory,
             checked: false,
+            order: cfg.order, // Add order number
             attachments: [],
             templateRef: cfg.templateRef,
             actionType: cfg.actionType,

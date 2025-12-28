@@ -15,6 +15,7 @@ export interface Checkpoint {
     label: string;
     checked: boolean;
     required: boolean;
+    order?: number; // Order number within phase (1, 2, 3...)
     description?: string;
     documentRef?: string; // ID of the required document
     attachments?: File[]; // Serializable file representation (optional/unused in checklist mode)
