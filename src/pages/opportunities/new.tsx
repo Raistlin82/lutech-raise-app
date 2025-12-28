@@ -9,6 +9,7 @@ import { showToast } from '../../lib/toast';
 import { LoadingSpinner } from '../../components/common/LoadingSpinner';
 import { FormField } from '../../components/common/FormField';
 import { ErrorSummary } from '../../components/common/ErrorSummary';
+import { QuickAddCustomerModal } from '../../components/opportunities/QuickAddCustomerModal';
 
 export const NewOpportunityPage = () => {
     const navigate = useNavigate();
@@ -16,6 +17,7 @@ export const NewOpportunityPage = () => {
     const { customers } = useCustomers();
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [formErrors, setFormErrors] = useState<Array<{ field: string; message: string }>>([]);
+    const [isQuickAddModalOpen, setIsQuickAddModalOpen] = useState(false);
 
     const [formData, setFormData] = useState({
         title: '',
@@ -75,6 +77,13 @@ export const NewOpportunityPage = () => {
         if (field === 'tcv') error = validateTcv(formData.tcv);
 
         setFieldErrors(prev => ({ ...prev, [field]: error }));
+    };
+
+    const handleCustomerCreated = (customerId: string) => {
+        // Auto-select the newly created customer
+        setFormData({ ...formData, customerId });
+        // Clear any customer selection error
+        setFieldErrors(prev => ({ ...prev, customerId: '' }));
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -226,7 +235,7 @@ export const NewOpportunityPage = () => {
                                 </select>
                                 <button
                                     type="button"
-                                    onClick={() => {/* TODO: Task 12 - Quick add modal */}}
+                                    onClick={() => setIsQuickAddModalOpen(true)}
                                     className="px-4 py-3 bg-green-600 text-white rounded-xl hover:bg-green-700 transition-colors flex items-center gap-2"
                                     title="Quick Add Customer"
                                 >
@@ -421,6 +430,13 @@ export const NewOpportunityPage = () => {
                     </button>
                 </div>
             </form>
+
+            {/* Quick Add Customer Modal */}
+            <QuickAddCustomerModal
+                isOpen={isQuickAddModalOpen}
+                onClose={() => setIsQuickAddModalOpen(false)}
+                onCustomerCreated={handleCustomerCreated}
+            />
         </div>
     );
 };

@@ -5,7 +5,7 @@ import { showToast } from '../lib/toast';
 
 interface CustomerContextType {
   customers: Customer[];
-  addCustomer: (customer: Omit<Customer, 'id'>) => void;
+  addCustomer: (customer: Omit<Customer, 'id'>) => string;
   updateCustomer: (customer: Customer) => void;
   deleteCustomer: (id: string) => void;
   getCustomer: (id: string) => Customer | undefined;
@@ -48,6 +48,8 @@ export const CustomerProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
     setCustomers(prev => [...prev, newCustomer]);
     showToast.success(`Cliente "${newCustomer.name}" creato!`);
+
+    return newCustomer.id;
   };
 
   const updateCustomer = (updatedCustomer: Customer) => {
