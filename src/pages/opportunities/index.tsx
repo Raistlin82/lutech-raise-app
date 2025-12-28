@@ -157,7 +157,7 @@ const OpportunityCard = ({ opp, onClick, onEdit, onDelete, delay = 0 }: Opportun
                                 ? "bg-gradient-to-br from-amber-50 to-orange-50 text-amber-700 border-amber-200"
                                 : "bg-gradient-to-br from-slate-50 to-slate-100 text-slate-700 border-slate-200"
                         )}>
-                            {opp.clientName.substring(0, 2).toUpperCase()}
+                            {(opp.clientName || 'CL').substring(0, 2).toUpperCase()}
                         </div>
 
                         {/* Title & metadata */}
@@ -173,7 +173,7 @@ const OpportunityCard = ({ opp, onClick, onEdit, onDelete, delay = 0 }: Opportun
                                 )}
                             </div>
                             <div className="flex items-center gap-2 text-sm text-slate-500">
-                                <span className="font-medium">{opp.clientName}</span>
+                                <span className="font-medium">{opp.clientName || 'Cliente'}</span>
                                 <span className="w-1 h-1 rounded-full bg-slate-300" />
                                 <span>{opp.industry}</span>
                             </div>

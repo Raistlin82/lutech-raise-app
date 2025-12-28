@@ -83,10 +83,10 @@ export const EditOpportunityPage = () => {
         if (existingOpp) {
             setFormData({
                 title: existingOpp.title,
-                clientName: existingOpp.clientName,
+                clientName: existingOpp.clientName || '',
                 tcv: existingOpp.tcv.toString(),
                 raiseTcv: existingOpp.raiseTcv.toString(),
-                industry: existingOpp.industry,
+                industry: existingOpp.industry || '',
                 isPublicSector: existingOpp.isPublicSector,
                 isRti: existingOpp.isRti,
                 isMandataria: existingOpp.isMandataria || false,

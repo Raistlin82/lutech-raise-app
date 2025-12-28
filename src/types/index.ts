@@ -37,10 +37,16 @@ export interface KcpDeviation {
 export interface Opportunity {
     id: string;
     title: string;
-    clientName: string;
+
+    // Customer relationship (NEW - v1.1.0)
+    customerId?: string;     // Foreign key to Customer (will be required after migration)
+
+    // Deprecated fields (kept for backward compatibility)
+    clientName?: string;     // DEPRECATED: Use customerId instead
+    industry?: string;       // DEPRECATED: Derived from customer
+
     tcv: number; // Total Contract Value (committed value)
     raiseTcv: number; // RAISE TCV (includes optional parts, must be >= tcv)
-    industry: string;
 
     // Phase Status
     currentPhase: Phase;

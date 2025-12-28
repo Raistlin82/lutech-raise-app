@@ -249,7 +249,7 @@ const OpportunityCard = ({ opp, onClick, onEdit, onDelete, delay = 0, isDeleting
             onKeyDown={handleKeyDown}
             tabIndex={0}
             role="button"
-            aria-label={`Apri opportunità ${opp.title} per ${opp.clientName}, valore €${(opp.tcv / 1000).toFixed(0)}k, fase ${opp.currentPhase}`}
+            aria-label={`Apri opportunità ${opp.title} per ${opp.clientName || 'Cliente'}, valore €${(opp.tcv / 1000).toFixed(0)}k, fase ${opp.currentPhase}`}
             style={{ animationDelay: `${delay}ms` }}
             className={clsx(
                 "group card-elevated p-0 rounded-2xl cursor-pointer relative overflow-hidden hover:scale-[1.01] active:scale-[0.99] transition-all duration-300 animate-slide-up focus:outline-none focus:ring-4 focus:ring-cyan-300",
@@ -306,7 +306,7 @@ const OpportunityCard = ({ opp, onClick, onEdit, onDelete, delay = 0, isDeleting
                                 ? "bg-gradient-to-br from-amber-50 to-orange-50 text-amber-700 border-amber-200"
                                 : "bg-gradient-to-br from-slate-50 to-slate-100 text-slate-700 border-slate-200"
                         )}>
-                            {opp.clientName.substring(0, 2).toUpperCase()}
+                            {(opp.clientName || 'CL').substring(0, 2).toUpperCase()}
                         </div>
 
                         {/* Title & metadata */}
@@ -322,9 +322,9 @@ const OpportunityCard = ({ opp, onClick, onEdit, onDelete, delay = 0, isDeleting
                                 )}
                             </div>
                             <div className="flex items-center gap-2 text-sm text-slate-500">
-                                <span className="font-medium">{opp.clientName}</span>
+                                <span className="font-medium">{opp.clientName || 'Cliente'}</span>
                                 <span className="w-1 h-1 rounded-full bg-slate-300" />
-                                <span>{opp.industry}</span>
+                                <span>{opp.industry || 'N/A'}</span>
                             </div>
                         </div>
                     </div>

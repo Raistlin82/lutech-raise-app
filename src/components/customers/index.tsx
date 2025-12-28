@@ -38,9 +38,9 @@ export const CustomersPage = () => {
   };
 
   const handleDeleteCustomer = (customer: Customer) => {
-    // Check if customer has opportunities (using clientName for now, will use customerId after Task 9)
+    // Check if customer has opportunities (using clientName for now, will use customerId after migration)
     const hasOpportunities = opportunities.some(
-      opp => opp.clientName.toLowerCase() === customer.name.toLowerCase()
+      opp => opp.clientName?.toLowerCase() === customer.name.toLowerCase()
     );
 
     if (hasOpportunities) {
