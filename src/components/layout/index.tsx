@@ -4,7 +4,7 @@ import { NavLink } from 'react-router-dom';
 import { clsx } from 'clsx';
 import { SkipLink } from '../common/SkipLink';
 import lutechLogo from '/assets/lutech-logo.png';
-import lutechIcon from '/assets/lutech-icon.ai';
+import lutechIcon from '/assets/lutech-icon.png';
 
 export const Sidebar = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) => {
     return (
@@ -29,7 +29,7 @@ export const Sidebar = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => v
                 <div className="p-6 border-b border-slate-800/50">
                     <div className="flex items-center justify-between mb-4">
                         <div className="flex items-center gap-3">
-                            {/* Lutech Icon - Note: Original file is .ai (PDF), ideally should be PNG or SVG for web */}
+                            {/* Lutech Icon */}
                             <div className="w-10 h-10 rounded-xl flex items-center justify-center overflow-hidden bg-white shadow-lg relative">
                                 <img
                                     src={lutechIcon}
