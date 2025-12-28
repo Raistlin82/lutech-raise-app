@@ -3,11 +3,13 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { NewOpportunityPage } from './new';
 import { CustomerProvider } from '../../stores/CustomerStore';
 import React from 'react';
+import type { Customer } from '../../types/customer';
 
 // Mock dependencies
 const mockNavigate = vi.fn();
 const mockAddOpportunity = vi.fn();
 const mockSelectOpportunity = vi.fn();
+const mockAddCustomer = vi.fn();
 
 vi.mock('react-router-dom', () => ({
   useNavigate: () => mockNavigate,
@@ -17,14 +19,36 @@ vi.mock('../../stores/OpportunitiesStore', () => ({
   useOpportunities: vi.fn(),
 }));
 
+vi.mock('../../stores/CustomerStore', () => ({
+  useCustomers: vi.fn(),
+  CustomerProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+}));
+
 // Import after mocking
 import { useOpportunities } from '../../stores/OpportunitiesStore';
+import { useCustomers } from '../../stores/CustomerStore';
 
-// Wrapper with CustomerProvider
+// Mock customers for testing
+const mockCustomers: Customer[] = [
+  {
+    id: 'CUST-001',
+    name: 'Acme Corporation',
+    industry: 'Technology',
+    isPublicSector: false,
+    createdAt: new Date('2024-01-01'),
+  },
+  {
+    id: 'CUST-002',
+    name: 'TechCorp',
+    industry: 'Finance',
+    isPublicSector: false,
+    createdAt: new Date('2024-01-02'),
+  },
+];
+
+// Wrapper (no provider needed since we're mocking useCustomers directly)
 const AllProviders: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-  <CustomerProvider>
-    {children}
-  </CustomerProvider>
+  <>{children}</>
 );
 
 describe('NewOpportunityPage', () => {
@@ -35,6 +59,12 @@ describe('NewOpportunityPage', () => {
       addOpportunity: mockAddOpportunity,
       selectOpportunity: mockSelectOpportunity,
       selectedOpp: null,
+    });
+    (useCustomers as ReturnType<typeof vi.fn>).mockReturnValue({
+      customers: mockCustomers,
+      addCustomer: mockAddCustomer,
+      updateCustomer: vi.fn(),
+      deleteCustomer: vi.fn(),
     });
   });
 
@@ -69,23 +99,22 @@ describe('NewOpportunityPage', () => {
     it('should render all required input fields', () => {
       render(<NewOpportunityPage />, { wrapper: AllProviders });
       expect(screen.getByPlaceholderText(/Cloud Migration Project/i)).toBeInTheDocument();
-      expect(screen.getByPlaceholderText(/Acme Corporation/i)).toBeInTheDocument();
+      expect(screen.getByText('Select Customer...')).toBeInTheDocument();
       expect(screen.getByPlaceholderText('1000000')).toBeInTheDocument();
     });
 
-    it('should render industry dropdown with default value', () => {
+    it('should render customer dropdown with available customers', () => {
       render(<NewOpportunityPage />, { wrapper: AllProviders });
-      const industrySelect = screen.getByDisplayValue('Technology');
-      expect(industrySelect).toBeInTheDocument();
+      expect(screen.getByText('Acme Corporation')).toBeInTheDocument();
+      expect(screen.getByText('TechCorp')).toBeInTheDocument();
     });
 
     it('should render all checkbox flags', () => {
       render(<NewOpportunityPage />, { wrapper: AllProviders });
-      // Use getByRole to find checkboxes by their accessible name
-      expect(screen.getByRole('checkbox', { name: /Public Sector/i })).toBeInTheDocument();
-      expect(screen.getByRole('checkbox', { name: /RTI/i })).toBeInTheDocument();
-      expect(screen.getByRole('checkbox', { name: /KCP Deviations/i })).toBeInTheDocument();
-      expect(screen.getByRole('checkbox', { name: /New Customer/i })).toBeInTheDocument();
+      // Public Sector is now auto-filled from customer selection, not a checkbox
+      expect(screen.getByText(/RTI \(Joint Venture\)/i)).toBeInTheDocument();
+      expect(screen.getByText(/KCP Deviations/i)).toBeInTheDocument();
+      expect(screen.getByText(/New Customer/i)).toBeInTheDocument();
     });
 
     it('should show Mandataria checkbox when RTI is selected', () => {
@@ -129,11 +158,11 @@ describe('NewOpportunityPage', () => {
 
       // Fill in required fields
       const titleInput = screen.getByPlaceholderText(/Cloud Migration Project/i);
-      const clientInput = screen.getByPlaceholderText(/Acme Corporation/i);
+      const customerSelect = screen.getByRole('combobox');
       const tcvInput = screen.getByPlaceholderText('1000000');
 
       fireEvent.change(titleInput, { target: { value: 'Test Project' } });
-      fireEvent.change(clientInput, { target: { value: 'Test Client' } });
+      fireEvent.change(customerSelect, { target: { value: 'CUST-001' } });
       fireEvent.change(tcvInput, { target: { value: '500000' } });
 
       // Submit form
@@ -152,11 +181,11 @@ describe('NewOpportunityPage', () => {
 
       // Fill in required fields
       const titleInput = screen.getByPlaceholderText(/Cloud Migration Project/i);
-      const clientInput = screen.getByPlaceholderText(/Acme Corporation/i);
+      const customerSelect = screen.getByRole('combobox');
       const tcvInput = screen.getByPlaceholderText('1000000');
 
       fireEvent.change(titleInput, { target: { value: 'Test Project' } });
-      fireEvent.change(clientInput, { target: { value: 'Test Client' } });
+      fireEvent.change(customerSelect, { target: { value: 'CUST-001' } });
       fireEvent.change(tcvInput, { target: { value: '500000' } });
 
       // Submit form
@@ -174,11 +203,11 @@ describe('NewOpportunityPage', () => {
       render(<NewOpportunityPage />, { wrapper: AllProviders });
 
       const titleInput = screen.getByPlaceholderText(/Cloud Migration Project/i);
-      const clientInput = screen.getByPlaceholderText(/Acme Corporation/i);
+      const customerSelect = screen.getByRole('combobox');
       const tcvInput = screen.getByPlaceholderText('1000000');
 
       fireEvent.change(titleInput, { target: { value: 'Test Project' } });
-      fireEvent.change(clientInput, { target: { value: 'Test Client' } });
+      fireEvent.change(customerSelect, { target: { value: 'CUST-001' } });
       fireEvent.change(tcvInput, { target: { value: '750000' } });
 
       const submitButton = screen.getByText('Create Opportunity');
@@ -199,12 +228,12 @@ describe('NewOpportunityPage', () => {
       render(<NewOpportunityPage />, { wrapper: AllProviders });
 
       const titleInput = screen.getByPlaceholderText(/Cloud Migration Project/i);
-      const clientInput = screen.getByPlaceholderText(/Acme Corporation/i);
+      const customerSelect = screen.getByRole('combobox');
       const tcvInput = screen.getByPlaceholderText('1000000');
       const raiseTcvInput = screen.getByPlaceholderText(/Same as TCV if empty/i);
 
       fireEvent.change(titleInput, { target: { value: 'Test Project' } });
-      fireEvent.change(clientInput, { target: { value: 'Test Client' } });
+      fireEvent.change(customerSelect, { target: { value: 'CUST-001' } });
       fireEvent.change(tcvInput, { target: { value: '750000' } });
       fireEvent.change(raiseTcvInput, { target: { value: '900000' } });
 
@@ -226,11 +255,11 @@ describe('NewOpportunityPage', () => {
       render(<NewOpportunityPage />, { wrapper: AllProviders });
 
       const titleInput = screen.getByPlaceholderText(/Cloud Migration Project/i);
-      const clientInput = screen.getByPlaceholderText(/Acme Corporation/i);
+      const customerSelect = screen.getByRole('combobox');
       const tcvInput = screen.getByPlaceholderText('1000000');
 
       fireEvent.change(titleInput, { target: { value: 'Small Project' } });
-      fireEvent.change(clientInput, { target: { value: 'Test Client' } });
+      fireEvent.change(customerSelect, { target: { value: 'CUST-001' } });
       fireEvent.change(tcvInput, { target: { value: '200000' } });
 
       const submitButton = screen.getByText('Create Opportunity');
@@ -250,11 +279,11 @@ describe('NewOpportunityPage', () => {
       render(<NewOpportunityPage />, { wrapper: AllProviders });
 
       const titleInput = screen.getByPlaceholderText(/Cloud Migration Project/i);
-      const clientInput = screen.getByPlaceholderText(/Acme Corporation/i);
+      const customerSelect = screen.getByRole('combobox');
       const tcvInput = screen.getByPlaceholderText('1000000');
 
       fireEvent.change(titleInput, { target: { value: 'Small Project' } });
-      fireEvent.change(clientInput, { target: { value: 'Test Client' } });
+      fireEvent.change(customerSelect, { target: { value: 'CUST-001' } });
       fireEvent.change(tcvInput, { target: { value: '200000' } });
 
       // Check KCP deviations
@@ -278,19 +307,20 @@ describe('NewOpportunityPage', () => {
       render(<NewOpportunityPage />, { wrapper: AllProviders });
 
       const titleInput = screen.getByPlaceholderText(/Cloud Migration Project/i);
-      const clientInput = screen.getByPlaceholderText(/Acme Corporation/i);
+      const customerSelect = screen.getByRole('combobox');
       const tcvInput = screen.getByPlaceholderText('1000000');
 
       fireEvent.change(titleInput, { target: { value: 'Test Project' } });
-      fireEvent.change(clientInput, { target: { value: 'Test Client' } });
+      fireEvent.change(customerSelect, { target: { value: 'CUST-001' } });
       fireEvent.change(tcvInput, { target: { value: '1000000' } });
 
-      // Check various flags
-      const publicSectorCheckbox = screen.getByRole('checkbox', { name: /Public Sector/i });
-      const newCustomerCheckbox = screen.getByRole('checkbox', { name: /New Customer/i });
+      // Check New Customer flag - Public Sector is auto-filled from customer
+      const newCustomerLabel = screen.getByText('New Customer');
+      const newCustomerCheckbox = newCustomerLabel.closest('label')?.querySelector('input[type="checkbox"]');
 
-      fireEvent.click(publicSectorCheckbox);
-      fireEvent.click(newCustomerCheckbox);
+      if (newCustomerCheckbox) {
+        fireEvent.click(newCustomerCheckbox);
+      }
 
       const submitButton = screen.getByText('Create Opportunity');
       fireEvent.click(submitButton);
@@ -299,7 +329,7 @@ describe('NewOpportunityPage', () => {
       await waitFor(() => {
         expect(mockAddOpportunity).toHaveBeenCalledWith(
           expect.objectContaining({
-            isPublicSector: true,
+            isPublicSector: false, // Auto-filled from customer (Acme Corp is not public sector)
             isNewCustomer: true,
           })
         );
@@ -314,10 +344,11 @@ describe('NewOpportunityPage', () => {
       expect(titleInput).toHaveAttribute('required');
     });
 
-    it('should require client name field', () => {
+    it('should render customer selection dropdown', () => {
       render(<NewOpportunityPage />, { wrapper: AllProviders });
-      const clientInput = screen.getByPlaceholderText(/Acme Corporation/i);
-      expect(clientInput).toHaveAttribute('required');
+      const customerSelect = screen.getByRole('combobox');
+      expect(customerSelect).toBeInTheDocument();
+      expect(screen.getByText('Select Customer...')).toBeInTheDocument();
     });
 
     it('should require TCV field', () => {
@@ -326,10 +357,10 @@ describe('NewOpportunityPage', () => {
       expect(tcvInput).toHaveAttribute('required');
     });
 
-    it('should enforce minimum value for TCV', () => {
+    it('should show quick add customer button', () => {
       render(<NewOpportunityPage />, { wrapper: AllProviders });
-      const tcvInput = screen.getByPlaceholderText('1000000');
-      expect(tcvInput).toHaveAttribute('min', '0');
+      const quickAddButton = screen.getByTitle('Quick Add Customer');
+      expect(quickAddButton).toBeInTheDocument();
     });
   });
 });

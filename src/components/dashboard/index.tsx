@@ -20,10 +20,8 @@ export const Dashboard = ({ onSelectOpp }: { onSelectOpp: (opp: Opportunity) => 
     });
 
     useEffect(() => {
-        // Simulate initial load (skip delay in test environment)
-        const delay = import.meta.env.MODE === 'test' ? 0 : 300;
-        const timer = setTimeout(() => setIsLoading(false), delay);
-        return () => clearTimeout(timer);
+        // Immediate load (delay removed for test compatibility)
+        setIsLoading(false);
     }, []);
 
     const totalTCV = opportunities.reduce((sum, opp) => sum + opp.tcv, 0);
@@ -42,9 +40,7 @@ export const Dashboard = ({ onSelectOpp }: { onSelectOpp: (opp: Opportunity) => 
         setDeletingId(deleteConfirm.opp.id);
 
         try {
-            // Skip delay in test environment
-            const delay = import.meta.env.MODE === 'test' ? 0 : 300;
-            await new Promise(resolve => setTimeout(resolve, delay));
+            // Delay removed for test compatibility
             deleteOpportunity(deleteConfirm.opp.id);
             if (selectedOpp?.id === deleteConfirm.opp.id) {
                 selectOpportunity(null);

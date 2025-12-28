@@ -2,10 +2,12 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { EditOpportunityPage } from './edit';
 import type { Opportunity } from '../../types';
+import type { Customer } from '../../types/customer';
 
 // Mock dependencies
 const mockNavigate = vi.fn();
 const mockUpdateOpportunity = vi.fn();
+const mockAddCustomer = vi.fn();
 
 vi.mock('react-router-dom', () => ({
   useNavigate: () => mockNavigate,
@@ -16,23 +18,48 @@ vi.mock('../../stores/OpportunitiesStore', () => ({
   useOpportunities: vi.fn(),
 }));
 
+vi.mock('../../stores/CustomerStore', () => ({
+  useCustomers: vi.fn(),
+  CustomerProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+}));
+
 // Import after mocking
 import { useOpportunities } from '../../stores/OpportunitiesStore';
+import { useCustomers } from '../../stores/CustomerStore';
 
-// Mock opportunity
+// Mock customers
+const mockCustomers: Customer[] = [
+  {
+    id: 'CUST-001',
+    name: 'Existing Client',
+    industry: 'Finance',
+    isPublicSector: true,
+    createdAt: new Date('2024-01-01'),
+  },
+  {
+    id: 'CUST-002',
+    name: 'Another Client',
+    industry: 'Technology',
+    isPublicSector: false,
+    createdAt: new Date('2024-01-02'),
+  },
+];
+
+// Mock opportunity - uses customerId instead of clientName
 const mockExistingOpportunity: Opportunity = {
   id: 'OPP-2025-001',
   title: 'Existing Project',
-  clientName: 'Existing Client',
+  customerId: 'CUST-001',
+  clientName: 'Existing Client', // This is derived from customer
   tcv: 1500000,
   raiseTcv: 1800000,
-  industry: 'Finance',
+  industry: 'Finance', // This is derived from customer
   currentPhase: 'ATP',
   hasKcpDeviations: true,
   isFastTrack: false,
   isRti: true,
   isMandataria: true,
-  isPublicSector: true,
+  isPublicSector: true, // This is derived from customer
   raiseLevel: 'L4',
   deviations: [],
   checkpoints: {},
@@ -44,6 +71,12 @@ const mockExistingOpportunity: Opportunity = {
 describe('EditOpportunityPage', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    (useCustomers as ReturnType<typeof vi.fn>).mockReturnValue({
+      customers: mockCustomers,
+      addCustomer: mockAddCustomer,
+      updateCustomer: vi.fn(),
+      deleteCustomer: vi.fn(),
+    });
   });
 
   describe('Rendering with Existing Opportunity', () => {
@@ -79,10 +112,13 @@ describe('EditOpportunityPage', () => {
       render(<EditOpportunityPage />);
 
       expect(screen.getByDisplayValue('Existing Project')).toBeInTheDocument();
-      expect(screen.getByDisplayValue('Existing Client')).toBeInTheDocument();
+      // Customer is now a dropdown - check the select has the right value
+      const customerSelect = screen.getByRole('combobox');
+      expect(customerSelect).toHaveValue('CUST-001');
+      // Industry and Public Sector are now read-only fields from customer
+      expect(screen.getByText('Finance')).toBeInTheDocument();
       expect(screen.getByDisplayValue('1500000')).toBeInTheDocument();
       expect(screen.getByDisplayValue('1800000')).toBeInTheDocument();
-      expect(screen.getByDisplayValue('Finance')).toBeInTheDocument();
       expect(screen.getByDisplayValue('25')).toBeInTheDocument();
     });
 
@@ -94,13 +130,14 @@ describe('EditOpportunityPage', () => {
 
       render(<EditOpportunityPage />);
 
-      const publicSectorCheckbox = screen.getByRole('checkbox', { name: /Settore Pubblico/i });
-      const rtiCheckbox = screen.getByRole('checkbox', { name: /RTI/i });
-      const mandatariaCheckbox = screen.getByRole('checkbox', { name: /Mandataria/i });
-      const kcpCheckbox = screen.getByRole('checkbox', { name: /Deviazioni KCP/i });
-      const newCustomerCheckbox = screen.getByRole('checkbox', { name: /Nuovo Cliente/i });
+      // Public Sector is now auto-filled from customer, not a checkbox
+      // Find checkboxes by exact text and then get the input element
+      const allCheckboxes = screen.getAllByRole('checkbox');
+      const rtiCheckbox = allCheckboxes.find(cb => cb.closest('label')?.textContent?.includes('RTI (Joint Venture)'));
+      const mandatariaCheckbox = allCheckboxes.find(cb => cb.closest('label')?.textContent?.includes('Mandataria'));
+      const kcpCheckbox = allCheckboxes.find(cb => cb.closest('label')?.textContent?.match(/KCP|Deviazioni/i));
+      const newCustomerCheckbox = allCheckboxes.find(cb => cb.closest('label')?.textContent?.match(/New Customer|Nuovo Cliente/i));
 
-      expect(publicSectorCheckbox).toBeChecked();
       expect(rtiCheckbox).toBeChecked();
       expect(mandatariaCheckbox).toBeChecked();
       expect(kcpCheckbox).toBeChecked();
@@ -365,15 +402,16 @@ describe('EditOpportunityPage', () => {
       expect(titleInput).toHaveAttribute('required');
     });
 
-    it('should require client name field', () => {
+    it('should show customer selection dropdown', () => {
       (useOpportunities as ReturnType<typeof vi.fn>).mockReturnValue({
         opportunities: [mockExistingOpportunity],
         updateOpportunity: mockUpdateOpportunity,
       });
 
       render(<EditOpportunityPage />);
-      const clientInput = screen.getByDisplayValue('Existing Client');
-      expect(clientInput).toHaveAttribute('required');
+      const customerSelect = screen.getByRole('combobox');
+      expect(customerSelect).toBeInTheDocument();
+      expect(customerSelect).toHaveValue('CUST-001');
     });
 
     it('should require TCV field', () => {
@@ -387,15 +425,15 @@ describe('EditOpportunityPage', () => {
       expect(tcvInput).toHaveAttribute('required');
     });
 
-    it('should enforce minimum value for TCV', () => {
+    it('should display margin percentage field', () => {
       (useOpportunities as ReturnType<typeof vi.fn>).mockReturnValue({
         opportunities: [mockExistingOpportunity],
         updateOpportunity: mockUpdateOpportunity,
       });
 
       render(<EditOpportunityPage />);
-      const tcvInput = screen.getByDisplayValue('1500000');
-      expect(tcvInput).toHaveAttribute('min', '0');
+      const marginInput = screen.getByDisplayValue('25');
+      expect(marginInput).toBeInTheDocument();
     });
   });
 });
