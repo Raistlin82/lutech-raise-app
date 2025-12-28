@@ -68,6 +68,7 @@ export const Settings = () => {
                 <table className="w-full text-left text-sm">
                     <thead className="bg-slate-50 border-b border-slate-200">
                         <tr>
+                            <th className="px-4 py-4 font-semibold text-slate-700 text-center w-16">#</th>
                             <th className="px-6 py-4 font-semibold text-slate-700">Phase</th>
                             <th className="px-6 py-4 font-semibold text-slate-700">RAISE Levels</th>
                             <th className="px-6 py-4 font-semibold text-slate-700">Label</th>
@@ -77,10 +78,24 @@ export const Settings = () => {
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-100">
-                        {controls.map((control) => {
+                        {controls
+                            .sort((a, b) => {
+                                // Sort by phase order, then by control order
+                                const phaseOrder = { 'Planning': 1, 'ATP': 2, 'ATS': 3, 'ATC': 4, 'Handover': 5, 'ALL': 6 };
+                                const phaseA = phaseOrder[a.phase as keyof typeof phaseOrder] || 99;
+                                const phaseB = phaseOrder[b.phase as keyof typeof phaseOrder] || 99;
+                                if (phaseA !== phaseB) return phaseA - phaseB;
+                                return (a.order || 0) - (b.order || 0);
+                            })
+                            .map((control) => {
                             const raiseLevels = extractRaiseLevels(control.condition);
                             return (
                             <tr key={control.id} className="hover:bg-slate-50/50 transition-colors">
+                                <td className="px-4 py-3 text-center">
+                                    <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-slate-100 text-slate-700 font-bold text-xs">
+                                        {control.order || '-'}
+                                    </span>
+                                </td>
                                 <td className="px-6 py-3">
                                     <span className={clsx(
                                         "px-2 py-1 rounded text-xs font-medium",
