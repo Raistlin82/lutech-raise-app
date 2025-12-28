@@ -1,10 +1,14 @@
 import { useState } from 'react';
 import { useCustomers } from '../../stores/CustomerStore';
 import { Building2, Plus, Pencil, Trash2 } from 'lucide-react';
+import { CustomerModal } from './CustomerModal';
+import type { Customer } from '../../types';
 
 export const CustomersPage = () => {
   const { customers } = useCustomers();
   const [searchQuery, setSearchQuery] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingCustomer, setEditingCustomer] = useState<Customer | undefined>();
 
   // Filter customers based on search query
   const filteredCustomers = customers.filter(c =>
@@ -15,6 +19,21 @@ export const CustomersPage = () => {
   const sortedCustomers = [...filteredCustomers].sort((a, b) =>
     a.name.localeCompare(b.name)
   );
+
+  // Modal handlers
+  const openAddModal = () => {
+    setEditingCustomer(undefined);
+    setIsModalOpen(true);
+  };
+
+  const openEditModal = (customer: Customer) => {
+    setEditingCustomer(customer);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
 
   return (
     <div className="p-8">
@@ -40,7 +59,7 @@ export const CustomersPage = () => {
             className="px-4 py-2 border border-slate-300 rounded-lg w-64 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           />
           <button
-            onClick={() => {/* TODO: Open add modal */}}
+            onClick={openAddModal}
             className="px-4 py-2 bg-blue-600 text-white rounded-lg flex items-center gap-2 hover:bg-blue-700 transition-colors"
           >
             <Plus size={20} />
@@ -94,7 +113,7 @@ export const CustomersPage = () => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       <button
-                        onClick={() => {/* TODO: Open edit modal */}}
+                        onClick={() => openEditModal(customer)}
                         className="text-blue-600 hover:text-blue-900 mr-4 transition-colors"
                         title="Edit customer"
                       >
@@ -114,6 +133,13 @@ export const CustomersPage = () => {
             </tbody>
           </table>
         </div>
+
+        {/* Customer Modal */}
+        <CustomerModal
+          isOpen={isModalOpen}
+          onClose={closeModal}
+          customer={editingCustomer}
+        />
       </div>
     </div>
   );
