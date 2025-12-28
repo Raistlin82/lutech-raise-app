@@ -36,11 +36,13 @@
 ### Core Features
 
 - **Dashboard Interattiva** - Visualizzazione completa delle opportunità con metriche in tempo reale
+- **Gestione Clienti** (NEW v1.1.0) - Sistema completo di gestione clienti con CRUD operations e integrazione opportunità
 - **Gestione Opportunità** - Creazione, modifica e tracciamento del ciclo di vita delle opportunità
 - **Workflow ATP/ATS/ATC** - Processo strutturato con checkpoint dinamici basati sul RAISE Level
 - **Calcolo RAISE Level** - Determinazione automatica del livello di autorizzazione (L1-L6) basato su TCV e margini
 - **Validazione Form** - Validazione inline con feedback visivo in tempo reale
 - **Settings Avanzati** - Gestione checkpoint e regole di processo personalizzabili
+- **Controls Ordering** (NEW v1.1.0) - Checkpoint numerati sequenzialmente (1, 2, 3...) per ogni fase
 
 ### UX & Performance
 
@@ -100,10 +102,12 @@
 ### Caratteristiche della Demo
 
 - ✅ Dashboard completa con opportunità di esempio
-- ✅ Creazione e modifica opportunità
-- ✅ Workflow ATP con checkpoint dinamici
-- ✅ Settings page interattiva
+- ✅ **Gestione Clienti** con CRUD operations (NEW v1.1.0)
+- ✅ Creazione e modifica opportunità con **customer dropdown** (NEW v1.1.0)
+- ✅ Workflow ATP con **checkpoint numerati** (NEW v1.1.0)
+- ✅ Settings page interattiva con **controls ordering** (NEW v1.1.0)
 - ✅ Validazione form in tempo reale
+- ✅ **Lutech branding** e author credits (NEW v1.1.0)
 
 ---
 
@@ -244,6 +248,38 @@ Opportunità con TCV < €250K e senza deviazioni KCP possono seguire un process
 
 ---
 
+## 👥 Gestione Clienti (v1.1.0)
+
+### Customer Management System
+
+Il sistema di gestione clienti permette di centralizzare i dati dei clienti e collegarli alle opportunità.
+
+**Caratteristiche principali:**
+
+- **Anagrafica Clienti** - Database clienti con nome, settore industriale e flag pubblica amministrazione
+- **10 Settori Predefiniti** - Technology, Manufacturing, Finance, Healthcare, Retail, Energy, Transportation, Public Administration, Telecommunications, Consulting
+- **CRUD Operations** - Creazione, modifica, cancellazione clienti con validazione dati
+- **Customer Dropdown** - Selezione cliente nei form opportunità con auto-popolamento campi
+- **Quick Add Modal** - Creazione rapida nuovo cliente senza lasciare il form opportunità
+- **Backward Compatibility** - Supporto opportunità esistenti con clientName/industry legacy
+
+### Auto-Fill da Cliente
+
+Quando si seleziona un cliente in un'opportunità:
+
+- ✅ **Industry** - Auto-popolato dal settore del cliente (readonly)
+- ✅ **Public Sector Flag** - Auto-popolato dal flag PA del cliente (readonly)
+- ✅ **Validazione Coerenza** - Garantisce che i dati derivati dal cliente siano sempre allineati
+
+### Customer-Opportunity Relationship
+
+- Relazione **1:N** - Un cliente può avere N opportunità
+- **Foreign Key** - Opportunity.customerId → Customer.id
+- **Referential Integrity** - Protezione eliminazione cliente con opportunità attive
+- **Data Migration** - Supporto graduale da clientName/industry a customerId
+
+---
+
 ## 🧪 Testing
 
 ### Test Coverage
@@ -335,26 +371,31 @@ raise-app/
 │   ├── components/        # UI Components
 │   │   ├── common/       # Shared components (FormField, LoadingSpinner, etc.)
 │   │   ├── dashboard/    # Dashboard component
-│   │   ├── layout/       # Layout e navigation
-│   │   ├── settings/     # Settings page
-│   │   └── workflow/     # Workflow ATP/ATS/ATC
+│   │   ├── layout/       # Layout e navigation (with Lutech branding)
+│   │   ├── opportunities/# QuickAddCustomerModal (NEW v1.1.0)
+│   │   ├── settings/     # Settings page (with controls ordering)
+│   │   └── workflow/     # Workflow ATP/ATS/ATC (with checkpoint numbering)
 │   ├── pages/            # Route pages
 │   │   ├── opportunities/# Opportunity pages (new, edit, list)
 │   │   └── settings/     # Settings page
-│   ├── stores/           # Zustand stores
+│   ├── stores/           # React Context stores
+│   │   ├── CustomerStore.tsx      # NEW v1.1.0 - Customer management
 │   │   ├── OpportunitiesStore.tsx
 │   │   └── SettingsStore.tsx
 │   ├── lib/              # Utilities e logica business
 │   │   ├── raiseLogic.ts # RAISE Level calculations
 │   │   ├── ruleEngine.ts # Checkpoint conditions engine
-│   │   ├── validation.ts # Form validation schemas
+│   │   ├── validation.ts # Form validation schemas (Zod)
 │   │   └── toast.ts      # Toast notifications
 │   ├── hooks/            # Custom React hooks
-│   ├── types/            # TypeScript types
+│   ├── types/            # TypeScript types (Customer, Opportunity, etc.)
 │   └── __tests__/        # Test files
+│       ├── integration/  # NEW v1.1.0 - Integration tests
+│       └── unit/         # Unit tests
 ├── docs/                 # Documentation
 ├── e2e/                  # Playwright E2E tests
 └── public/               # Static assets
+    └── assets/           # Lutech logo and branding assets
 ```
 
 ---
@@ -387,6 +428,7 @@ Questo progetto è rilasciato sotto licenza **MIT**. Vedi [LICENSE](LICENSE) per
 ## 👥 Team
 
 Sviluppato con ❤️ da **Lutech Professional Services**
+**Author:** Gabriele Rendina
 
 ### Contatti
 
@@ -405,6 +447,10 @@ Sviluppato con ❤️ da **Lutech Professional Services**
 - [x] Loading states & toast notifications
 - [x] Accessibility improvements
 - [x] Production deployment
+- [x] **Customer Management System** (v1.1.0)
+- [x] **Lutech Branding & Author Credits** (v1.1.0)
+- [x] **Controls Ordering & Checkpoint Numbering** (v1.1.0)
+- [x] **Integration Tests** (v1.1.0)
 
 ### In Progress 🚧
 - [ ] Advanced reporting & analytics
