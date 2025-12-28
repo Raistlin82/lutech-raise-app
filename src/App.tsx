@@ -13,6 +13,7 @@ const OpportunitiesPage = lazy(() => import('./pages/opportunities').then(m => (
 const NewOpportunityPage = lazy(() => import('./pages/opportunities/new').then(m => ({ default: m.NewOpportunityPage })));
 const EditOpportunityPage = lazy(() => import('./pages/opportunities/edit').then(m => ({ default: m.EditOpportunityPage })));
 const ApprovalsPage = lazy(() => import('./pages/approvals').then(m => ({ default: m.ApprovalsPage })));
+const CustomersPage = lazy(() => import('./components/customers').then(m => ({ default: m.CustomersPage })));
 const SettingsPage = lazy(() => import('./pages/settings').then(m => ({ default: m.SettingsPage })));
 
 // Loading fallback component
@@ -46,6 +47,7 @@ function AppRoutes() {
       <Route path="/opportunities/new" element={<NewOpportunityPage />} />
       <Route path="/opportunities/:id/edit" element={<EditOpportunityPage />} />
       <Route path="/approvals" element={<ApprovalsPage />} />
+      <Route path="/customers" element={<CustomersPage />} />
       <Route path="/settings" element={<SettingsPage />} />
       <Route
         path="/opportunity/:id"
