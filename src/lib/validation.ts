@@ -78,3 +78,35 @@ export const StorageOpportunitiesSchema = z.array(OpportunitySchema);
 export function validateStorageData(data: unknown) {
   return StorageOpportunitiesSchema.safeParse(data);
 }
+
+// Customer validation schema
+export const CustomerSchema = z.object({
+  id: z.string().uuid('ID must be valid UUID'),
+  name: z.string()
+    .min(2, 'Customer name must be at least 2 characters')
+    .max(200, 'Customer name must be less than 200 characters')
+    .trim(),
+  industry: z.enum([
+    'Technology',
+    'Manufacturing',
+    'Finance',
+    'Healthcare',
+    'Retail',
+    'Energy',
+    'Transportation',
+    'Public Administration',
+    'Telecommunications',
+    'Consulting'
+  ], {
+    message: 'Invalid industry'
+  }),
+  isPublicSector: z.boolean(),
+});
+
+export const validateCustomer = (data: unknown) => {
+  return CustomerSchema.safeParse(data);
+};
+
+export const validateCustomerArray = (data: unknown) => {
+  return z.array(CustomerSchema).safeParse(data);
+};
