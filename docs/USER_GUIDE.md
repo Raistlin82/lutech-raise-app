@@ -3,11 +3,12 @@
 ## Indice
 
 1. [Introduzione](#introduzione)
-2. [Dashboard](#dashboard)
-3. [Creazione Opportunità](#creazione-opportunità)
-4. [Workflow ATP/ATS/ATC](#workflow-atpatsatc)
-5. [Gestione Checkpoint](#gestione-checkpoint)
-6. [FAQ](#faq)
+2. [Gestione Clienti](#gestione-clienti) **(NEW v1.1.0)**
+3. [Dashboard](#dashboard)
+4. [Creazione Opportunità](#creazione-opportunità)
+5. [Workflow ATP/ATS/ATC](#workflow-atpatsatc)
+6. [Gestione Checkpoint](#gestione-checkpoint)
+7. [FAQ](#faq)
 
 ---
 
@@ -49,6 +50,145 @@ Opportunità con:
 - Nessuna deviazione KCP
 
 Possono seguire un processo accelerato con meno checkpoint.
+
+---
+
+## Gestione Clienti
+
+### Panoramica (NEW v1.1.0)
+
+Il sistema di **Gestione Clienti** permette di centralizzare i dati dei clienti e collegarli alle opportunità.
+
+### Creazione Cliente
+
+#### 1. Accesso
+
+Click **"Customers"** nella sidebar per accedere alla lista clienti.
+
+#### 2. Nuovo Cliente
+
+Click **"New Customer"** per aprire il form di creazione.
+
+#### 3. Campi Richiesti
+
+**Informazioni Cliente:**
+- **Nome Cliente*** - Nome completo (minimo 2, massimo 200 caratteri)
+  - ✅ Esempio: "Acme Corporation S.p.A."
+  - ✅ Esempio: "Ministero dell'Interno"
+
+- **Industry*** - Settore industriale (selezione da dropdown)
+  - 10 settori predefiniti:
+    - Technology
+    - Manufacturing
+    - Finance
+    - Healthcare
+    - Retail
+    - Energy
+    - Transportation
+    - Public Administration
+    - Telecommunications
+    - Consulting
+
+- **Public Sector** - Flag Pubblica Amministrazione (checkbox)
+  - ✅ Seleziona se cliente è PA/Ente Pubblico
+  - ⬜ Deseleziona se cliente privato
+
+#### 4. Validazione
+
+Il sistema valida:
+- Nome: lunghezza minima 2 caratteri
+- Industry: deve essere uno dei 10 settori predefiniti
+- UUID: generato automaticamente
+
+#### 5. Salvataggio
+
+Click **"Create Customer"**:
+- Cliente creato e aggiunto alla lista
+- Toast notification conferma successo
+- ID univoco UUID generato automaticamente
+
+### Quick Add Customer (Inline)
+
+#### Durante Creazione Opportunità
+
+1. Nel form opportunità, click **pulsante "+" verde** accanto al dropdown cliente
+2. Si apre modal **Quick Add Customer**
+3. Compila i campi (Nome, Industry, Public Sector)
+4. Click **"Add Customer"**
+5. **Cliente creato e auto-selezionato** nel dropdown
+6. Campi industry e public sector **auto-popolati** automaticamente
+
+**Vantaggi:**
+- ✅ Non esci dal form opportunità
+- ✅ Cliente immediatamente disponibile
+- ✅ Auto-selezione e auto-fill automatici
+
+### Modifica Cliente
+
+1. Dalla lista clienti, click **icona matita** sulla card cliente
+2. Modifica i campi desiderati
+3. Click **"Update Customer"**
+4. Toast notification conferma modifica
+
+### Eliminazione Cliente
+
+⚠️ **Protezione Referential Integrity:**
+
+- ✅ Puoi eliminare clienti **senza opportunità collegate**
+- ❌ **Non puoi** eliminare clienti con opportunità attive
+- Sistema mostra alert se provi a eliminare cliente con opportunità
+
+**Procedura:**
+1. Click **icona cestino** sulla card cliente
+2. Conferma nella dialog
+3. Se OK → Cliente eliminato, toast conferma
+4. Se cliente ha opportunità → Error message, eliminazione bloccata
+
+### Auto-Fill da Cliente
+
+Quando selezioni un cliente nel form opportunità:
+
+**Campi Auto-Popolati (Readonly):**
+- ✅ **Industry** - Settore del cliente (icona lucchetto 🔒)
+- ✅ **Public Sector** - Flag PA del cliente (icona lucchetto 🔒)
+
+**Visualizzazione:**
+- Campi con **sfondo grigio chiaro**
+- **Icona lucchetto** a sinistra
+- Testo **"Auto-filled from customer"** sotto il campo
+
+**Vantaggi:**
+- ✅ Coerenza dati garantita
+- ✅ Nessuna discrepanza tra cliente e opportunità
+- ✅ Aggiornamento automatico se modifichi cliente
+
+### Lista Clienti
+
+**Visualizzazione Card:**
+
+Ogni card cliente mostra:
+- **Nome** (font bold, grande)
+- **Industry** (badge colorato)
+- **Public Sector** badge (se PA)
+- **# Opportunità** - Numero opportunità collegate
+- **Actions** - Edit (matita) e Delete (cestino)
+
+**Ordinamento:**
+- Alfabetico per nome cliente (A-Z)
+- Card responsive per mobile/tablet
+
+### Backward Compatibility
+
+**Opportunità Legacy (create prima v1.1.0):**
+
+- Continuano a funzionare con **clientName** e **industry** come testo libero
+- Non hanno **customerId** collegato
+- Possono essere **migrate manualmente**:
+  1. Crea cliente corrispondente
+  2. Modifica opportunità
+  3. Seleziona cliente dal dropdown
+  4. Campi auto-popolati da cliente
+  5. Salva → Migrazione completa
 
 ---
 
@@ -108,8 +248,10 @@ Click sul pulsante **"New Opportunity"** nella dashboard.
   - ✅ Esempio: "Cloud Migration SAP per Cliente X"
   - ❌ Evita: "Prog", "Test"
 
-- **Client Name*** - Nome cliente (minimo 2 caratteri)
-  - ✅ Esempio: "Acme Corporation S.p.A."
+- **Customer*** (NEW v1.1.0) - Selezione cliente da dropdown
+  - Seleziona cliente esistente dalla lista (ordinata A-Z)
+  - Oppure click **pulsante "+" verde** per creare nuovo cliente inline
+  - Industry e Public Sector vengono **auto-popolati** automaticamente dal cliente (readonly)
 
 - **Description** - Descrizione dettagliata (opzionale)
 
@@ -212,6 +354,11 @@ Ogni fase ha checkpoint specifici filtrati per RAISE Level:
 4. ⬜ Resource Availability Check
 5. ⬜ Risk Assessment
 
+**Checkpoint Numbering (NEW v1.1.0):**
+- Ogni checkpoint ha un **badge numerico** (1, 2, 3...) all'inizio
+- I numeri seguono l'ordine sequenziale definito in Settings
+- Facilita riferimento e comunicazione ("Checkpoint #3 completato")
+
 **Come funziona:**
 - ⬜ **Unchecked** = Da completare
 - ✅ **Checked** = Completato
@@ -273,11 +420,16 @@ Per opportunità Fast Track (TCV < €250K, no deviazioni):
 ### Visualizzazione Checkpoint
 
 Tabella con colonne:
+- **#** (NEW v1.1.0) - Numero sequenziale checkpoint (1, 2, 3... per fase)
 - **ID** - Identificativo univoco
 - **Name** - Nome checkpoint
 - **Phase** - Fase di appartenenza (Planning/ATP/ATS/ATC/ALL)
 - **RAISE Levels** - Livelli applicabilità (badge colorati o "ALL")
 - **Description** - Descrizione dettagliata
+
+**Ordinamento:**
+- Checkpoint ordinati per **Phase** (Planning → ATP → ATS → ATC → Handover → ALL)
+- All'interno di ogni fase, ordinati per **numero sequenziale (#)**
 
 ### Filtri
 
@@ -324,6 +476,26 @@ A: No, le fasi devono essere completate in ordine sequenziale (Planning → ATP 
 
 **Q: Cosa significa Fast Track?**
 A: Opportunità con TCV < €250K senza deviazioni KCP seguono un processo semplificato con meno checkpoint.
+
+### Gestione Clienti (v1.1.0)
+
+**Q: Devo creare un cliente prima di creare un'opportunità?**
+A: No, puoi usare il pulsante "+" verde nel form opportunità per creare un cliente inline senza uscire dal form.
+
+**Q: Cosa succede ai dati se modifico un cliente?**
+A: Le opportunità collegate al cliente erediteranno automaticamente i nuovi valori di Industry e Public Sector al prossimo salvataggio.
+
+**Q: Posso eliminare un cliente?**
+A: Sì, ma solo se NON ha opportunità collegate. Il sistema protegge la referential integrity e blocca l'eliminazione se ci sono opportunità attive.
+
+**Q: Come faccio a migrare le vecchie opportunità al nuovo sistema clienti?**
+A: Crea il cliente corrispondente, modifica l'opportunità, seleziona il cliente dal dropdown, e salva. I campi clientName e industry legacy saranno sostituiti dal customerId.
+
+**Q: I campi Industry e Public Sector sono readonly nelle opportunità. Perché?**
+A: Questi campi sono auto-popolati dal cliente selezionato per garantire coerenza. Se vuoi modificarli, devi modificare il cliente stesso.
+
+**Q: Quanti settori industriali sono disponibili?**
+A: 10 settori predefiniti: Technology, Manufacturing, Finance, Healthcare, Retail, Energy, Transportation, Public Administration, Telecommunications, Consulting.
 
 ### Checkpoint
 
@@ -434,6 +606,7 @@ A: Funzionalità in roadmap (Q2 2025).
 ### Quick Links
 
 - **Dashboard:** [/](https://raistlin82.github.io/lutech-raise-app/)
+- **Customers:** [/customers](https://raistlin82.github.io/lutech-raise-app/customers) **(NEW v1.1.0)**
 - **New Opportunity:** [/opportunities/new](https://raistlin82.github.io/lutech-raise-app/opportunities/new)
 - **Settings:** [/settings](https://raistlin82.github.io/lutech-raise-app/settings)
 
