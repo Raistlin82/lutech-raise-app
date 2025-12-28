@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import { useCustomers } from '../../stores/CustomerStore';
+import { useOpportunities } from '../../stores/OpportunitiesStore';
 import { Building2, Plus, Pencil, Trash2 } from 'lucide-react';
 import { CustomerModal } from './CustomerModal';
 import type { Customer } from '../../types';
 
 export const CustomersPage = () => {
-  const { customers } = useCustomers();
+  const { customers, deleteCustomer } = useCustomers();
+  const { opportunities } = useOpportunities();
   const [searchQuery, setSearchQuery] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingCustomer, setEditingCustomer] = useState<Customer | undefined>();
@@ -33,6 +35,25 @@ export const CustomersPage = () => {
 
   const closeModal = () => {
     setIsModalOpen(false);
+  };
+
+  const handleDeleteCustomer = (customer: Customer) => {
+    // Check if customer has opportunities (using clientName for now, will use customerId after Task 9)
+    const hasOpportunities = opportunities.some(
+      opp => opp.clientName.toLowerCase() === customer.name.toLowerCase()
+    );
+
+    if (hasOpportunities) {
+      alert(
+        `Cannot delete "${customer.name}" because it has active opportunities. ` +
+        `Please delete or reassign those opportunities first.`
+      );
+      return;
+    }
+
+    if (confirm(`Are you sure you want to delete "${customer.name}"?`)) {
+      deleteCustomer(customer.id);
+    }
   };
 
   return (
@@ -120,7 +141,7 @@ export const CustomersPage = () => {
                         <Pencil size={16} />
                       </button>
                       <button
-                        onClick={() => {/* TODO: Open delete confirmation */}}
+                        onClick={() => handleDeleteCustomer(customer)}
                         className="text-red-600 hover:text-red-900 transition-colors"
                         title="Delete customer"
                       >
