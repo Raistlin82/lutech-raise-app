@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { LayoutDashboard, FileText, Settings, Menu as MenuIcon, X } from 'lucide-react';
+import { LayoutDashboard, FileText, Building2, Settings, Menu as MenuIcon, X } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
 import { clsx } from 'clsx';
 import { SkipLink } from '../common/SkipLink';
@@ -47,6 +47,7 @@ export const Sidebar = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => v
                 <div className="flex-1 p-4 space-y-2 overflow-y-auto">
                     <NavItem to="/" icon={<LayoutDashboard size={20} />} label="Dashboard" end onClick={onClose} />
                     <NavItem to="/opportunities" icon={<FileText size={20} />} label="Opportunities" onClick={onClose} />
+                    <NavItem to="/customers" icon={<Building2 size={20} />} label="Customers" onClick={onClose} />
                     <NavItem to="/settings" icon={<Settings size={20} />} label="Settings" onClick={onClose} />
                 </div>
 
