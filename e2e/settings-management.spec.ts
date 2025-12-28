@@ -44,8 +44,6 @@ test.describe('Settings Management Journey', () => {
     await page.goto('/settings');
 
     // Should display controls from various phases
-    const phaseLabels = ['Planning', 'ATP', 'ATS', 'ATC', 'Handover'];
-
     // Check if at least some phase badges are visible
     const phaseBadges = page.locator('tbody td span').filter({ hasText: /Planning|ATP|ATS|ATC|Handover/ });
     await expect(phaseBadges.first()).toBeVisible();

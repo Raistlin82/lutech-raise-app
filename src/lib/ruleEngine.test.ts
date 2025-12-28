@@ -323,6 +323,7 @@ describe('ruleEngine', () => {
       it('should handle unknown operator gracefully', () => {
         const condition = {
           all: [
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             { field: 'tcv' as keyof Opportunity, operator: 'unknownOp' as any, value: 1000000 }
           ]
         };
@@ -333,7 +334,7 @@ describe('ruleEngine', () => {
 
     describe('Security tests', () => {
       it('should not execute arbitrary JavaScript code', () => {
-        let sideEffect = false;
+        const sideEffect = false;
 
         // Try to inject code that would set the side effect
         const maliciousCondition = "(() => { sideEffect = true; return true; })()";

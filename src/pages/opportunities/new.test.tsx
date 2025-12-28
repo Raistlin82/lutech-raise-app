@@ -1,9 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { NewOpportunityPage } from './new';
-import { CustomerProvider } from '../../stores/CustomerStore';
 import React from 'react';
-import type { Customer } from '../../types/customer';
+import type { Customer } from '../../types';
 
 // Mock dependencies
 const mockNavigate = vi.fn();
@@ -35,14 +34,12 @@ const mockCustomers: Customer[] = [
     name: 'Acme Corporation',
     industry: 'Technology',
     isPublicSector: false,
-    createdAt: new Date('2024-01-01'),
   },
   {
     id: 'CUST-002',
     name: 'TechCorp',
     industry: 'Finance',
     isPublicSector: false,
-    createdAt: new Date('2024-01-02'),
   },
 ];
 

@@ -3,7 +3,12 @@ import type { Opportunity } from '../types';
 /**
  * Safe rule evaluation engine
  * Replaces dangerous new Function() approach with declarative rules
+ *
+ * Note: This is a generic rule engine that evaluates conditions on any opportunity.
+ * The use of 'any' types in operators is intentional to support multiple value types.
  */
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 // Predefined safe operators
 const SAFE_OPERATORS = {

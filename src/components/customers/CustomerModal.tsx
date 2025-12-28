@@ -39,6 +39,7 @@ export const CustomerModal: React.FC<CustomerModalProps> = ({
   useEffect(() => {
     if (customer) {
       // Edit mode - populate from customer
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setFormData({
         name: customer.name,
         industry: customer.industry,

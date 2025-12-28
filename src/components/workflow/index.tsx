@@ -60,7 +60,7 @@ export const OpportunityWorkflow = ({ opp, onBack }: { opp: Opportunity, onBack:
                 setActiveTab(nextPhase);
                 showToast.success(`Fase ${phase} completata! Avanzamento a ${nextPhase}.`);
             }
-        } catch (error) {
+        } catch {
             showToast.error('Errore durante il completamento della fase.');
         } finally {
             setIsCompleting(false);

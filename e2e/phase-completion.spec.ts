@@ -111,8 +111,6 @@ test.describe('Phase Completion Journey', () => {
 
   test('should show sidebar with all workflow phases', async ({ page }) => {
     // Verify sidebar navigation shows all phases
-    const sidebar = page.locator('nav, div[class*="sidebar"]');
-
     // All workflow phases should be listed
     await expect(page.locator('button:has-text("Planning")').first()).toBeVisible();
 

@@ -2,8 +2,12 @@
  * useFormValidation Hook
  * Manages form validation state and field-level errors
  * Provides real-time validation on blur
+ *
+ * Note: This is a generic utility hook that works with any form shape.
+ * The use of 'any' types is intentional to provide maximum flexibility.
  */
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useCallback } from 'react';
 
 export interface FieldValidation {
