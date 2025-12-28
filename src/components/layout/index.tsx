@@ -4,6 +4,7 @@ import { NavLink } from 'react-router-dom';
 import { clsx } from 'clsx';
 import { SkipLink } from '../common/SkipLink';
 import lutechLogo from '/assets/lutech-logo.png';
+import lutechIcon from '/assets/lutech-icon.ai';
 
 export const Sidebar = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) => {
     return (
@@ -28,9 +29,22 @@ export const Sidebar = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => v
                 <div className="p-6 border-b border-slate-800/50">
                     <div className="flex items-center justify-between mb-4">
                         <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-gradient-to-br from-cyan-500 via-blue-600 to-indigo-600 rounded-xl flex items-center justify-center font-bold text-xl shadow-glow-accent relative">
-                                <span className="relative z-10">R</span>
-                                <div className="absolute inset-0 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-xl blur opacity-50" />
+                            {/* Lutech Icon - Note: Original file is .ai (PDF), ideally should be PNG or SVG for web */}
+                            <div className="w-10 h-10 rounded-xl flex items-center justify-center overflow-hidden bg-white shadow-lg relative">
+                                <img
+                                    src={lutechIcon}
+                                    alt="Lutech"
+                                    className="w-full h-full object-contain"
+                                    onError={(e) => {
+                                        // Fallback to gradient "R" if icon fails to load
+                                        e.currentTarget.style.display = 'none';
+                                        const parent = e.currentTarget.parentElement;
+                                        if (parent) {
+                                            parent.className = "w-10 h-10 bg-gradient-to-br from-cyan-500 via-blue-600 to-indigo-600 rounded-xl flex items-center justify-center font-bold text-xl shadow-glow-accent relative";
+                                            parent.innerHTML = '<span class="relative z-10 text-white">R</span><div class="absolute inset-0 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-xl blur opacity-50"></div>';
+                                        }
+                                    }}
+                                />
                             </div>
                             <div className="flex flex-col">
                                 <span className="text-lg font-bold tracking-tight">RAISE</span>
