@@ -105,6 +105,7 @@ export interface ControlConfig {
     label: string;
     description: string;
     phase: 'Planning' | 'ATP' | 'ATS' | 'ATC' | 'Handover' | 'ALL'; // ALL = applies to all phases
+    order?: number; // Position within phase (1, 2, 3...) - will be required after migration
     isMandatory: boolean;
     templateRef?: string; // Name or URL of the template (legacy)
     actionType?: 'document' | 'email' | 'notification' | 'task';
@@ -113,4 +114,25 @@ export interface ControlConfig {
     folderPath?: string; // Percorso cartella dove salvare il documento (es. "/Salesforce/Documents/ATP/")
     templateLinks?: TemplateLink[]; // Array di link ai template (supporta documenti multipli)
     mandatoryNotes?: string; // Note sulla mandatorietà dall'Excel (per pop-up)
+}
+
+// Industry enum (10 predefined sectors)
+export type Industry =
+  | 'Technology'
+  | 'Manufacturing'
+  | 'Finance'
+  | 'Healthcare'
+  | 'Retail'
+  | 'Energy'
+  | 'Transportation'
+  | 'Public Administration'
+  | 'Telecommunications'
+  | 'Consulting';
+
+// Customer entity
+export interface Customer {
+  id: string;              // UUID
+  name: string;            // Min 2, max 200 chars
+  industry: Industry;      // Enum
+  isPublicSector: boolean; // Public Administration flag
 }
