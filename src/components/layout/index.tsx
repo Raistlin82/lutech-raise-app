@@ -3,6 +3,7 @@ import { LayoutDashboard, FileText, Building2, Settings, Menu as MenuIcon, X } f
 import { NavLink } from 'react-router-dom';
 import { clsx } from 'clsx';
 import { SkipLink } from '../common/SkipLink';
+import lutechLogo from '/assets/lutech-logo.png';
 
 export const Sidebar = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) => {
     return (
@@ -50,7 +51,7 @@ export const Sidebar = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => v
                         <div className="flex items-center gap-2">
                             {/* Logo - fallback to text if image not available */}
                             <img
-                                src="/assets/lutech-logo.png"
+                                src={lutechLogo}
                                 alt="Lutech"
                                 className="h-5 object-contain"
                                 onError={(e) => {
@@ -93,7 +94,7 @@ export const Sidebar = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => v
                         <div className="flex items-center justify-between pt-3 border-t border-slate-800/30">
                             <div className="flex items-center gap-2">
                                 <img
-                                    src="/assets/lutech-logo.png"
+                                    src={lutechLogo}
                                     alt="Lutech"
                                     className="h-4 object-contain opacity-50"
                                     onError={(e) => {
