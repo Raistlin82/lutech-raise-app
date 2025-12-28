@@ -24,24 +24,50 @@ export const Sidebar = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => v
                 )}
                 aria-label="Navigazione principale"
             >
-                <div className="p-6 border-b border-slate-800/50 flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-gradient-to-br from-cyan-500 via-blue-600 to-indigo-600 rounded-xl flex items-center justify-center font-bold text-xl shadow-glow-accent relative">
-                            <span className="relative z-10">R</span>
-                            <div className="absolute inset-0 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-xl blur opacity-50" />
+                <div className="p-6 border-b border-slate-800/50">
+                    <div className="flex items-center justify-between mb-4">
+                        <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 bg-gradient-to-br from-cyan-500 via-blue-600 to-indigo-600 rounded-xl flex items-center justify-center font-bold text-xl shadow-glow-accent relative">
+                                <span className="relative z-10">R</span>
+                                <div className="absolute inset-0 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-xl blur opacity-50" />
+                            </div>
+                            <div className="flex flex-col">
+                                <span className="text-lg font-bold tracking-tight">RAISE</span>
+                                <span className="text-[10px] text-cyan-400 font-semibold uppercase tracking-widest">Compliance</span>
+                            </div>
                         </div>
-                        <div className="flex flex-col">
-                            <span className="text-lg font-bold tracking-tight">RAISE</span>
-                            <span className="text-[10px] text-cyan-400 font-semibold uppercase tracking-widest">Compliance</span>
-                        </div>
+                        <button
+                            onClick={onClose}
+                            className="md:hidden text-slate-400 hover:text-white transition-colors"
+                            aria-label="Chiudi menu"
+                        >
+                            <X size={24} />
+                        </button>
                     </div>
-                    <button
-                        onClick={onClose}
-                        className="md:hidden text-slate-400 hover:text-white transition-colors"
-                        aria-label="Chiudi menu"
-                    >
-                        <X size={24} />
-                    </button>
+
+                    {/* Lutech Logo & Author Credit */}
+                    <div className="flex items-center justify-between pt-4 border-t border-slate-800/30">
+                        <div className="flex items-center gap-2">
+                            {/* Logo - fallback to text if image not available */}
+                            <img
+                                src="/assets/lutech-logo.png"
+                                alt="Lutech"
+                                className="h-5 object-contain"
+                                onError={(e) => {
+                                    // Fallback to text logo if image not found
+                                    e.currentTarget.style.display = 'none';
+                                    const fallback = e.currentTarget.nextElementSibling as HTMLElement;
+                                    if (fallback) fallback.style.display = 'block';
+                                }}
+                            />
+                            <span className="text-white font-bold text-sm hidden" style={{display: 'none'}}>
+                                Lutech
+                            </span>
+                        </div>
+                        <span className="text-[10px] text-slate-500 font-medium">
+                            by Gabriele Rendina
+                        </span>
+                    </div>
                 </div>
 
                 <div className="flex-1 p-4 space-y-2 overflow-y-auto">
