@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { X } from 'lucide-react';
 import { useCustomers } from '../../stores/CustomerStore';
 import type { Industry } from '../../types';
@@ -28,6 +29,8 @@ export const QuickAddCustomerModal: React.FC<QuickAddCustomerModalProps> = ({
     onClose,
     onCustomerCreated,
 }) => {
+    const { t } = useTranslation('customers');
+    const { t: tCommon } = useTranslation('common');
     const { addCustomer } = useCustomers();
     const [formData, setFormData] = useState({
         name: '',
@@ -100,7 +103,7 @@ export const QuickAddCustomerModal: React.FC<QuickAddCustomerModalProps> = ({
             <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md animate-slide-up">
                 {/* Header */}
                 <div className="flex items-center justify-between p-6 border-b border-slate-200">
-                    <h2 className="text-2xl font-bold text-slate-900">Quick Add Customer</h2>
+                    <h2 className="text-2xl font-bold text-slate-900">{t('form.titleAdd')}</h2>
                     <button
                         onClick={onClose}
                         className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
@@ -115,7 +118,7 @@ export const QuickAddCustomerModal: React.FC<QuickAddCustomerModalProps> = ({
                     {/* Name */}
                     <div>
                         <label htmlFor="customer-name" className="block text-sm font-semibold text-slate-700 mb-2">
-                            Customer Name *
+                            {t('form.labelName')} *
                         </label>
                         <input
                             id="customer-name"
@@ -130,7 +133,7 @@ export const QuickAddCustomerModal: React.FC<QuickAddCustomerModalProps> = ({
                                     ? 'border-red-300 bg-red-50'
                                     : 'border-slate-200 focus:border-cyan-500'
                             }`}
-                            placeholder="Enter customer name"
+                            placeholder={t('form.placeholderName')}
                             autoFocus
                         />
                         {errors.name && (
@@ -141,7 +144,7 @@ export const QuickAddCustomerModal: React.FC<QuickAddCustomerModalProps> = ({
                     {/* Industry */}
                     <div>
                         <label htmlFor="customer-industry" className="block text-sm font-semibold text-slate-700 mb-2">
-                            Industry *
+                            {t('form.labelIndustry')} *
                         </label>
                         <select
                             id="customer-industry"
@@ -178,12 +181,9 @@ export const QuickAddCustomerModal: React.FC<QuickAddCustomerModalProps> = ({
                                 className="w-5 h-5 rounded border-slate-300 text-cyan-600 focus:ring-4 focus:ring-cyan-300 transition-all cursor-pointer"
                             />
                             <span className="text-sm font-semibold text-slate-700 group-hover:text-cyan-700 transition-colors">
-                                Public Administration Sector
+                                {t('form.labelPublicSector')}
                             </span>
                         </label>
-                        <p className="text-xs text-slate-500 mt-1 ml-8">
-                            Check if this customer is a public sector entity
-                        </p>
                     </div>
 
                     {/* Submit Error */}
@@ -201,14 +201,14 @@ export const QuickAddCustomerModal: React.FC<QuickAddCustomerModalProps> = ({
                             className="flex-1 px-4 py-3 bg-slate-100 text-slate-700 rounded-xl font-semibold hover:bg-slate-200 transition-colors"
                             disabled={isSubmitting}
                         >
-                            Cancel
+                            {t('actions.cancel')}
                         </button>
                         <button
                             type="submit"
                             className="flex-1 px-4 py-3 bg-gradient-to-r from-cyan-600 to-blue-600 text-white rounded-xl font-semibold hover:from-cyan-700 hover:to-blue-700 transition-all shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
                             disabled={isSubmitting}
                         >
-                            {isSubmitting ? 'Adding...' : 'Add Customer'}
+                            {isSubmitting ? tCommon('message.loading') : t('actions.add')}
                         </button>
                     </div>
                 </form>

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useCustomers } from '../../stores/CustomerStore';
 import { useOpportunities } from '../../stores/OpportunitiesStore';
 import { Building2, Plus, Pencil, Trash2 } from 'lucide-react';
@@ -6,6 +7,8 @@ import { CustomerModal } from './CustomerModal';
 import type { Customer } from '../../types';
 
 export const CustomersPage = () => {
+  const { t } = useTranslation('customers');
+  const { t: tCommon } = useTranslation('common');
   const { customers, deleteCustomer } = useCustomers();
   const { opportunities } = useOpportunities();
   const [searchQuery, setSearchQuery] = useState('');
@@ -51,7 +54,7 @@ export const CustomersPage = () => {
       return;
     }
 
-    if (confirm(`Are you sure you want to delete "${customer.name}"?`)) {
+    if (confirm(t('actions.deleteConfirm'))) {
       deleteCustomer(customer.id);
     }
   };
@@ -63,10 +66,10 @@ export const CustomersPage = () => {
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-slate-900 flex items-center gap-3">
             <Building2 size={32} />
-            Customers
+            {t('title')}
           </h1>
           <p className="text-slate-600 mt-2">
-            Manage your customer database
+            {t('subtitle')}
           </p>
         </div>
 
@@ -74,7 +77,7 @@ export const CustomersPage = () => {
         <div className="mb-6 flex justify-between items-center">
           <input
             type="search"
-            placeholder="Search customers..."
+            placeholder={t('list.searchPlaceholder')}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="px-4 py-2 border border-slate-300 rounded-lg w-64 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -84,7 +87,7 @@ export const CustomersPage = () => {
             className="px-4 py-2 bg-blue-600 text-white rounded-lg flex items-center gap-2 hover:bg-blue-700 transition-colors"
           >
             <Plus size={20} />
-            Add Customer
+            {t('actions.add')}
           </button>
         </div>
 
@@ -111,7 +114,7 @@ export const CustomersPage = () => {
               {sortedCustomers.length === 0 ? (
                 <tr>
                   <td colSpan={4} className="px-6 py-8 text-center text-slate-500">
-                    {searchQuery ? 'No customers found matching your search.' : 'No customers found. Click "Add Customer" to create one.'}
+                    {searchQuery ? t('list.empty') : t('list.addFirst')}
                   </td>
                 </tr>
               ) : (
