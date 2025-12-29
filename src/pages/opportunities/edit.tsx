@@ -14,7 +14,6 @@ import { useTranslation } from 'react-i18next';
 
 export const EditOpportunityPage = () => {
     const { t } = useTranslation('opportunities');
-    const { t: tCommon } = useTranslation('common');
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
     const { opportunities, updateOpportunity } = useOpportunities();

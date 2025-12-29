@@ -8,7 +8,6 @@ import type { Customer } from '../../types';
 
 export const CustomersPage = () => {
   const { t } = useTranslation('customers');
-  const { t: tCommon } = useTranslation('common');
   const { customers, deleteCustomer } = useCustomers();
   const { opportunities } = useOpportunities();
   const [searchQuery, setSearchQuery] = useState('');

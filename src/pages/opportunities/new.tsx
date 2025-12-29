@@ -14,7 +14,6 @@ import { useTranslation } from 'react-i18next';
 
 export const NewOpportunityPage = () => {
     const { t } = useTranslation('opportunities');
-    const { t: tCommon } = useTranslation('common');
     const navigate = useNavigate();
     const { addOpportunity, selectOpportunity } = useOpportunities();
     const { customers } = useCustomers();

@@ -29,7 +29,6 @@ export const CustomerModal: React.FC<CustomerModalProps> = ({
   customer,
 }) => {
   const { t } = useTranslation('customers');
-  const { t: tCommon } = useTranslation('common');
   const { addCustomer, updateCustomer } = useCustomers();
   const [formData, setFormData] = useState({
     name: '',

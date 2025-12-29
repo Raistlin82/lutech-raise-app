@@ -233,7 +233,7 @@ interface OpportunityCardProps {
     onDelete: (e: React.MouseEvent) => void;
     delay?: number;
     isDeleting?: boolean;
-    t: (key: string) => string;
+    t: (key: string, options?: Record<string, unknown>) => string;
 }
 
 const OpportunityCard = ({ opp, onClick, onEdit, onDelete, delay = 0, isDeleting = false, t }: OpportunityCardProps) => {
@@ -247,18 +247,21 @@ const OpportunityCard = ({ opp, onClick, onEdit, onDelete, delay = 0, isDeleting
         }
     };
 
+    const clientName = opp.clientName || t('opportunityCard.defaultClient');
+    const ariaLabel = t('opportunityCard.ariaLabel', {
+        title: opp.title,
+        client: clientName,
+        value: (opp.tcv / 1000).toFixed(0),
+        phase: opp.currentPhase
+    });
+
     return (
         <div
             onClick={onClick}
             onKeyDown={handleKeyDown}
             tabIndex={0}
             role="button"
-            aria-label={t('opportunityCard.ariaLabel', {
-                title: opp.title,
-                client: opp.clientName || t('opportunityCard.defaultClient'),
-                value: (opp.tcv / 1000).toFixed(0),
-                phase: opp.currentPhase
-            })}
+            aria-label={ariaLabel}
             style={{ animationDelay: `${delay}ms` }}
             className={clsx(
                 "group card-elevated p-0 rounded-2xl cursor-pointer relative overflow-hidden hover:scale-[1.01] active:scale-[0.99] transition-all duration-300 animate-slide-up focus:outline-none focus:ring-4 focus:ring-cyan-300",

@@ -8,6 +8,8 @@
   "controls": {
     "tableHeaders": {
       "label": "Controllo",
+      "description": "Descrizione",
+      "raiseLevels": "Livelli RAISE",
       "phase": "Fase",
       "mandatory": "Obbligatorio",
       "actions": "Azioni"
@@ -37,7 +39,13 @@
     "removeTemplate": "Rimuovi",
     "labelPhase": "Fase",
     "labelMandatory": "Obbligatorio",
-    "labelActionType": "Tipo Azione"
+    "labelActionType": "Tipo Azione",
+    "actionTypes": {
+      "document": "Documento",
+      "email": "Email",
+      "task": "Task",
+      "notification": "Notifica"
+    }
   },
   "actions": {
     "save": "Salva Controllo",

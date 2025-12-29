@@ -315,7 +315,6 @@ const PhaseChecklist = ({
     isCompleting: boolean
 }) => {
     const { t } = useTranslation('workflow');
-    const { t: tCommon } = useTranslation('common');
     const [localCheckpoints, setLocalCheckpoints] = useState<Checkpoint[]>(() =>
         getRequiredCheckpoints(phase, currentOpp, controls)
     );
@@ -711,7 +710,6 @@ interface EditOpportunityDetailsModalProps {
 
 const EditOpportunityDetailsModal = ({ opp, onSave, onClose }: EditOpportunityDetailsModalProps) => {
     const { t } = useTranslation('workflow');
-    const { t: tCommon } = useTranslation('common');
     const [formData, setFormData] = useState({
         isRti: opp.isRti,
         isMandataria: opp.isMandataria || false,

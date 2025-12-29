@@ -25,7 +25,6 @@ const extractRaiseLevels = (condition?: string): RaiseLevel[] | 'ALL' => {
 
 export const Settings = () => {
     const { t } = useTranslation('settings');
-    const { t: tCommon } = useTranslation('common');
     const { controls, addControl, updateControl, deleteControl, resetDefaults } = useSettings();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingControl, setEditingControl] = useState<ControlConfig | null>(null);
@@ -73,9 +72,9 @@ export const Settings = () => {
                         <tr>
                             <th className="px-4 py-4 font-semibold text-slate-700 text-center w-16">#</th>
                             <th className="px-6 py-4 font-semibold text-slate-700">{t('controls.tableHeaders.phase')}</th>
-                            <th className="px-6 py-4 font-semibold text-slate-700">RAISE Levels</th>
+                            <th className="px-6 py-4 font-semibold text-slate-700">{t('controls.tableHeaders.raiseLevels')}</th>
                             <th className="px-6 py-4 font-semibold text-slate-700">{t('controls.tableHeaders.label')}</th>
-                            <th className="px-6 py-4 font-semibold text-slate-700">Description</th>
+                            <th className="px-6 py-4 font-semibold text-slate-700">{t('controls.tableHeaders.description')}</th>
                             <th className="px-6 py-4 font-semibold text-slate-700 text-center">{t('controls.tableHeaders.mandatory')}</th>
                             <th className="px-6 py-4 font-semibold text-slate-700 text-right">{t('controls.tableHeaders.actions')}</th>
                         </tr>
@@ -221,12 +220,12 @@ const ControlModal = ({ control, onSave, onClose }: { control: ControlConfig | n
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4 overflow-y-auto">
             <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl animate-in zoom-in-95 duration-200 my-8">
                 <div className="p-6 border-b border-slate-100 flex justify-between items-center">
-                    <h3 className="text-lg font-bold text-slate-900">{control ? 'Edit Control' : 'New Control'}</h3>
+                    <h3 className="text-lg font-bold text-slate-900">{t('form.title')}</h3>
                     <button onClick={onClose} className="text-slate-400 hover:text-slate-600"><X size={20} /></button>
                 </div>
                 <form onSubmit={handleSubmit} className="p-6 space-y-4 max-h-[70vh] overflow-y-auto">
                     <div>
-                        <label className="block text-sm font-medium text-slate-700 mb-1">Phase</label>
+                        <label className="block text-sm font-medium text-slate-700 mb-1">{t('form.labelPhase')}</label>
                         <select
                             value={formData.phase}
                             onChange={e => setFormData({ ...formData, phase: e.target.value as ControlConfig['phase'] })}
@@ -236,7 +235,7 @@ const ControlModal = ({ control, onSave, onClose }: { control: ControlConfig | n
                         </select>
                     </div>
                     <div>
-                        <label className="block text-sm font-medium text-slate-700 mb-1">Label</label>
+                        <label className="block text-sm font-medium text-slate-700 mb-1">{t('form.labelName')}</label>
                         <input
                             type="text"
                             required
@@ -246,7 +245,7 @@ const ControlModal = ({ control, onSave, onClose }: { control: ControlConfig | n
                         />
                     </div>
                     <div>
-                        <label className="block text-sm font-medium text-slate-700 mb-1">Description</label>
+                        <label className="block text-sm font-medium text-slate-700 mb-1">{t('form.labelDescription')}</label>
                         <textarea
                             required
                             rows={3}
@@ -263,19 +262,19 @@ const ControlModal = ({ control, onSave, onClose }: { control: ControlConfig | n
                             id="isMandatory"
                             className="w-4 h-4 text-blue-600 border-slate-300 rounded focus:ring-blue-500"
                         />
-                        <label htmlFor="isMandatory" className="text-sm font-medium text-slate-700">Is Mandatory?</label>
+                        <label htmlFor="isMandatory" className="text-sm font-medium text-slate-700">{t('form.labelMandatory')}</label>
                     </div>
                     <div>
-                        <label className="block text-sm font-medium text-slate-700 mb-1">Action Type</label>
+                        <label className="block text-sm font-medium text-slate-700 mb-1">{t('form.labelActionType')}</label>
                         <select
                             value={formData.actionType}
                             onChange={e => setFormData({ ...formData, actionType: e.target.value as ControlConfig['actionType'] })}
                             className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none"
                         >
-                            <option value="document">Document</option>
-                            <option value="email">Email</option>
-                            <option value="task">Task</option>
-                            <option value="notification">Notification</option>
+                            <option value="document">{t('form.actionTypes.document')}</option>
+                            <option value="email">{t('form.actionTypes.email')}</option>
+                            <option value="task">{t('form.actionTypes.task')}</option>
+                            <option value="notification">{t('form.actionTypes.notification')}</option>
                         </select>
                     </div>
                     <div>
@@ -384,9 +383,9 @@ const ControlModal = ({ control, onSave, onClose }: { control: ControlConfig | n
                     </div>
 
                     <div className="pt-4 flex justify-end gap-2 border-t border-slate-200">
-                        <button type="button" onClick={onClose} className="px-4 py-2 text-slate-600 hover:bg-slate-100 rounded-lg">Cancel</button>
+                        <button type="button" onClick={onClose} className="px-4 py-2 text-slate-600 hover:bg-slate-100 rounded-lg">{tCommon('button.cancel')}</button>
                         <button type="submit" className="px-4 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 flex items-center gap-2">
-                            <Save size={16} /> Save Control
+                            <Save size={16} /> {t('actions.save')}
                         </button>
                     </div>
                 </form>
