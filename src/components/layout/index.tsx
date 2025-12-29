@@ -67,7 +67,7 @@ export const Sidebar = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => v
                             <img
                                 src={lutechLogo}
                                 alt="Lutech"
-                                className="h-5 object-contain"
+                                className="h-5 object-contain brightness-0 invert"
                                 onError={(e) => {
                                     // Fallback to text logo if image not found
                                     e.currentTarget.style.display = 'none';
@@ -102,7 +102,7 @@ export const Sidebar = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => v
                         <span>Operational</span>
                     </div>
                     <div className="mt-4 pt-4 border-t border-slate-800/50">
-                        <div className="text-[10px] text-slate-600 uppercase font-semibold tracking-wider mb-3">Version 1.1.0</div>
+                        <div className="text-[10px] text-slate-600 uppercase font-semibold tracking-wider mb-3">Version 1.2.0</div>
 
                         {/* Footer Logo & Copyright */}
                         <div className="flex items-center justify-between pt-3 border-t border-slate-800/30">
@@ -110,7 +110,7 @@ export const Sidebar = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => v
                                 <img
                                     src={lutechLogo}
                                     alt="Lutech"
-                                    className="h-4 object-contain opacity-50"
+                                    className="h-4 object-contain brightness-0 invert opacity-60"
                                     onError={(e) => {
                                         e.currentTarget.style.display = 'none';
                                         const fallback = e.currentTarget.nextElementSibling as HTMLElement;
