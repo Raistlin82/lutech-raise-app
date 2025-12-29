@@ -1,10 +1,35 @@
 {
-  "title": "Dashboard RAISE",
-  "subtitle": "Gestione Workflow Opportunità",
+  "title": "Pipeline Overview",
+  "subtitle": "Real-time compliance tracking across all active opportunities",
   "stats": {
-    "totalOpportunities": "Opportunità Totali",
-    "activeWorkflows": "Workflow Attivi",
-    "completedPhases": "Fasi Completate"
+    "totalPipelineValue": "Total Pipeline Value",
+    "totalContractValue": "Total Contract Value",
+    "activeOpportunities": "Active Opportunities",
+    "acrossAllPhases": "Across all phases",
+    "criticalRisks": "Critical Risks",
+    "kcpDeviations": "KCP Deviations",
+    "actionRequired": "Action required",
+    "allClear": "All clear",
+    "inProgress": "in progress",
+    "opportunities": "opportunities"
+  },
+  "activeWorkflows": {
+    "title": "Active Workflows",
+    "total": "Total"
+  },
+  "opportunityCard": {
+    "highRisk": "High Risk",
+    "value": "Value",
+    "phase": "Phase",
+    "level": "Level",
+    "editLabel": "Modifica opportunità",
+    "deleteLabel": "Elimina opportunità"
+  },
+  "deleteConfirm": {
+    "title": "Elimina Opportunità",
+    "message": "Sei sicuro di voler eliminare l'opportunità \"{{title}}\"? Questa azione non può essere annullata.",
+    "confirm": "Elimina",
+    "cancel": "Annulla"
   },
   "quickActions": {
     "title": "Azioni Rapide",

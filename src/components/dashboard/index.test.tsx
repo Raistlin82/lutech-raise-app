@@ -2,6 +2,8 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { Dashboard } from './index';
 import type { Opportunity } from '../../types';
+import { I18nextProvider } from 'react-i18next';
+import i18n from '../../i18n/config';
 
 // Mock dependencies
 const mockNavigate = vi.fn();
@@ -44,6 +46,14 @@ const createMockOpportunity = (overrides: Partial<Opportunity> = {}): Opportunit
 describe('Dashboard', () => {
   const mockOnSelectOpp = vi.fn();
 
+  const renderDashboard = (props = {}) => {
+    return render(
+      <I18nextProvider i18n={i18n}>
+        <Dashboard onSelectOpp={mockOnSelectOpp} {...props} />
+      </I18nextProvider>
+    );
+  };
+
   beforeEach(() => {
     vi.clearAllMocks();
   });
@@ -57,7 +67,7 @@ describe('Dashboard', () => {
         selectedOpp: null,
       });
 
-      render(<Dashboard onSelectOpp={mockOnSelectOpp} />);
+      renderDashboard();
       await waitFor(() => {
         expect(screen.getByText('Pipeline Overview')).toBeInTheDocument();
       }, { timeout: 500 });
@@ -71,7 +81,7 @@ describe('Dashboard', () => {
         selectedOpp: null,
       });
 
-      render(<Dashboard onSelectOpp={mockOnSelectOpp} />);
+      renderDashboard();
       expect(screen.getByText('Pipeline Overview')).toBeInTheDocument();
       expect(screen.getByText(/Real-time compliance tracking/i)).toBeInTheDocument();
     });
@@ -84,7 +94,7 @@ describe('Dashboard', () => {
         selectedOpp: null,
       });
 
-      render(<Dashboard onSelectOpp={mockOnSelectOpp} />);
+      renderDashboard();
       await waitFor(() => {
         expect(screen.getByText('Total Pipeline Value')).toBeInTheDocument();
         expect(screen.getByText('Active Opportunities')).toBeInTheDocument();
@@ -104,7 +114,7 @@ describe('Dashboard', () => {
         selectedOpp: null,
       });
 
-      render(<Dashboard onSelectOpp={mockOnSelectOpp} />);
+      renderDashboard();
       // TCV displayed in millions: 1000000 / 1000000 = 1.00M
       expect(screen.getByText('€1.00M')).toBeInTheDocument();
     });
@@ -123,7 +133,7 @@ describe('Dashboard', () => {
         selectedOpp: null,
       });
 
-      render(<Dashboard onSelectOpp={mockOnSelectOpp} />);
+      renderDashboard();
       // Total: 4000000 / 1000000 = 4.00M
       expect(screen.getByText('€4.00M')).toBeInTheDocument();
     });
@@ -142,7 +152,7 @@ describe('Dashboard', () => {
         selectedOpp: null,
       });
 
-      render(<Dashboard onSelectOpp={mockOnSelectOpp} />);
+      renderDashboard();
       expect(screen.getByText('3')).toBeInTheDocument();
     });
 
@@ -160,7 +170,7 @@ describe('Dashboard', () => {
         selectedOpp: null,
       });
 
-      render(<Dashboard onSelectOpp={mockOnSelectOpp} />);
+      renderDashboard();
       // The critical count is displayed as the value in the Critical Risks card
       const criticalCards = screen.getAllByText('2');
       expect(criticalCards.length).toBeGreaterThan(0);
@@ -180,7 +190,7 @@ describe('Dashboard', () => {
         selectedOpp: null,
       });
 
-      render(<Dashboard onSelectOpp={mockOnSelectOpp} />);
+      renderDashboard();
       // 2 opportunities are in progress (not Won)
       expect(screen.getByText('2 in progress')).toBeInTheDocument();
     });
@@ -195,7 +205,7 @@ describe('Dashboard', () => {
         selectedOpp: null,
       });
 
-      render(<Dashboard onSelectOpp={mockOnSelectOpp} />);
+      renderDashboard();
       expect(screen.getByText('€0.00M')).toBeInTheDocument();
       // Multiple cards show "0" - use getAllByText
       const zeroValues = screen.getAllByText('0');
@@ -215,7 +225,7 @@ describe('Dashboard', () => {
         selectedOpp: null,
       });
 
-      render(<Dashboard onSelectOpp={mockOnSelectOpp} />);
+      renderDashboard();
       expect(screen.getByText('All clear')).toBeInTheDocument();
     });
 
@@ -231,7 +241,7 @@ describe('Dashboard', () => {
         selectedOpp: null,
       });
 
-      render(<Dashboard onSelectOpp={mockOnSelectOpp} />);
+      renderDashboard();
       expect(screen.getByText('Action required')).toBeInTheDocument();
     });
   });
@@ -252,7 +262,7 @@ describe('Dashboard', () => {
         selectedOpp: null,
       });
 
-      render(<Dashboard onSelectOpp={mockOnSelectOpp} />);
+      renderDashboard();
       expect(screen.getByText('Digital Transformation')).toBeInTheDocument();
       expect(screen.getByText('TechCorp')).toBeInTheDocument();
       expect(screen.getByText('Finance')).toBeInTheDocument();
@@ -268,7 +278,7 @@ describe('Dashboard', () => {
         selectedOpp: null,
       });
 
-      render(<Dashboard onSelectOpp={mockOnSelectOpp} />);
+      renderDashboard();
       // Should display first 2 characters uppercased
       expect(screen.getByText('AC')).toBeInTheDocument();
     });
@@ -283,7 +293,7 @@ describe('Dashboard', () => {
         selectedOpp: null,
       });
 
-      render(<Dashboard onSelectOpp={mockOnSelectOpp} />);
+      renderDashboard();
       // TCV / 1000 = 1500k
       expect(screen.getByText('€1500k')).toBeInTheDocument();
     });
@@ -298,7 +308,7 @@ describe('Dashboard', () => {
         selectedOpp: null,
       });
 
-      render(<Dashboard onSelectOpp={mockOnSelectOpp} />);
+      renderDashboard();
       expect(screen.getByText('ATP')).toBeInTheDocument();
     });
 
@@ -312,7 +322,7 @@ describe('Dashboard', () => {
         selectedOpp: null,
       });
 
-      render(<Dashboard onSelectOpp={mockOnSelectOpp} />);
+      renderDashboard();
       expect(screen.getByText('L3')).toBeInTheDocument();
     });
 
@@ -326,7 +336,7 @@ describe('Dashboard', () => {
         selectedOpp: null,
       });
 
-      render(<Dashboard onSelectOpp={mockOnSelectOpp} />);
+      renderDashboard();
       expect(screen.getByText('High Risk')).toBeInTheDocument();
     });
 
@@ -340,7 +350,7 @@ describe('Dashboard', () => {
         selectedOpp: null,
       });
 
-      render(<Dashboard onSelectOpp={mockOnSelectOpp} />);
+      renderDashboard();
       expect(screen.queryByText('High Risk')).not.toBeInTheDocument();
     });
   });
@@ -356,7 +366,7 @@ describe('Dashboard', () => {
         selectedOpp: null,
       });
 
-      render(<Dashboard onSelectOpp={mockOnSelectOpp} />);
+      renderDashboard();
 
       const card = screen.getByText('Cloud Migration Project').closest('div[class*="cursor-pointer"]');
       fireEvent.click(card!);
@@ -374,7 +384,7 @@ describe('Dashboard', () => {
         selectedOpp: null,
       });
 
-      render(<Dashboard onSelectOpp={mockOnSelectOpp} />);
+      renderDashboard();
 
       const editButton = screen.getByTitle('Modifica opportunità');
       fireEvent.click(editButton);
@@ -392,7 +402,7 @@ describe('Dashboard', () => {
         selectedOpp: null,
       });
 
-      render(<Dashboard onSelectOpp={mockOnSelectOpp} />);
+      renderDashboard();
 
       const editButton = screen.getByTitle('Modifica opportunità');
       fireEvent.click(editButton);
@@ -410,7 +420,7 @@ describe('Dashboard', () => {
         selectedOpp: null,
       });
 
-      render(<Dashboard onSelectOpp={mockOnSelectOpp} />);
+      renderDashboard();
 
       const deleteButton = screen.getByTitle('Elimina opportunità');
       fireEvent.click(deleteButton);
@@ -430,7 +440,7 @@ describe('Dashboard', () => {
         selectedOpp: null,
       });
 
-      render(<Dashboard onSelectOpp={mockOnSelectOpp} />);
+      renderDashboard();
 
       const deleteButton = screen.getByTitle('Elimina opportunità');
       fireEvent.click(deleteButton);
@@ -448,7 +458,7 @@ describe('Dashboard', () => {
         selectedOpp: null,
       });
 
-      render(<Dashboard onSelectOpp={mockOnSelectOpp} />);
+      renderDashboard();
 
       const deleteButton = screen.getByTitle('Elimina opportunità');
       fireEvent.click(deleteButton);
@@ -471,7 +481,7 @@ describe('Dashboard', () => {
         selectedOpp: null,
       });
 
-      render(<Dashboard onSelectOpp={mockOnSelectOpp} />);
+      renderDashboard();
 
       const deleteButton = screen.getByTitle('Elimina opportunità');
       fireEvent.click(deleteButton);
@@ -492,7 +502,7 @@ describe('Dashboard', () => {
         selectedOpp: mockOpp,
       });
 
-      render(<Dashboard onSelectOpp={mockOnSelectOpp} />);
+      renderDashboard();
 
       const deleteButton = screen.getByTitle('Elimina opportunità');
       fireEvent.click(deleteButton);
@@ -520,7 +530,7 @@ describe('Dashboard', () => {
         selectedOpp: null,
       });
 
-      render(<Dashboard onSelectOpp={mockOnSelectOpp} />);
+      renderDashboard();
       expect(screen.getByText('Project Alpha')).toBeInTheDocument();
       expect(screen.getByText('Project Beta')).toBeInTheDocument();
       expect(screen.getByText('Project Gamma')).toBeInTheDocument();
@@ -542,7 +552,7 @@ describe('Dashboard', () => {
         selectedOpp: null,
       });
 
-      render(<Dashboard onSelectOpp={mockOnSelectOpp} />);
+      renderDashboard();
       expect(screen.getByText('5 Total')).toBeInTheDocument();
     });
   });

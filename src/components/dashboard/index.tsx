@@ -8,8 +8,11 @@ import { ConfirmModal } from '../common/ConfirmModal';
 import { LoadingSpinner } from '../common/LoadingSpinner';
 import { SkeletonCard } from '../common/SkeletonCard';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 export const Dashboard = ({ onSelectOpp }: { onSelectOpp: (opp: Opportunity) => void }) => {
+    const { t } = useTranslation('dashboard');
+    const { t: tCommon } = useTranslation('common');
     const navigate = useNavigate();
     const { opportunities, deleteOpportunity, selectOpportunity, selectedOpp } = useOpportunities();
     const [isLoading, setIsLoading] = useState(true);
@@ -61,7 +64,7 @@ export const Dashboard = ({ onSelectOpp }: { onSelectOpp: (opp: Opportunity) => 
             <div className="space-y-8 animate-slide-up">
                 <div className="flex items-center gap-3">
                     <LoadingSpinner />
-                    <h1 className="text-4xl font-bold text-slate-900">Caricamento...</h1>
+                    <h1 className="text-4xl font-bold text-slate-900">{tCommon('message.loading')}</h1>
                 </div>
                 <div className="grid grid-cols-1 gap-4">
                     {[1, 2, 3].map(i => <SkeletonCard key={i} />)}
@@ -74,10 +77,10 @@ export const Dashboard = ({ onSelectOpp }: { onSelectOpp: (opp: Opportunity) => 
         <>
             <ConfirmModal
                 isOpen={deleteConfirm.isOpen}
-                title="Elimina Opportunità"
-                message={`Sei sicuro di voler eliminare l'opportunità "${deleteConfirm.opp?.title}"? Questa azione non può essere annullata.`}
-                confirmLabel="Elimina"
-                cancelLabel="Annulla"
+                title={t('deleteConfirm.title')}
+                message={t('deleteConfirm.message', { title: deleteConfirm.opp?.title })}
+                confirmLabel={t('deleteConfirm.confirm')}
+                cancelLabel={t('deleteConfirm.cancel')}
                 variant="danger"
                 onConfirm={handleDeleteConfirm}
                 onCancel={() => setDeleteConfirm({ isOpen: false, opp: null })}
@@ -88,38 +91,38 @@ export const Dashboard = ({ onSelectOpp }: { onSelectOpp: (opp: Opportunity) => 
             <div className="flex flex-col gap-2">
                 <div className="flex items-center gap-3">
                     <div className="w-1.5 h-8 bg-gradient-to-b from-cyan-500 to-blue-600 rounded-full" />
-                    <h1 className="text-4xl font-bold text-gradient-primary">Pipeline Overview</h1>
+                    <h1 className="text-4xl font-bold text-gradient-primary">{t('title')}</h1>
                 </div>
-                <p className="text-slate-500 text-lg ml-6">Real-time compliance tracking across all active opportunities</p>
+                <p className="text-slate-500 text-lg ml-6">{t('subtitle')}</p>
             </div>
 
             {/* Stats Grid */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <StatCard
-                    title="Total Pipeline Value"
+                    title={t('stats.totalPipelineValue')}
                     value={`€${(totalTCV / 1000000).toFixed(2)}M`}
-                    subtitle="Total Contract Value"
+                    subtitle={t('stats.totalContractValue')}
                     icon={<DollarSign size={24} strokeWidth={2.5} />}
                     gradient="from-emerald-500 via-teal-500 to-cyan-600"
-                    trend={`${opportunities.length} opportunities`}
+                    trend={`${opportunities.length} ${t('stats.opportunities')}`}
                     trendUp={true}
                 />
                 <StatCard
-                    title="Active Opportunities"
+                    title={t('stats.activeOpportunities')}
                     value={activeCount.toString()}
-                    subtitle="Across all phases"
+                    subtitle={t('stats.acrossAllPhases')}
                     icon={<Activity size={24} strokeWidth={2.5} />}
                     gradient="from-cyan-500 via-blue-500 to-indigo-600"
-                    trend={`${inProgressCount} in progress`}
+                    trend={`${inProgressCount} ${t('stats.inProgress')}`}
                     trendUp={inProgressCount > 0}
                 />
                 <StatCard
-                    title="Critical Risks"
+                    title={t('stats.criticalRisks')}
                     value={criticalCount.toString()}
-                    subtitle="KCP Deviations"
+                    subtitle={t('stats.kcpDeviations')}
                     icon={<AlertTriangle size={24} strokeWidth={2.5} />}
                     gradient="from-amber-500 via-orange-500 to-red-600"
-                    trend={criticalCount > 0 ? "Action required" : "All clear"}
+                    trend={criticalCount > 0 ? t('stats.actionRequired') : t('stats.allClear')}
                     trendUp={false}
                 />
             </div>
@@ -129,10 +132,10 @@ export const Dashboard = ({ onSelectOpp }: { onSelectOpp: (opp: Opportunity) => 
                 <div className="flex items-center justify-between mb-6">
                     <div className="flex items-center gap-3">
                         <h2 className="text-2xl font-bold text-gradient-primary">
-                            Active Workflows
+                            {t('activeWorkflows.title')}
                         </h2>
                         <span className="bg-gradient-to-r from-cyan-50 to-blue-50 text-cyan-700 text-xs font-bold px-3 py-1.5 rounded-full border border-cyan-200/50 uppercase tracking-wider">
-                            {opportunities.length} Total
+                            {opportunities.length} {t('activeWorkflows.total')}
                         </span>
                     </div>
                 </div>
@@ -146,6 +149,7 @@ export const Dashboard = ({ onSelectOpp }: { onSelectOpp: (opp: Opportunity) => 
                             onDelete={(e) => handleDeleteClick(opp, e)}
                             delay={idx * 100}
                             isDeleting={deletingId === opp.id}
+                            t={t}
                         />
                     ))}
                 </div>
@@ -229,9 +233,10 @@ interface OpportunityCardProps {
     onDelete: (e: React.MouseEvent) => void;
     delay?: number;
     isDeleting?: boolean;
+    t: (key: string) => string;
 }
 
-const OpportunityCard = ({ opp, onClick, onEdit, onDelete, delay = 0, isDeleting = false }: OpportunityCardProps) => {
+const OpportunityCard = ({ opp, onClick, onEdit, onDelete, delay = 0, isDeleting = false, t }: OpportunityCardProps) => {
     const calculatedLevel = calculateRaiseLevel(opp);
     const isRisky = opp.hasKcpDeviations;
 
@@ -260,16 +265,16 @@ const OpportunityCard = ({ opp, onClick, onEdit, onDelete, delay = 0, isDeleting
                 <button
                     onClick={onEdit}
                     className="p-2.5 text-slate-400 hover:text-cyan-600 hover:bg-white rounded-xl transition-all shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-cyan-300"
-                    aria-label={`Modifica opportunità ${opp.title}`}
-                    title="Modifica opportunità"
+                    aria-label={`${t('opportunityCard.editLabel')} ${opp.title}`}
+                    title={t('opportunityCard.editLabel')}
                 >
                     <Edit3 size={18} strokeWidth={2.5} aria-hidden="true" />
                 </button>
                 <button
                     onClick={onDelete}
                     className="p-2.5 text-slate-400 hover:text-red-600 hover:bg-white rounded-xl transition-all shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-red-300"
-                    aria-label={`Elimina opportunità ${opp.title}`}
-                    title="Elimina opportunità"
+                    aria-label={`${t('opportunityCard.deleteLabel')} ${opp.title}`}
+                    title={t('opportunityCard.deleteLabel')}
                 >
                     <Trash2 size={18} strokeWidth={2.5} aria-hidden="true" />
                 </button>
@@ -316,7 +321,7 @@ const OpportunityCard = ({ opp, onClick, onEdit, onDelete, delay = 0, isDeleting
                                 </h3>
                                 {isRisky && (
                                     <span className="flex items-center gap-1.5 text-xs font-bold text-amber-700 bg-gradient-to-r from-amber-50 to-orange-50 px-2.5 py-1 rounded-lg border border-amber-200 shrink-0">
-                                        <AlertTriangle size={12} strokeWidth={2.5} /> High Risk
+                                        <AlertTriangle size={12} strokeWidth={2.5} /> {t('opportunityCard.highRisk')}
                                     </span>
                                 )}
                             </div>
@@ -332,7 +337,7 @@ const OpportunityCard = ({ opp, onClick, onEdit, onDelete, delay = 0, isDeleting
                     <div className="flex items-center gap-6 lg:gap-8 border-t lg:border-t-0 lg:border-l border-slate-100 pt-5 lg:pt-0 lg:pl-8">
                         {/* TCV */}
                         <div className="flex flex-col gap-1.5">
-                            <span className="text-slate-400 text-[10px] font-bold uppercase tracking-widest">Value</span>
+                            <span className="text-slate-400 text-[10px] font-bold uppercase tracking-widest">{t('opportunityCard.value')}</span>
                             <span className="font-bold text-slate-900 text-base">
                                 €{(opp.tcv / 1000).toFixed(0)}k
                             </span>
@@ -340,7 +345,7 @@ const OpportunityCard = ({ opp, onClick, onEdit, onDelete, delay = 0, isDeleting
 
                         {/* Phase */}
                         <div className="flex flex-col gap-1.5">
-                            <span className="text-slate-400 text-[10px] font-bold uppercase tracking-widest">Phase</span>
+                            <span className="text-slate-400 text-[10px] font-bold uppercase tracking-widest">{t('opportunityCard.phase')}</span>
                             <span className={clsx(
                                 "phase-badge",
                                 opp.currentPhase === 'Won'
@@ -353,7 +358,7 @@ const OpportunityCard = ({ opp, onClick, onEdit, onDelete, delay = 0, isDeleting
 
                         {/* RAISE Level */}
                         <div className="flex flex-col gap-1.5">
-                            <span className="text-slate-400 text-[10px] font-bold uppercase tracking-widest">Level</span>
+                            <span className="text-slate-400 text-[10px] font-bold uppercase tracking-widest">{t('opportunityCard.level')}</span>
                             <div className={clsx(
                                 "badge-level transition-all duration-300 group-hover:scale-110",
                                 isRisky
