@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useSettings } from '../../stores/SettingsStore';
 import type { ControlConfig, RaiseLevel } from '../../types';
 import { Plus, Trash2, Edit2, RotateCcw, Save, X } from 'lucide-react';
@@ -23,6 +24,8 @@ const extractRaiseLevels = (condition?: string): RaiseLevel[] | 'ALL' => {
 };
 
 export const Settings = () => {
+    const { t } = useTranslation('settings');
+    const { t: tCommon } = useTranslation('common');
     const { controls, addControl, updateControl, deleteControl, resetDefaults } = useSettings();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingControl, setEditingControl] = useState<ControlConfig | null>(null);
@@ -51,15 +54,15 @@ export const Settings = () => {
         <div className="animate-in fade-in slide-in-from-bottom-4 duration-300 space-y-6">
             <div className="flex justify-between items-center">
                 <div>
-                    <h1 className="text-2xl font-bold text-slate-900">Settings & Controls</h1>
-                    <p className="text-slate-500">Manage checkpoint definitions and process rules</p>
+                    <h1 className="text-2xl font-bold text-slate-900">{t('title')}</h1>
+                    <p className="text-slate-500">{t('subtitle')}</p>
                 </div>
                 <div className="flex gap-2">
                     <button onClick={resetDefaults} className="px-4 py-2 border border-slate-200 text-slate-600 rounded-lg hover:bg-slate-50 flex items-center gap-2">
-                        <RotateCcw size={16} /> Reset Defaults
+                        <RotateCcw size={16} /> {t('controls.resetDefaults')}
                     </button>
                     <button onClick={openNew} className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2 shadow-lg shadow-blue-500/30">
-                        <Plus size={16} /> Add Control
+                        <Plus size={16} /> {t('controls.addControl')}
                     </button>
                 </div>
             </div>
@@ -69,12 +72,12 @@ export const Settings = () => {
                     <thead className="bg-slate-50 border-b border-slate-200">
                         <tr>
                             <th className="px-4 py-4 font-semibold text-slate-700 text-center w-16">#</th>
-                            <th className="px-6 py-4 font-semibold text-slate-700">Phase</th>
+                            <th className="px-6 py-4 font-semibold text-slate-700">{t('controls.tableHeaders.phase')}</th>
                             <th className="px-6 py-4 font-semibold text-slate-700">RAISE Levels</th>
-                            <th className="px-6 py-4 font-semibold text-slate-700">Label</th>
+                            <th className="px-6 py-4 font-semibold text-slate-700">{t('controls.tableHeaders.label')}</th>
                             <th className="px-6 py-4 font-semibold text-slate-700">Description</th>
-                            <th className="px-6 py-4 font-semibold text-slate-700 text-center">Mandatory</th>
-                            <th className="px-6 py-4 font-semibold text-slate-700 text-right">Actions</th>
+                            <th className="px-6 py-4 font-semibold text-slate-700 text-center">{t('controls.tableHeaders.mandatory')}</th>
+                            <th className="px-6 py-4 font-semibold text-slate-700 text-right">{t('controls.tableHeaders.actions')}</th>
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-100">
@@ -140,9 +143,9 @@ export const Settings = () => {
                                 <td className="px-6 py-3 text-slate-500 max-w-md truncate" title={control.description}>{control.description}</td>
                                 <td className="px-6 py-3 text-center">
                                     {control.isMandatory ? (
-                                        <span className="text-xs font-bold text-red-600 bg-red-50 px-2 py-0.5 rounded border border-red-100">YES</span>
+                                        <span className="text-xs font-bold text-red-600 bg-red-50 px-2 py-0.5 rounded border border-red-100">{t('controls.mandatory')}</span>
                                     ) : (
-                                        <span className="text-xs text-slate-400">NO</span>
+                                        <span className="text-xs text-slate-400">{t('controls.optional')}</span>
                                     )}
                                 </td>
                                 <td className="px-6 py-3 text-right">
@@ -174,6 +177,8 @@ export const Settings = () => {
 };
 
 const ControlModal = ({ control, onSave, onClose }: { control: ControlConfig | null, onSave: (c: ControlConfig) => void, onClose: () => void }) => {
+    const { t } = useTranslation('settings');
+    const { t: tCommon } = useTranslation('common');
     const [formData, setFormData] = useState<Partial<ControlConfig>>(control || {
         label: '',
         description: '',

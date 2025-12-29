@@ -1,7 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, within } from '@testing-library/react';
+import { I18nextProvider } from 'react-i18next';
 import { Settings } from './index';
 import type { ControlConfig } from '../../types';
+import i18n from '../../i18n/config';
 
 // Mock dependencies
 const mockAddControl = vi.fn();
@@ -23,7 +25,7 @@ const mockControls: ControlConfig[] = [
     label: 'Opportunity Site Created',
     description: 'Create SharePoint Opportunity Site from Salesforce',
     phase: 'Planning',
-    isMandatory: true,
+    isObbligatorio: true,
     actionType: 'task'
   },
   {
@@ -31,7 +33,7 @@ const mockControls: ControlConfig[] = [
     label: 'Request Documentation',
     description: 'Tender documentation, RFP, customer invitation to bid',
     phase: 'ATP',
-    isMandatory: true,
+    isObbligatorio: true,
     actionType: 'document',
     templateRef: 'None (customer provided)',
     condition: 'opp.raiseLevel !== "L6"'
@@ -41,7 +43,7 @@ const mockControls: ControlConfig[] = [
     label: 'MOD-001 P&L',
     description: 'Revenue/Cost/Profit model. Economic values must match Salesforce',
     phase: 'ATS',
-    isMandatory: true,
+    isObbligatorio: true,
     actionType: 'document',
     templateRef: 'MOD-001',
     folderPath: '01. BID\\04-Economics'
@@ -51,7 +53,7 @@ const mockControls: ControlConfig[] = [
     label: 'Contract/Order',
     description: 'Signed contract or order',
     phase: 'ATC',
-    isMandatory: true,
+    isObbligatorio: true,
     actionType: 'document'
   },
   {
@@ -59,7 +61,7 @@ const mockControls: ControlConfig[] = [
     label: 'Handover Meeting',
     description: 'Formal handover meeting from Sales to Delivery',
     phase: 'Handover',
-    isMandatory: true,
+    isObbligatorio: true,
     actionType: 'task'
   },
   {
@@ -67,10 +69,19 @@ const mockControls: ControlConfig[] = [
     label: 'Expert Compliance/ESG',
     description: 'Compliance/ESG expert validation',
     phase: 'ATS',
-    isMandatory: false,
+    isObbligatorio: false,
     actionType: 'email'
   }
 ];
+
+// Helper to render with i18n
+const renderSettings = () => {
+  return render(
+    <I18nextProvider i18n={i18n}>
+      <Settings />
+    </I18nextProvider>
+  );
+};
 
 describe('Settings', () => {
   beforeEach(() => {
@@ -88,18 +99,18 @@ describe('Settings', () => {
 
   describe('Rendering', () => {
     it('should render without crashing', () => {
-      render(<Settings />);
-      expect(screen.getByText('Settings & Controls')).toBeInTheDocument();
+      renderSettings();
+      expect(screen.getByText('Impostazioni')).toBeInTheDocument();
     });
 
     it('should display heading and description', () => {
-      render(<Settings />);
-      expect(screen.getByText('Settings & Controls')).toBeInTheDocument();
-      expect(screen.getByText('Manage checkpoint definitions and process rules')).toBeInTheDocument();
+      renderSettings();
+      expect(screen.getByText('Impostazioni')).toBeInTheDocument();
+      expect(screen.getByText('Gestisci controlli e configurazioni workflow')).toBeInTheDocument();
     });
 
     it('should show all controls in table', () => {
-      render(<Settings />);
+      renderSettings();
 
       expect(screen.getByText('Opportunity Site Created')).toBeInTheDocument();
       expect(screen.getByText('Request Documentation')).toBeInTheDocument();
@@ -109,67 +120,67 @@ describe('Settings', () => {
     });
 
     it('should display control phases correctly', () => {
-      render(<Settings />);
+      renderSettings();
 
-      // Phases appear as badges in the table
+      // Fases appear as badges in the table
       const phases = screen.getAllByText(/Planning|ATP|ATS|ATC|Handover/);
       expect(phases.length).toBeGreaterThan(0);
     });
 
     it('should show mandatory status correctly', () => {
-      render(<Settings />);
+      renderSettings();
 
-      const yesLabels = screen.getAllByText('YES');
-      expect(yesLabels.length).toBeGreaterThan(0);
+      const yesControllos = screen.getAllByText('SI');
+      expect(yesControllos.length).toBeGreaterThan(0);
 
-      const noLabels = screen.getAllByText('NO');
-      expect(noLabels.length).toBeGreaterThan(0);
+      const noControllos = screen.getAllByText('NO');
+      expect(noControllos.length).toBeGreaterThan(0);
     });
 
     it('should display control descriptions', () => {
-      render(<Settings />);
+      renderSettings();
 
       expect(screen.getByText(/Create SharePoint Opportunity Site/i)).toBeInTheDocument();
       expect(screen.getByText(/Revenue\/Cost\/Profit model/i)).toBeInTheDocument();
     });
 
     it('should show table headers', () => {
-      render(<Settings />);
+      renderSettings();
 
-      expect(screen.getByText('Phase')).toBeInTheDocument();
-      expect(screen.getByText('Label')).toBeInTheDocument();
+      expect(screen.getByText('Fase')).toBeInTheDocument();
+      expect(screen.getByText('Controllo')).toBeInTheDocument();
       expect(screen.getByText('Description')).toBeInTheDocument();
-      expect(screen.getByText('Mandatory')).toBeInTheDocument();
-      expect(screen.getByText('Actions')).toBeInTheDocument();
+      expect(screen.getByText('Obbligatorio')).toBeInTheDocument();
+      expect(screen.getByText('Azioni')).toBeInTheDocument();
     });
   });
 
   describe('Control Management', () => {
-    it('should show Add Control button', () => {
-      render(<Settings />);
+    it('should show Aggiungi Controllo button', () => {
+      renderSettings();
 
-      const addButton = screen.getByRole('button', { name: /Add Control/i });
+      const addButton = screen.getByRole('button', { name: /Aggiungi Controllo/i });
       expect(addButton).toBeInTheDocument();
     });
 
-    it('should show Reset Defaults button', () => {
-      render(<Settings />);
+    it('should show Ripristina Default button', () => {
+      renderSettings();
 
-      const resetButton = screen.getByRole('button', { name: /Reset Defaults/i });
+      const resetButton = screen.getByRole('button', { name: /Ripristina Default/i });
       expect(resetButton).toBeInTheDocument();
     });
 
     it('should call resetDefaults when Reset button clicked', () => {
-      render(<Settings />);
+      renderSettings();
 
-      const resetButton = screen.getByRole('button', { name: /Reset Defaults/i });
+      const resetButton = screen.getByRole('button', { name: /Ripristina Default/i });
       fireEvent.click(resetButton);
 
       expect(mockResetDefaults).toHaveBeenCalledTimes(1);
     });
 
     it('should show edit and delete buttons for each control', () => {
-      render(<Settings />);
+      renderSettings();
 
       // Each control should have edit and delete buttons
       const rows = screen.getAllByRole('row').slice(1); // Skip header row
@@ -177,7 +188,7 @@ describe('Settings', () => {
     });
 
     it('should call deleteControl when delete button clicked', () => {
-      render(<Settings />);
+      renderSettings();
 
       // Find first delete button (trash icon)
       const deleteButtons = screen.getAllByRole('button');
@@ -194,17 +205,17 @@ describe('Settings', () => {
   });
 
   describe('Modal Interaction', () => {
-    it('should open modal when Add Control clicked', () => {
-      render(<Settings />);
+    it('should open modal when Aggiungi Controllo clicked', () => {
+      renderSettings();
 
-      const addButton = screen.getByRole('button', { name: /Add Control/i });
+      const addButton = screen.getByRole('button', { name: /Aggiungi Controllo/i });
       fireEvent.click(addButton);
 
       expect(screen.getByText('New Control')).toBeInTheDocument();
     });
 
     it('should open modal when Edit button clicked', () => {
-      render(<Settings />);
+      renderSettings();
 
       // Find first edit button
       const editButtons = screen.getAllByRole('button');
@@ -220,9 +231,9 @@ describe('Settings', () => {
     });
 
     it('should show form fields in modal', () => {
-      render(<Settings />);
+      renderSettings();
 
-      const addButton = screen.getByRole('button', { name: /Add Control/i });
+      const addButton = screen.getByRole('button', { name: /Aggiungi Controllo/i });
       fireEvent.click(addButton);
 
       // Verify modal opened by checking for modal title and save button
@@ -231,9 +242,9 @@ describe('Settings', () => {
     });
 
     it('should close modal when Cancel clicked', () => {
-      render(<Settings />);
+      renderSettings();
 
-      const addButton = screen.getByRole('button', { name: /Add Control/i });
+      const addButton = screen.getByRole('button', { name: /Aggiungi Controllo/i });
       fireEvent.click(addButton);
 
       const cancelButton = screen.getByRole('button', { name: /Cancel/i });
@@ -243,9 +254,9 @@ describe('Settings', () => {
     });
 
     it('should allow entering control data in form', () => {
-      render(<Settings />);
+      renderSettings();
 
-      const addButton = screen.getByRole('button', { name: /Add Control/i });
+      const addButton = screen.getByRole('button', { name: /Aggiungi Controllo/i });
       fireEvent.click(addButton);
 
       // Verify form inputs exist by checking for input fields
@@ -254,9 +265,9 @@ describe('Settings', () => {
     });
 
     it('should call addControl when Save clicked on new control', () => {
-      render(<Settings />);
+      renderSettings();
 
-      const addButton = screen.getByRole('button', { name: /Add Control/i });
+      const addButton = screen.getByRole('button', { name: /Aggiungi Controllo/i });
       fireEvent.click(addButton);
 
       // Fill in required fields
@@ -276,9 +287,9 @@ describe('Settings', () => {
     });
   });
 
-  describe('Phase Grouping', () => {
+  describe('Fase Grouping', () => {
     it('should group controls by phase in table', () => {
-      render(<Settings />);
+      renderSettings();
 
       const table = screen.getByRole('table');
       const rows = within(table).getAllByRole('row');
@@ -288,7 +299,7 @@ describe('Settings', () => {
     });
 
     it('should show phase-specific styling', () => {
-      render(<Settings />);
+      renderSettings();
 
       // Find the Planning phase badge
       const planningBadge = screen.getByText('Planning');
@@ -310,11 +321,11 @@ describe('Settings', () => {
         resetDefaults: mockResetDefaults,
       });
 
-      render(<Settings />);
+      renderSettings();
 
       // Should still show header and buttons
-      expect(screen.getByText('Settings & Controls')).toBeInTheDocument();
-      expect(screen.getByRole('button', { name: /Add Control/i })).toBeInTheDocument();
+      expect(screen.getByText('Impostazioni')).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /Aggiungi Controllo/i })).toBeInTheDocument();
     });
   });
 });
