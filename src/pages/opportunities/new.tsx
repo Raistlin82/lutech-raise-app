@@ -10,8 +10,11 @@ import { LoadingSpinner } from '../../components/common/LoadingSpinner';
 import { FormField } from '../../components/common/FormField';
 import { ErrorSummary } from '../../components/common/ErrorSummary';
 import { QuickAddCustomerModal } from '../../components/opportunities/QuickAddCustomerModal';
+import { useTranslation } from 'react-i18next';
 
 export const NewOpportunityPage = () => {
+    const { t } = useTranslation('opportunities');
+    const { t: tCommon } = useTranslation('common');
     const navigate = useNavigate();
     const { addOpportunity, selectOpportunity } = useOpportunities();
     const { customers } = useCustomers();
@@ -49,24 +52,24 @@ export const NewOpportunityPage = () => {
 
     // Validation functions
     const validateTitle = useCallback((value: string) => {
-        if (!value.trim()) return 'Il titolo è obbligatorio';
-        if (value.length < 3) return 'Il titolo deve contenere almeno 3 caratteri';
+        if (!value.trim()) return t('validation.titleRequired');
+        if (value.length < 3) return t('validation.titleMinLength');
         if (value.length > 200) return 'Il titolo è troppo lungo (max 200 caratteri)';
         return '';
-    }, []);
+    }, [t]);
 
     const validateCustomerId = useCallback((value: string) => {
-        if (!value) return 'Seleziona un cliente';
+        if (!value) return t('validation.customerRequired');
         return '';
-    }, []);
+    }, [t]);
 
     const validateTcv = useCallback((value: string) => {
         const num = parseFloat(value);
-        if (!value || isNaN(num)) return 'Il TCV è obbligatorio';
-        if (num <= 0) return 'Il TCV deve essere maggiore di zero';
+        if (!value || isNaN(num)) return t('validation.tcvRequired');
+        if (num <= 0) return t('validation.tcvPositive');
         if (num > 1000000000) return 'Il TCV supera il limite massimo';
         return '';
-    }, []);
+    }, [t]);
 
     const handleBlur = (field: 'title' | 'customerId' | 'tcv') => {
         setTouched(prev => ({ ...prev, [field]: true }));
@@ -176,8 +179,8 @@ export const NewOpportunityPage = () => {
                     <ArrowLeft size={20} strokeWidth={2.5} />
                 </button>
                 <div>
-                    <h1 className="text-3xl font-bold text-gradient-primary">New Opportunity</h1>
-                    <p className="text-slate-500 mt-1">Create a new RAISE workflow opportunity</p>
+                    <h1 className="text-3xl font-bold text-gradient-primary">{t('new.title')}</h1>
+                    <p className="text-slate-500 mt-1">{t('new.subtitle')}</p>
                 </div>
             </div>
 
@@ -190,27 +193,27 @@ export const NewOpportunityPage = () => {
                 <div className="space-y-4">
                     <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
                         <Building2 size={20} className="text-cyan-600" />
-                        Basic Information
+                        {t('new.sectionBasicInfo')}
                     </h2>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <FormField
                             id="title"
                             name="title"
-                            label="Opportunity Title"
+                            label={t('form.labelTitle')}
                             type="text"
                             value={formData.title}
                             onChange={(value) => setFormData({ ...formData, title: value as string })}
                             onBlur={() => handleBlur('title')}
                             error={touched.title ? fieldErrors.title : ''}
                             required
-                            placeholder="e.g., Cloud Migration Project"
+                            placeholder={t('form.placeholderTitle')}
                             helpText="Inserisci un titolo descrittivo per l'opportunità"
                         />
 
                         <div>
                             <label className="block text-sm font-semibold text-slate-700 mb-2">
-                                Customer *
+                                {t('form.labelCustomer')} *
                             </label>
                             <div className="flex gap-2">
                                 <select
@@ -223,7 +226,7 @@ export const NewOpportunityPage = () => {
                                             : 'border-slate-200'
                                     }`}
                                 >
-                                    <option value="">Select Customer...</option>
+                                    <option value="">{t('form.placeholderCustomer')}</option>
                                     {customers
                                         .sort((a, b) => a.name.localeCompare(b.name))
                                         .map(c => (
@@ -237,7 +240,7 @@ export const NewOpportunityPage = () => {
                                     type="button"
                                     onClick={() => setIsQuickAddModalOpen(true)}
                                     className="px-4 py-3 bg-green-600 text-white rounded-xl hover:bg-green-700 transition-colors flex items-center gap-2"
-                                    title="Quick Add Customer"
+                                    title={t('form.quickAddCustomer')}
                                 >
                                     <Plus size={20} />
                                 </button>
@@ -280,27 +283,27 @@ export const NewOpportunityPage = () => {
                 <div className="space-y-4 pt-6 border-t border-slate-200">
                     <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
                         <DollarSign size={20} className="text-emerald-600" />
-                        Financial Details
+                        {t('new.sectionFinancialDetails')}
                     </h2>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <FormField
                             id="tcv"
                             name="tcv"
-                            label="TCV (€)"
+                            label={t('form.labelTcv')}
                             type="number"
                             value={formData.tcv}
                             onChange={(value) => setFormData({ ...formData, tcv: value.toString() })}
                             onBlur={() => handleBlur('tcv')}
                             error={touched.tcv ? fieldErrors.tcv : ''}
                             required
-                            placeholder="1000000"
+                            placeholder={t('form.placeholderTcv')}
                             helpText="Total Contract Value (committed)"
                         />
 
                         <div>
                             <label className="block text-sm font-semibold text-slate-700 mb-2">
-                                RAISE TCV (€)
+                                {t('form.labelRaiseTcv')}
                             </label>
                             <input
                                 type="number"
@@ -308,15 +311,15 @@ export const NewOpportunityPage = () => {
                                 step="1000"
                                 value={formData.raiseTcv}
                                 onChange={e => setFormData({ ...formData, raiseTcv: e.target.value })}
-                                placeholder="Same as TCV if empty"
+                                placeholder={t('form.placeholderRaiseTcv')}
                                 className="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 outline-none transition-all"
                             />
-                            <p className="text-xs text-slate-500 mt-1">Includes optional parts</p>
+                            <p className="text-xs text-slate-500 mt-1">Include parti opzionali</p>
                         </div>
 
                         <div>
                             <label className="block text-sm font-semibold text-slate-700 mb-2">
-                                Margin (%)
+                                {t('form.labelMargin')}
                             </label>
                             <input
                                 type="number"
@@ -335,7 +338,7 @@ export const NewOpportunityPage = () => {
                 <div className="space-y-4 pt-6 border-t border-slate-200">
                     <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
                         <Briefcase size={20} className="text-indigo-600" />
-                        Opportunity Flags
+                        {t('new.sectionFlags')}
                     </h2>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -349,7 +352,7 @@ export const NewOpportunityPage = () => {
                                 className="w-5 h-5 text-cyan-600 border-slate-300 rounded focus:ring-cyan-500"
                             />
                             <div>
-                                <div className="font-semibold text-slate-900">RTI (Joint Venture)</div>
+                                <div className="font-semibold text-slate-900">{t('form.flagRti')}</div>
                                 <div className="text-xs text-slate-500">Raggruppamento Temporaneo Imprese</div>
                             </div>
                         </label>
@@ -363,8 +366,8 @@ export const NewOpportunityPage = () => {
                                     className="w-5 h-5 text-cyan-600 border-slate-300 rounded focus:ring-cyan-500"
                                 />
                                 <div>
-                                    <div className="font-semibold text-cyan-900">Mandataria</div>
-                                    <div className="text-xs text-cyan-700">Lutech is leading mandatory</div>
+                                    <div className="font-semibold text-cyan-900">{t('form.flagMandataria')}</div>
+                                    <div className="text-xs text-cyan-700">Lutech è la capofila</div>
                                 </div>
                             </label>
                         )}
@@ -377,8 +380,8 @@ export const NewOpportunityPage = () => {
                                 className="w-5 h-5 text-amber-600 border-slate-300 rounded focus:ring-amber-500"
                             />
                             <div>
-                                <div className="font-semibold text-slate-900">KCP Deviations</div>
-                                <div className="text-xs text-slate-500">Key Control Points issues</div>
+                                <div className="font-semibold text-slate-900">{t('form.flagKcp')}</div>
+                                <div className="text-xs text-slate-500">Problemi con Key Control Points</div>
                             </div>
                         </label>
 
@@ -390,8 +393,8 @@ export const NewOpportunityPage = () => {
                                 className="w-5 h-5 text-cyan-600 border-slate-300 rounded focus:ring-cyan-500"
                             />
                             <div>
-                                <div className="font-semibold text-slate-900">New Customer</div>
-                                <div className="text-xs text-slate-500">First engagement with client</div>
+                                <div className="font-semibold text-slate-900">{t('form.flagNewCustomer')}</div>
+                                <div className="text-xs text-slate-500">Primo engagement con il cliente</div>
                             </div>
                         </label>
                     </div>
@@ -405,7 +408,7 @@ export const NewOpportunityPage = () => {
                         disabled={isSubmitting}
                         className="px-6 py-3 text-slate-700 font-semibold rounded-xl border-2 border-slate-200 hover:border-slate-300 hover:bg-slate-50 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                        Cancel
+                        {t('actions.cancel')}
                     </button>
                     <button
                         type="submit"
@@ -424,7 +427,7 @@ export const NewOpportunityPage = () => {
                         ) : (
                             <>
                                 <Save size={18} strokeWidth={2.5} />
-                                Create Opportunity
+                                {t('actions.create')}
                             </>
                         )}
                     </button>

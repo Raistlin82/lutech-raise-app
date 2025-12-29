@@ -3,6 +3,8 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { NewOpportunityPage } from './new';
 import React from 'react';
 import type { Customer } from '../../types';
+import { I18nextProvider } from 'react-i18next';
+import i18n from '../../i18n/config';
 
 // Mock dependencies
 const mockNavigate = vi.fn();
@@ -43,9 +45,11 @@ const mockCustomers: Customer[] = [
   },
 ];
 
-// Wrapper (no provider needed since we're mocking useCustomers directly)
+// Wrapper with I18next
 const AllProviders: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-  <>{children}</>
+  <I18nextProvider i18n={i18n}>
+    {children}
+  </I18nextProvider>
 );
 
 describe('NewOpportunityPage', () => {
@@ -68,15 +72,15 @@ describe('NewOpportunityPage', () => {
   describe('Rendering', () => {
     it('should render page heading', () => {
       render(<NewOpportunityPage />, { wrapper: AllProviders });
-      expect(screen.getByText('New Opportunity')).toBeInTheDocument();
-      expect(screen.getByText(/Create a new RAISE workflow opportunity/i)).toBeInTheDocument();
+      expect(screen.getByText('Nuova Opportunità')).toBeInTheDocument();
+      expect(screen.getByText('Crea una nuova opportunità RAISE workflow')).toBeInTheDocument();
     });
 
     it('should render all form sections', () => {
       render(<NewOpportunityPage />, { wrapper: AllProviders });
-      expect(screen.getByText('Basic Information')).toBeInTheDocument();
-      expect(screen.getByText('Financial Details')).toBeInTheDocument();
-      expect(screen.getByText('Opportunity Flags')).toBeInTheDocument();
+      expect(screen.getByText('Informazioni Base')).toBeInTheDocument();
+      expect(screen.getByText('Dettagli Finanziari')).toBeInTheDocument();
+      expect(screen.getByText('Flag Opportunità')).toBeInTheDocument();
     });
 
     it('should render back button', () => {
@@ -87,8 +91,8 @@ describe('NewOpportunityPage', () => {
 
     it('should render form buttons', () => {
       render(<NewOpportunityPage />, { wrapper: AllProviders });
-      expect(screen.getByText('Cancel')).toBeInTheDocument();
-      expect(screen.getByText('Create Opportunity')).toBeInTheDocument();
+      expect(screen.getByText('Annulla')).toBeInTheDocument();
+      expect(screen.getByText('Crea Opportunità')).toBeInTheDocument();
     });
   });
 
@@ -96,7 +100,7 @@ describe('NewOpportunityPage', () => {
     it('should render all required input fields', () => {
       render(<NewOpportunityPage />, { wrapper: AllProviders });
       expect(screen.getByPlaceholderText(/Cloud Migration Project/i)).toBeInTheDocument();
-      expect(screen.getByText('Select Customer...')).toBeInTheDocument();
+      expect(screen.getByText('Seleziona Cliente...')).toBeInTheDocument();
       expect(screen.getByPlaceholderText('1000000')).toBeInTheDocument();
     });
 
@@ -109,9 +113,9 @@ describe('NewOpportunityPage', () => {
     it('should render all checkbox flags', () => {
       render(<NewOpportunityPage />, { wrapper: AllProviders });
       // Public Sector is now auto-filled from customer selection, not a checkbox
-      expect(screen.getByText(/RTI \(Joint Venture\)/i)).toBeInTheDocument();
-      expect(screen.getByText(/KCP Deviations/i)).toBeInTheDocument();
-      expect(screen.getByText(/New Customer/i)).toBeInTheDocument();
+      expect(screen.getByText('RTI (Joint Venture)')).toBeInTheDocument();
+      expect(screen.getByText('KCP Deviations')).toBeInTheDocument();
+      expect(screen.getByText('Nuovo Cliente')).toBeInTheDocument();
     });
 
     it('should show Mandataria checkbox when RTI is selected', () => {
@@ -142,7 +146,7 @@ describe('NewOpportunityPage', () => {
     it('should navigate back to opportunities when cancel is clicked', () => {
       render(<NewOpportunityPage />, { wrapper: AllProviders });
 
-      const cancelButton = screen.getByText('Cancel');
+      const cancelButton = screen.getByText('Annulla');
       fireEvent.click(cancelButton);
 
       expect(mockNavigate).toHaveBeenCalledWith('/opportunities');
@@ -163,7 +167,7 @@ describe('NewOpportunityPage', () => {
       fireEvent.change(tcvInput, { target: { value: '500000' } });
 
       // Submit form
-      const submitButton = screen.getByText('Create Opportunity');
+      const submitButton = screen.getByText('Crea Opportunità');
       fireEvent.click(submitButton);
 
       // Wait for async submission (500ms delay)
@@ -186,7 +190,7 @@ describe('NewOpportunityPage', () => {
       fireEvent.change(tcvInput, { target: { value: '500000' } });
 
       // Submit form
-      const submitButton = screen.getByText('Create Opportunity');
+      const submitButton = screen.getByText('Crea Opportunità');
       fireEvent.click(submitButton);
 
       // Wait for async submission (500ms delay)
@@ -207,7 +211,7 @@ describe('NewOpportunityPage', () => {
       fireEvent.change(customerSelect, { target: { value: 'CUST-001' } });
       fireEvent.change(tcvInput, { target: { value: '750000' } });
 
-      const submitButton = screen.getByText('Create Opportunity');
+      const submitButton = screen.getByText('Crea Opportunità');
       fireEvent.click(submitButton);
 
       // Wait for async submission (500ms delay)
@@ -227,14 +231,14 @@ describe('NewOpportunityPage', () => {
       const titleInput = screen.getByPlaceholderText(/Cloud Migration Project/i);
       const customerSelect = screen.getByRole('combobox');
       const tcvInput = screen.getByPlaceholderText('1000000');
-      const raiseTcvInput = screen.getByPlaceholderText(/Same as TCV if empty/i);
+      const raiseTcvInput = screen.getByPlaceholderText(/uguale a TCV se vuoto/i);
 
       fireEvent.change(titleInput, { target: { value: 'Test Project' } });
       fireEvent.change(customerSelect, { target: { value: 'CUST-001' } });
       fireEvent.change(tcvInput, { target: { value: '750000' } });
       fireEvent.change(raiseTcvInput, { target: { value: '900000' } });
 
-      const submitButton = screen.getByText('Create Opportunity');
+      const submitButton = screen.getByText('Crea Opportunità');
       fireEvent.click(submitButton);
 
       // Wait for async submission (500ms delay)
@@ -259,7 +263,7 @@ describe('NewOpportunityPage', () => {
       fireEvent.change(customerSelect, { target: { value: 'CUST-001' } });
       fireEvent.change(tcvInput, { target: { value: '200000' } });
 
-      const submitButton = screen.getByText('Create Opportunity');
+      const submitButton = screen.getByText('Crea Opportunità');
       fireEvent.click(submitButton);
 
       // Wait for async submission (500ms delay)
@@ -287,7 +291,7 @@ describe('NewOpportunityPage', () => {
       const kcpCheckbox = screen.getByRole('checkbox', { name: /KCP Deviations/i });
       fireEvent.click(kcpCheckbox);
 
-      const submitButton = screen.getByText('Create Opportunity');
+      const submitButton = screen.getByText('Crea Opportunità');
       fireEvent.click(submitButton);
 
       // Wait for async submission (500ms delay)
@@ -312,14 +316,14 @@ describe('NewOpportunityPage', () => {
       fireEvent.change(tcvInput, { target: { value: '1000000' } });
 
       // Check New Customer flag - Public Sector is auto-filled from customer
-      const newCustomerLabel = screen.getByText('New Customer');
+      const newCustomerLabel = screen.getByText('Nuovo Cliente');
       const newCustomerCheckbox = newCustomerLabel.closest('label')?.querySelector('input[type="checkbox"]');
 
       if (newCustomerCheckbox) {
         fireEvent.click(newCustomerCheckbox);
       }
 
-      const submitButton = screen.getByText('Create Opportunity');
+      const submitButton = screen.getByText('Crea Opportunità');
       fireEvent.click(submitButton);
 
       // Wait for async submission (500ms delay)
@@ -345,7 +349,7 @@ describe('NewOpportunityPage', () => {
       render(<NewOpportunityPage />, { wrapper: AllProviders });
       const customerSelect = screen.getByRole('combobox');
       expect(customerSelect).toBeInTheDocument();
-      expect(screen.getByText('Select Customer...')).toBeInTheDocument();
+      expect(screen.getByText('Seleziona Cliente...')).toBeInTheDocument();
     });
 
     it('should require TCV field', () => {
@@ -356,7 +360,7 @@ describe('NewOpportunityPage', () => {
 
     it('should show quick add customer button', () => {
       render(<NewOpportunityPage />, { wrapper: AllProviders });
-      const quickAddButton = screen.getByTitle('Quick Add Customer');
+      const quickAddButton = screen.getByTitle('Aggiungi Cliente Rapido');
       expect(quickAddButton).toBeInTheDocument();
     });
   });
