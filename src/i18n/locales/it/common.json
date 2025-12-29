@@ -7,7 +7,9 @@
     "delete": "Elimina",
     "back": "Indietro",
     "confirm": "Conferma",
-    "close": "Chiudi"
+    "close": "Chiudi",
+    "retry": "Riprova",
+    "home": "Torna alla Home"
   },
   "label": {
     "required": "Obbligatorio",
@@ -15,7 +17,10 @@
   },
   "error": {
     "required": "Campo obbligatorio",
-    "generic": "Si è verificato un errore"
+    "generic": "Si è verificato un errore",
+    "title": "Ops! Qualcosa è andato storto",
+    "description": "Si è verificato un errore imprevisto nell'applicazione. Il nostro team è stato notificato.",
+    "detailsTitle": "Dettagli Errore (solo in sviluppo)"
   },
   "message": {
     "loading": "Caricamento...",

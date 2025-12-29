@@ -1,8 +1,10 @@
 import { Component } from 'react';
 import type { ReactNode, ErrorInfo } from 'react';
+import { withTranslation } from 'react-i18next';
+import type { WithTranslation } from 'react-i18next';
 import { AlertTriangle, RefreshCw, Home } from 'lucide-react';
 
-interface Props {
+interface Props extends WithTranslation {
   children: ReactNode;
   fallback?: ReactNode;
   onError?: (error: Error, errorInfo: ErrorInfo) => void;
@@ -14,7 +16,7 @@ interface State {
   errorInfo: ErrorInfo | null;
 }
 
-export class ErrorBoundary extends Component<Props, State> {
+class ErrorBoundaryClass extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
@@ -75,17 +77,17 @@ export class ErrorBoundary extends Component<Props, State> {
               </div>
               <div className="flex-1">
                 <h1 className="text-2xl font-bold text-slate-900 mb-2">
-                  Ops! Qualcosa è andato storto
+                  {this.props.t('error.title')}
                 </h1>
                 <p className="text-slate-600">
-                  Si è verificato un errore imprevisto nell'applicazione. Il nostro team è stato notificato.
+                  {this.props.t('error.description')}
                 </p>
               </div>
             </div>
 
             {import.meta.env.DEV && this.state.error && (
               <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl">
-                <h3 className="text-sm font-bold text-red-900 mb-2">Dettagli Errore (solo in sviluppo)</h3>
+                <h3 className="text-sm font-bold text-red-900 mb-2">{this.props.t('error.detailsTitle')}</h3>
                 <pre className="text-xs text-red-800 overflow-auto max-h-64 whitespace-pre-wrap">
                   {this.state.error.toString()}
                   {'\n\n'}
@@ -100,14 +102,14 @@ export class ErrorBoundary extends Component<Props, State> {
                 className="flex items-center gap-2 px-6 py-3 bg-cyan-600 text-white font-semibold rounded-xl hover:bg-cyan-700 transition-colors"
               >
                 <RefreshCw size={18} />
-                Riprova
+                {this.props.t('button.retry')}
               </button>
               <button
                 onClick={this.handleGoHome}
                 className="flex items-center gap-2 px-6 py-3 bg-slate-200 text-slate-700 font-semibold rounded-xl hover:bg-slate-300 transition-colors"
               >
                 <Home size={18} />
-                Torna alla Home
+                {this.props.t('button.home')}
               </button>
             </div>
           </div>
@@ -118,3 +120,5 @@ export class ErrorBoundary extends Component<Props, State> {
     return this.props.children;
   }
 }
+
+export const ErrorBoundary = withTranslation()(ErrorBoundaryClass);
