@@ -25,7 +25,7 @@ const mockControls: ControlConfig[] = [
     label: 'Opportunity Site Created',
     description: 'Create SharePoint Opportunity Site from Salesforce',
     phase: 'Planning',
-    isObbligatorio: true,
+    isMandatory: true,
     actionType: 'task'
   },
   {
@@ -33,7 +33,7 @@ const mockControls: ControlConfig[] = [
     label: 'Request Documentation',
     description: 'Tender documentation, RFP, customer invitation to bid',
     phase: 'ATP',
-    isObbligatorio: true,
+    isMandatory: true,
     actionType: 'document',
     templateRef: 'None (customer provided)',
     condition: 'opp.raiseLevel !== "L6"'
@@ -43,7 +43,7 @@ const mockControls: ControlConfig[] = [
     label: 'MOD-001 P&L',
     description: 'Revenue/Cost/Profit model. Economic values must match Salesforce',
     phase: 'ATS',
-    isObbligatorio: true,
+    isMandatory: true,
     actionType: 'document',
     templateRef: 'MOD-001',
     folderPath: '01. BID\\04-Economics'
@@ -53,7 +53,7 @@ const mockControls: ControlConfig[] = [
     label: 'Contract/Order',
     description: 'Signed contract or order',
     phase: 'ATC',
-    isObbligatorio: true,
+    isMandatory: true,
     actionType: 'document'
   },
   {
@@ -61,7 +61,7 @@ const mockControls: ControlConfig[] = [
     label: 'Handover Meeting',
     description: 'Formal handover meeting from Sales to Delivery',
     phase: 'Handover',
-    isObbligatorio: true,
+    isMandatory: true,
     actionType: 'task'
   },
   {
@@ -69,7 +69,7 @@ const mockControls: ControlConfig[] = [
     label: 'Expert Compliance/ESG',
     description: 'Compliance/ESG expert validation',
     phase: 'ATS',
-    isObbligatorio: false,
+    isMandatory: false,
     actionType: 'email'
   }
 ];
