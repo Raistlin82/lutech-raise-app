@@ -314,15 +314,15 @@ const ControlModal = ({ control, onSave, onClose }: { control: ControlConfig | n
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-slate-700 mb-1">Percorso Cartella Salesforce</label>
+                                <label className="block text-sm font-medium text-slate-700 mb-1">Percorso Cartella SharePoint</label>
                                 <input
                                     type="text"
-                                    placeholder="es. /Salesforce/Documents/ATP/ o /RAISE/ATS/MOD-001/"
+                                    placeholder="es. /SharePoint/Documents/ATP/ o /RAISE/ATS/MOD-001/"
                                     value={formData.folderPath || ''}
                                     onChange={e => setFormData({ ...formData, folderPath: e.target.value })}
                                     className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 outline-none font-mono text-sm"
                                 />
-                                <p className="text-xs text-slate-400 mt-1">Dove salvare il documento in Salesforce</p>
+                                <p className="text-xs text-slate-400 mt-1">Dove salvare il documento in SharePoint</p>
                             </div>
 
                             <div>

@@ -602,13 +602,13 @@ const CheckpointDetailModal = ({ cp, onClose }: { cp: Checkpoint, onClose: () =>
                         <div className="space-y-2">
                             <h3 className="text-sm font-bold text-slate-700 uppercase tracking-wider flex items-center gap-2">
                                 <FolderOpen size={16} className="text-amber-600" />
-                                Percorso Salesforce
+                                Percorso SharePoint
                             </h3>
                             <div className="p-3 bg-amber-50 rounded-lg border border-amber-200 font-mono text-sm text-amber-900">
                                 {cp.folderPath}
                             </div>
                             <p className="text-xs text-slate-500">
-                                Salva il documento in questa cartella su Salesforce
+                                Salva il documento in questa cartella su SharePoint
                             </p>
                         </div>
                     )}

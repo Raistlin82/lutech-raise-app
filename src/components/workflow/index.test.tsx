@@ -496,7 +496,7 @@ describe('OpportunityWorkflow', () => {
         phase: 'Planning',
         isMandatory: true,
         actionType: 'document',
-        folderPath: '/Salesforce/Documents/ATP/'
+        folderPath: '/SharePoint/Documents/ATP/'
       };
 
       (useSettings as ReturnType<typeof vi.fn>).mockReturnValue({
@@ -509,7 +509,7 @@ describe('OpportunityWorkflow', () => {
       const infoButton = screen.getByTitle(/Visualizza dettagli/i);
       fireEvent.click(infoButton);
 
-      expect(screen.getByText('/Salesforce/Documents/ATP/')).toBeInTheDocument();
+      expect(screen.getByText('/SharePoint/Documents/ATP/')).toBeInTheDocument();
     });
 
     it('should close detail modal when close button clicked', () => {

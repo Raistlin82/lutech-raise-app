@@ -118,7 +118,7 @@ export interface ControlConfig {
     actionType?: 'document' | 'email' | 'notification' | 'task';
     condition?: string; // Logic string e.g. "tcv > 1000000" or "hasKcpDeviations"
     detailedDescription?: string; // Descrizione estesa/istruzioni dall'Excel
-    folderPath?: string; // Percorso cartella dove salvare il documento (es. "/Salesforce/Documents/ATP/")
+    folderPath?: string; // Percorso cartella dove salvare il documento (es. "/SharePoint/Documents/ATP/")
     templateLinks?: TemplateLink[]; // Array di link ai template (supporta documenti multipli)
     mandatoryNotes?: string; // Note sulla mandatorietà dall'Excel (per pop-up)
 }
