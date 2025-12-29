@@ -3,12 +3,13 @@
 ## Indice
 
 1. [Introduzione](#introduzione)
-2. [Gestione Clienti](#gestione-clienti) **(NEW v1.1.0)**
-3. [Dashboard](#dashboard)
-4. [Creazione Opportunità](#creazione-opportunità)
-5. [Workflow ATP/ATS/ATC](#workflow-atpatsatc)
-6. [Gestione Checkpoint](#gestione-checkpoint)
-7. [FAQ](#faq)
+2. [Interfaccia e Lingua](#interfaccia-e-lingua) **(NEW v1.2.0)**
+3. [Gestione Clienti](#gestione-clienti) **(NEW v1.1.0)**
+4. [Dashboard](#dashboard)
+5. [Creazione Opportunità](#creazione-opportunità)
+6. [Workflow ATP/ATS/ATC](#workflow-atpatsatc)
+7. [Gestione Checkpoint](#gestione-checkpoint)
+8. [FAQ](#faq)
 
 ---
 
@@ -17,6 +18,10 @@
 ### Cos'è RAISE?
 
 **RAISE** (Risk Assessment & Internal Sales Enablement) è un sistema per la gestione delle opportunità di vendita che guida attraverso un processo strutturato di compliance e autorizzazioni.
+
+### Versione Corrente
+
+**v1.2.0** - Interfaccia Completa in Italiano con sistema i18n
 
 ### Concetti Chiave
 
@@ -50,6 +55,48 @@ Opportunità con:
 - Nessuna deviazione KCP
 
 Possono seguire un processo accelerato con meno checkpoint.
+
+---
+
+## Interfaccia e Lingua
+
+### Interfaccia Italiana (NEW v1.2.0)
+
+A partire dalla **versione 1.2.0**, l'intera interfaccia di RAISE App è disponibile in **italiano**.
+
+#### Caratteristiche
+
+✅ **Tutti i testi UI tradotti** - Bottoni, etichette, messaggi, notifiche
+✅ **Form e validazioni** - Messaggi di errore e aiuti contestuali in italiano
+✅ **Dashboard e metriche** - Statistiche e KPI con terminologia italiana
+✅ **Workflow completo** - Fasi, checkpoint e azioni in italiano
+
+#### Elementi Tradotti
+
+**Componenti Principali:**
+- Dashboard - Panoramica Pipeline, statistiche, card opportunità
+- Gestione Clienti - Form, lista, validazioni
+- Opportunità - Creazione, modifica, dettagli
+- Workflow - Fasi ATP/ATS/ATC, checkpoint, completion
+- Settings - Tabella controlli, form configurazione
+
+**Messaggi e Notifiche:**
+- Toast notifications di conferma/errore
+- Messaggi di validazione form
+- Conferme eliminazione
+- Messaggi di stato (loading, success, error)
+
+#### Supporto Multi-Lingua (Futuro)
+
+Il sistema è stato progettato con architettura **i18n** (internationalization) che permette l'espansione a nuove lingue in futuro:
+
+**Lingue Pianificate:**
+- 🇬🇧 Inglese (English)
+- 🇫🇷 Francese (Français)
+- 🇩🇪 Tedesco (Deutsch)
+
+**Nota per Sviluppatori:**
+Per informazioni tecniche sul sistema i18n, consulta [I18N_GUIDE.md](I18N_GUIDE.md).
 
 ---
 
@@ -476,6 +523,17 @@ A: No, le fasi devono essere completate in ordine sequenziale (Planning → ATP 
 
 **Q: Cosa significa Fast Track?**
 A: Opportunità con TCV < €250K senza deviazioni KCP seguono un processo semplificato con meno checkpoint.
+
+### Interfaccia e Lingua (v1.2.0)
+
+**Q: L'interfaccia è completamente in italiano?**
+A: Sì! A partire dalla v1.2.0, l'intera interfaccia è tradotta in italiano, inclusi form, messaggi di validazione, notifiche e tutti i testi UI.
+
+**Q: Posso cambiare la lingua dell'interfaccia?**
+A: Attualmente l'italiano è l'unica lingua disponibile. Il sistema è stato progettato con architettura i18n per supportare lingue aggiuntive (EN, FR, DE) in futuro.
+
+**Q: Dove trovo la documentazione tecnica sull'i18n?**
+A: Gli sviluppatori possono consultare [I18N_GUIDE.md](I18N_GUIDE.md) per informazioni complete sul sistema di internazionalizzazione.
 
 ### Gestione Clienti (v1.1.0)
 

@@ -149,7 +149,7 @@ describe('Settings', () => {
 
       expect(screen.getByText('Fase')).toBeInTheDocument();
       expect(screen.getByText('Controllo')).toBeInTheDocument();
-      expect(screen.getByText('Description')).toBeInTheDocument();
+      expect(screen.getByText('Descrizione')).toBeInTheDocument();
       expect(screen.getByText('Obbligatorio')).toBeInTheDocument();
       expect(screen.getByText('Azioni')).toBeInTheDocument();
     });
@@ -211,7 +211,7 @@ describe('Settings', () => {
       const addButton = screen.getByRole('button', { name: /Aggiungi Controllo/i });
       fireEvent.click(addButton);
 
-      expect(screen.getByText('New Control')).toBeInTheDocument();
+      expect(screen.getByText('Dettagli Controllo')).toBeInTheDocument();
     });
 
     it('should open modal when Edit button clicked', () => {
@@ -226,7 +226,7 @@ describe('Settings', () => {
 
       if (editButton) {
         fireEvent.click(editButton);
-        expect(screen.getByText('Edit Control')).toBeInTheDocument();
+        expect(screen.getByText('Dettagli Controllo')).toBeInTheDocument();
       }
     });
 
@@ -237,8 +237,8 @@ describe('Settings', () => {
       fireEvent.click(addButton);
 
       // Verify modal opened by checking for modal title and save button
-      expect(screen.getByText('New Control')).toBeInTheDocument();
-      expect(screen.getByRole('button', { name: /Save Control/i })).toBeInTheDocument();
+      expect(screen.getByText('Dettagli Controllo')).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /Salva Controllo/i })).toBeInTheDocument();
     });
 
     it('should close modal when Cancel clicked', () => {
@@ -247,10 +247,10 @@ describe('Settings', () => {
       const addButton = screen.getByRole('button', { name: /Aggiungi Controllo/i });
       fireEvent.click(addButton);
 
-      const cancelButton = screen.getByRole('button', { name: /Cancel/i });
+      const cancelButton = screen.getByRole('button', { name: /Annulla/i });
       fireEvent.click(cancelButton);
 
-      expect(screen.queryByText('New Control')).not.toBeInTheDocument();
+      expect(screen.queryByText('Dettagli Controllo')).not.toBeInTheDocument();
     });
 
     it('should allow entering control data in form', () => {
@@ -279,7 +279,7 @@ describe('Settings', () => {
         fireEvent.change(inputs[1], { target: { value: 'New Description' } });
       }
 
-      const saveButton = screen.getByRole('button', { name: /Save Control/i });
+      const saveButton = screen.getByRole('button', { name: /Salva Controllo/i });
       fireEvent.click(saveButton);
 
       // Verify addControl was called
