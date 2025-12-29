@@ -2,6 +2,8 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { EditOpportunityPage } from './edit';
 import type { Opportunity, Customer } from '../../types';
+import { I18nextProvider } from 'react-i18next';
+import i18n from '../../i18n/config';
 
 // Mock dependencies
 const mockNavigate = vi.fn();
@@ -65,6 +67,14 @@ const mockExistingOpportunity: Opportunity = {
   isNewCustomer: true,
 };
 
+const renderWithI18n = (component: React.ReactElement) => {
+  return render(
+    <I18nextProvider i18n={i18n}>
+      {component}
+    </I18nextProvider>
+  );
+};
+
 describe('EditOpportunityPage', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -83,7 +93,7 @@ describe('EditOpportunityPage', () => {
         updateOpportunity: mockUpdateOpportunity,
       });
 
-      render(<EditOpportunityPage />);
+      renderWithI18n(<EditOpportunityPage />);
       expect(screen.getByText('Modifica Opportunità')).toBeInTheDocument();
       expect(screen.getByText(/Aggiorna i dettagli dell'opportunità OPP-2025-001/i)).toBeInTheDocument();
     });
@@ -94,7 +104,7 @@ describe('EditOpportunityPage', () => {
         updateOpportunity: mockUpdateOpportunity,
       });
 
-      render(<EditOpportunityPage />);
+      renderWithI18n(<EditOpportunityPage />);
       expect(screen.getByText('Informazioni Base')).toBeInTheDocument();
       expect(screen.getByText('Dettagli Finanziari')).toBeInTheDocument();
       expect(screen.getByText('Flag Opportunità')).toBeInTheDocument();
@@ -106,7 +116,7 @@ describe('EditOpportunityPage', () => {
         updateOpportunity: mockUpdateOpportunity,
       });
 
-      render(<EditOpportunityPage />);
+      renderWithI18n(<EditOpportunityPage />);
 
       expect(screen.getByDisplayValue('Existing Project')).toBeInTheDocument();
       // Customer is now a dropdown - check the select has the right value
@@ -125,7 +135,7 @@ describe('EditOpportunityPage', () => {
         updateOpportunity: mockUpdateOpportunity,
       });
 
-      render(<EditOpportunityPage />);
+      renderWithI18n(<EditOpportunityPage />);
 
       // Public Sector is now auto-filled from customer, not a checkbox
       // Find checkboxes by exact text and then get the input element
@@ -147,7 +157,7 @@ describe('EditOpportunityPage', () => {
         updateOpportunity: mockUpdateOpportunity,
       });
 
-      render(<EditOpportunityPage />);
+      renderWithI18n(<EditOpportunityPage />);
       expect(screen.getByText('Mandataria')).toBeInTheDocument();
     });
   });
@@ -159,7 +169,7 @@ describe('EditOpportunityPage', () => {
         updateOpportunity: mockUpdateOpportunity,
       });
 
-      render(<EditOpportunityPage />);
+      renderWithI18n(<EditOpportunityPage />);
       expect(screen.getByText('Opportunità non trovata')).toBeInTheDocument();
       expect(screen.getByText(/L'opportunità con ID "OPP-2025-001" non esiste/i)).toBeInTheDocument();
     });
@@ -170,7 +180,7 @@ describe('EditOpportunityPage', () => {
         updateOpportunity: mockUpdateOpportunity,
       });
 
-      render(<EditOpportunityPage />);
+      renderWithI18n(<EditOpportunityPage />);
       expect(screen.getByText('Torna alle Opportunità')).toBeInTheDocument();
     });
 
@@ -180,7 +190,7 @@ describe('EditOpportunityPage', () => {
         updateOpportunity: mockUpdateOpportunity,
       });
 
-      render(<EditOpportunityPage />);
+      renderWithI18n(<EditOpportunityPage />);
 
       const backButton = screen.getByText('Torna alle Opportunità');
       fireEvent.click(backButton);
@@ -196,7 +206,7 @@ describe('EditOpportunityPage', () => {
         updateOpportunity: mockUpdateOpportunity,
       });
 
-      render(<EditOpportunityPage />);
+      renderWithI18n(<EditOpportunityPage />);
 
       const backButton = screen.getAllByRole('button')[0]; // First button is back button
       fireEvent.click(backButton);
@@ -210,7 +220,7 @@ describe('EditOpportunityPage', () => {
         updateOpportunity: mockUpdateOpportunity,
       });
 
-      render(<EditOpportunityPage />);
+      renderWithI18n(<EditOpportunityPage />);
 
       const cancelButton = screen.getByText('Annulla');
       fireEvent.click(cancelButton);
@@ -226,7 +236,7 @@ describe('EditOpportunityPage', () => {
         updateOpportunity: mockUpdateOpportunity,
       });
 
-      render(<EditOpportunityPage />);
+      renderWithI18n(<EditOpportunityPage />);
 
       // Modify the title
       const titleInput = screen.getByDisplayValue('Existing Project');
@@ -253,7 +263,7 @@ describe('EditOpportunityPage', () => {
         updateOpportunity: mockUpdateOpportunity,
       });
 
-      render(<EditOpportunityPage />);
+      renderWithI18n(<EditOpportunityPage />);
 
       const submitButton = screen.getByText('Salva Modifiche');
       fireEvent.click(submitButton);
@@ -270,7 +280,7 @@ describe('EditOpportunityPage', () => {
         updateOpportunity: mockUpdateOpportunity,
       });
 
-      render(<EditOpportunityPage />);
+      renderWithI18n(<EditOpportunityPage />);
 
       // Change TCV to a different level
       const tcvInput = screen.getByDisplayValue('1500000');
@@ -302,7 +312,7 @@ describe('EditOpportunityPage', () => {
         updateOpportunity: mockUpdateOpportunity,
       });
 
-      render(<EditOpportunityPage />);
+      renderWithI18n(<EditOpportunityPage />);
 
       const submitButton = screen.getByText('Salva Modifiche');
       fireEvent.click(submitButton);
@@ -323,7 +333,7 @@ describe('EditOpportunityPage', () => {
         updateOpportunity: mockUpdateOpportunity,
       });
 
-      render(<EditOpportunityPage />);
+      renderWithI18n(<EditOpportunityPage />);
 
       const submitButton = screen.getByText('Salva Modifiche');
       fireEvent.click(submitButton);
@@ -347,7 +357,7 @@ describe('EditOpportunityPage', () => {
         updateOpportunity: mockUpdateOpportunity,
       });
 
-      render(<EditOpportunityPage />);
+      renderWithI18n(<EditOpportunityPage />);
 
       // Clear RAISE TCV
       const raiseTcvInput = screen.getByDisplayValue('1800000');
@@ -373,7 +383,7 @@ describe('EditOpportunityPage', () => {
         updateOpportunity: mockUpdateOpportunity,
       });
 
-      render(<EditOpportunityPage />);
+      renderWithI18n(<EditOpportunityPage />);
 
       // Mandataria should be visible initially (RTI is checked)
       expect(screen.getByText('Mandataria')).toBeInTheDocument();
@@ -394,7 +404,7 @@ describe('EditOpportunityPage', () => {
         updateOpportunity: mockUpdateOpportunity,
       });
 
-      render(<EditOpportunityPage />);
+      renderWithI18n(<EditOpportunityPage />);
       const titleInput = screen.getByDisplayValue('Existing Project');
       expect(titleInput).toHaveAttribute('required');
     });
@@ -405,7 +415,7 @@ describe('EditOpportunityPage', () => {
         updateOpportunity: mockUpdateOpportunity,
       });
 
-      render(<EditOpportunityPage />);
+      renderWithI18n(<EditOpportunityPage />);
       const customerSelect = screen.getByRole('combobox');
       expect(customerSelect).toBeInTheDocument();
       expect(customerSelect).toHaveValue('CUST-001');
@@ -417,7 +427,7 @@ describe('EditOpportunityPage', () => {
         updateOpportunity: mockUpdateOpportunity,
       });
 
-      render(<EditOpportunityPage />);
+      renderWithI18n(<EditOpportunityPage />);
       const tcvInput = screen.getByDisplayValue('1500000');
       expect(tcvInput).toHaveAttribute('required');
     });
@@ -428,7 +438,7 @@ describe('EditOpportunityPage', () => {
         updateOpportunity: mockUpdateOpportunity,
       });
 
-      render(<EditOpportunityPage />);
+      renderWithI18n(<EditOpportunityPage />);
       const marginInput = screen.getByDisplayValue('25');
       expect(marginInput).toBeInTheDocument();
     });

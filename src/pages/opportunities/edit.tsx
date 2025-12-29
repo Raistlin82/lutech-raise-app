@@ -10,8 +10,11 @@ import { LoadingSpinner } from '../../components/common/LoadingSpinner';
 import { FormField } from '../../components/common/FormField';
 import { ErrorSummary } from '../../components/common/ErrorSummary';
 import { QuickAddCustomerModal } from '../../components/opportunities/QuickAddCustomerModal';
+import { useTranslation } from 'react-i18next';
 
 export const EditOpportunityPage = () => {
+    const { t } = useTranslation('opportunities');
+    const { t: tCommon } = useTranslation('common');
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
     const { opportunities, updateOpportunity } = useOpportunities();
@@ -52,24 +55,24 @@ export const EditOpportunityPage = () => {
 
     // Validation functions
     const validateTitle = useCallback((value: string) => {
-        if (!value.trim()) return 'Il titolo è obbligatorio';
-        if (value.length < 3) return 'Il titolo deve contenere almeno 3 caratteri';
+        if (!value.trim()) return t('validation.titleRequired');
+        if (value.length < 3) return t('validation.titleMinLength');
         if (value.length > 200) return 'Il titolo è troppo lungo (max 200 caratteri)';
         return '';
-    }, []);
+    }, [t]);
 
     const validateCustomerId = useCallback((value: string) => {
-        if (!value) return 'Seleziona un cliente';
+        if (!value) return t('validation.customerRequired');
         return '';
-    }, []);
+    }, [t]);
 
     const validateTcv = useCallback((value: string) => {
         const num = parseFloat(value);
-        if (!value || isNaN(num)) return 'Il TCV è obbligatorio';
-        if (num <= 0) return 'Il TCV deve essere maggiore di zero';
+        if (!value || isNaN(num)) return t('validation.tcvRequired');
+        if (num <= 0) return t('validation.tcvPositive');
         if (num > 1000000000) return 'Il TCV supera il limite massimo';
         return '';
-    }, []);
+    }, [t]);
 
     const handleBlur = (field: 'title' | 'customerId' | 'tcv') => {
         setTouched(prev => ({ ...prev, [field]: true }));
@@ -126,18 +129,18 @@ export const EditOpportunityPage = () => {
                     >
                         <ArrowLeft size={20} strokeWidth={2.5} />
                     </button>
-                    <h1 className="text-3xl font-bold text-slate-900">Opportunità non trovata</h1>
+                    <h1 className="text-3xl font-bold text-slate-900">{t('edit.notFoundTitle')}</h1>
                 </div>
                 <div className="card-elevated p-12 text-center">
                     <AlertCircle size={48} className="mx-auto text-amber-500 mb-4" />
                     <p className="text-slate-600 text-lg mb-6">
-                        L'opportunità con ID "{id}" non esiste o è stata eliminata.
+                        {t('edit.notFoundMessage').replace('{{id}}', id || '')}
                     </p>
                     <button
                         onClick={() => navigate('/opportunities')}
                         className="btn-primary"
                     >
-                        Torna alle Opportunità
+                        {t('edit.backToList')}
                     </button>
                 </div>
             </div>
@@ -228,8 +231,8 @@ export const EditOpportunityPage = () => {
                     <ArrowLeft size={20} strokeWidth={2.5} />
                 </button>
                 <div>
-                    <h1 className="text-3xl font-bold text-gradient-primary">Modifica Opportunità</h1>
-                    <p className="text-slate-500 mt-1">Aggiorna i dettagli dell'opportunità {existingOpp.id}</p>
+                    <h1 className="text-3xl font-bold text-gradient-primary">{t('edit.title')}</h1>
+                    <p className="text-slate-500 mt-1">{t('edit.subtitle').replace('{{id}}', existingOpp.id)}</p>
                 </div>
             </div>
 
@@ -242,27 +245,27 @@ export const EditOpportunityPage = () => {
                 <div className="space-y-4">
                     <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
                         <Building2 size={20} className="text-cyan-600" />
-                        Informazioni Base
+                        {t('edit.sectionBasicInfo')}
                     </h2>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <FormField
                             id="title"
                             name="title"
-                            label="Titolo Opportunità"
+                            label={t('form.labelTitle')}
                             type="text"
                             value={formData.title}
                             onChange={(value) => setFormData({ ...formData, title: value as string })}
                             onBlur={() => handleBlur('title')}
                             error={touched.title ? fieldErrors.title : ''}
                             required
-                            placeholder="es. Progetto Cloud Migration"
+                            placeholder={t('form.placeholderTitle')}
                             helpText="Inserisci un titolo descrittivo per l'opportunità"
                         />
 
                         <div>
                             <label className="block text-sm font-semibold text-slate-700 mb-2">
-                                Customer *
+                                {t('form.labelCustomer')} *
                             </label>
                             <div className="flex gap-2">
                                 <select
@@ -289,7 +292,7 @@ export const EditOpportunityPage = () => {
                                     type="button"
                                     onClick={() => setIsQuickAddModalOpen(true)}
                                     className="px-4 py-3 bg-green-600 text-white rounded-xl hover:bg-green-700 transition-colors flex items-center gap-2"
-                                    title="Quick Add Customer"
+                                    title={t('form.quickAddCustomer')}
                                 >
                                     <Plus size={20} />
                                 </button>
@@ -332,27 +335,27 @@ export const EditOpportunityPage = () => {
                 <div className="space-y-4 pt-6 border-t border-slate-200">
                     <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
                         <DollarSign size={20} className="text-emerald-600" />
-                        Dettagli Finanziari
+                        {t('edit.sectionFinancialDetails')}
                     </h2>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <FormField
                             id="tcv"
                             name="tcv"
-                            label="TCV (€)"
+                            label={t('form.labelTcv')}
                             type="number"
                             value={formData.tcv}
                             onChange={(value) => setFormData({ ...formData, tcv: value.toString() })}
                             onBlur={() => handleBlur('tcv')}
                             error={touched.tcv ? fieldErrors.tcv : ''}
                             required
-                            placeholder="1000000"
+                            placeholder={t('form.placeholderTcv')}
                             helpText="Total Contract Value (committed)"
                         />
 
                         <div>
                             <label className="block text-sm font-semibold text-slate-700 mb-2">
-                                RAISE TCV (€)
+                                {t('form.labelRaiseTcv')}
                             </label>
                             <input
                                 type="number"
@@ -360,7 +363,7 @@ export const EditOpportunityPage = () => {
                                 step="1000"
                                 value={formData.raiseTcv}
                                 onChange={e => setFormData({ ...formData, raiseTcv: e.target.value })}
-                                placeholder="Uguale a TCV se vuoto"
+                                placeholder={t('form.placeholderRaiseTcv')}
                                 className="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 outline-none transition-all"
                             />
                             <p className="text-xs text-slate-500 mt-1">Include parti opzionali</p>
@@ -368,7 +371,7 @@ export const EditOpportunityPage = () => {
 
                         <div>
                             <label className="block text-sm font-semibold text-slate-700 mb-2">
-                                Margine (%)
+                                {t('form.labelMargin')}
                             </label>
                             <input
                                 type="number"
@@ -387,7 +390,7 @@ export const EditOpportunityPage = () => {
                 <div className="space-y-4 pt-6 border-t border-slate-200">
                     <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
                         <Briefcase size={20} className="text-indigo-600" />
-                        Flag Opportunità
+                        {t('edit.sectionFlags')}
                     </h2>
 
                     {/* Public Sector is now auto-filled from customer selection */}
@@ -401,7 +404,7 @@ export const EditOpportunityPage = () => {
                                 className="w-5 h-5 text-cyan-600 border-slate-300 rounded focus:ring-cyan-500"
                             />
                             <div>
-                                <div className="font-semibold text-slate-900">RTI (Joint Venture)</div>
+                                <div className="font-semibold text-slate-900">{t('form.flagRti')}</div>
                                 <div className="text-xs text-slate-500">Raggruppamento Temporaneo Imprese</div>
                             </div>
                         </label>
@@ -415,7 +418,7 @@ export const EditOpportunityPage = () => {
                                     className="w-5 h-5 text-cyan-600 border-slate-300 rounded focus:ring-cyan-500"
                                 />
                                 <div>
-                                    <div className="font-semibold text-cyan-900">Mandataria</div>
+                                    <div className="font-semibold text-cyan-900">{t('form.flagMandataria')}</div>
                                     <div className="text-xs text-cyan-700">Lutech è la capofila</div>
                                 </div>
                             </label>
@@ -429,7 +432,7 @@ export const EditOpportunityPage = () => {
                                 className="w-5 h-5 text-amber-600 border-slate-300 rounded focus:ring-amber-500"
                             />
                             <div>
-                                <div className="font-semibold text-slate-900">Deviazioni KCP</div>
+                                <div className="font-semibold text-slate-900">{t('form.flagKcp')}</div>
                                 <div className="text-xs text-slate-500">Problemi con Key Control Points</div>
                             </div>
                         </label>
@@ -442,7 +445,7 @@ export const EditOpportunityPage = () => {
                                 className="w-5 h-5 text-cyan-600 border-slate-300 rounded focus:ring-cyan-500"
                             />
                             <div>
-                                <div className="font-semibold text-slate-900">Nuovo Cliente</div>
+                                <div className="font-semibold text-slate-900">{t('form.flagNewCustomer')}</div>
                                 <div className="text-xs text-slate-500">Primo engagement con il cliente</div>
                             </div>
                         </label>
@@ -457,7 +460,7 @@ export const EditOpportunityPage = () => {
                         disabled={isSubmitting}
                         className="px-6 py-3 text-slate-700 font-semibold rounded-xl border-2 border-slate-200 hover:border-slate-300 hover:bg-slate-50 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                        Annulla
+                        {t('actions.cancel')}
                     </button>
                     <button
                         type="submit"
@@ -476,7 +479,7 @@ export const EditOpportunityPage = () => {
                         ) : (
                             <>
                                 <Save size={18} strokeWidth={2.5} />
-                                Salva Modifiche
+                                {t('actions.save')}
                             </>
                         )}
                     </button>

@@ -18,7 +18,13 @@
   },
   "edit": {
     "title": "Modifica Opportunità",
-    "subtitle": "Aggiorna i dettagli dell'opportunità {{id}}"
+    "subtitle": "Aggiorna i dettagli dell'opportunità {{id}}",
+    "sectionBasicInfo": "Informazioni Base",
+    "sectionFinancialDetails": "Dettagli Finanziari",
+    "sectionFlags": "Flag Opportunità",
+    "notFoundTitle": "Opportunità non trovata",
+    "notFoundMessage": "L'opportunità con ID \"{{id}}\" non esiste o è stata eliminata.",
+    "backToList": "Torna alle Opportunità"
   },
   "form": {
     "labelTitle": "Titolo Opportunità",
