@@ -69,7 +69,7 @@ describe('Dashboard', () => {
 
       renderDashboard();
       await waitFor(() => {
-        expect(screen.getByText('Pipeline Overview')).toBeInTheDocument();
+        expect(screen.getByText('Panoramica Pipeline')).toBeInTheDocument();
       }, { timeout: 500 });
     });
 
@@ -82,8 +82,8 @@ describe('Dashboard', () => {
       });
 
       renderDashboard();
-      expect(screen.getByText('Pipeline Overview')).toBeInTheDocument();
-      expect(screen.getByText(/Real-time compliance tracking/i)).toBeInTheDocument();
+      expect(screen.getByText('Panoramica Pipeline')).toBeInTheDocument();
+      expect(screen.getByText(/Monitoraggio della conformità/i)).toBeInTheDocument();
     });
 
     it('should show all three stats cards', async () => {
@@ -96,9 +96,9 @@ describe('Dashboard', () => {
 
       renderDashboard();
       await waitFor(() => {
-        expect(screen.getByText('Total Pipeline Value')).toBeInTheDocument();
-        expect(screen.getByText('Active Opportunities')).toBeInTheDocument();
-        expect(screen.getByText('Critical Risks')).toBeInTheDocument();
+        expect(screen.getByText('Valore Totale Pipeline')).toBeInTheDocument();
+        expect(screen.getByText('Opportunità Attive')).toBeInTheDocument();
+        expect(screen.getByText('Rischi Critici')).toBeInTheDocument();
       }, { timeout: 500 });
     });
   });
@@ -192,7 +192,7 @@ describe('Dashboard', () => {
 
       renderDashboard();
       // 2 opportunities are in progress (not Won)
-      expect(screen.getByText('2 in progress')).toBeInTheDocument();
+      expect(screen.getByText('2 in corso')).toBeInTheDocument();
     });
   });
 
@@ -210,7 +210,7 @@ describe('Dashboard', () => {
       // Multiple cards show "0" - use getAllByText
       const zeroValues = screen.getAllByText('0');
       expect(zeroValues.length).toBeGreaterThan(0);
-      expect(screen.getByText('All clear')).toBeInTheDocument();
+      expect(screen.getByText('Tutto a posto')).toBeInTheDocument();
     });
 
     it('should show "All clear" when no critical risks', () => {
@@ -226,7 +226,7 @@ describe('Dashboard', () => {
       });
 
       renderDashboard();
-      expect(screen.getByText('All clear')).toBeInTheDocument();
+      expect(screen.getByText('Tutto a posto')).toBeInTheDocument();
     });
 
     it('should show "Action required" when critical risks exist', () => {
@@ -242,7 +242,7 @@ describe('Dashboard', () => {
       });
 
       renderDashboard();
-      expect(screen.getByText('Action required')).toBeInTheDocument();
+      expect(screen.getByText('Azione richiesta')).toBeInTheDocument();
     });
   });
 
@@ -337,7 +337,7 @@ describe('Dashboard', () => {
       });
 
       renderDashboard();
-      expect(screen.getByText('High Risk')).toBeInTheDocument();
+      expect(screen.getByText('Alto Rischio')).toBeInTheDocument();
     });
 
     it('should not show "High Risk" badge for opportunities without KCP deviations', () => {
@@ -351,7 +351,7 @@ describe('Dashboard', () => {
       });
 
       renderDashboard();
-      expect(screen.queryByText('High Risk')).not.toBeInTheDocument();
+      expect(screen.queryByText('Alto Rischio')).not.toBeInTheDocument();
     });
   });
 
@@ -553,7 +553,7 @@ describe('Dashboard', () => {
       });
 
       renderDashboard();
-      expect(screen.getByText('5 Total')).toBeInTheDocument();
+      expect(screen.getByText('5 Totale')).toBeInTheDocument();
     });
   });
 });

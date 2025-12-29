@@ -1,29 +1,31 @@
 {
-  "title": "Pipeline Overview",
-  "subtitle": "Real-time compliance tracking across all active opportunities",
+  "title": "Panoramica Pipeline",
+  "subtitle": "Monitoraggio della conformità in tempo reale su tutte le opportunità attive",
   "stats": {
-    "totalPipelineValue": "Total Pipeline Value",
-    "totalContractValue": "Total Contract Value",
-    "activeOpportunities": "Active Opportunities",
-    "acrossAllPhases": "Across all phases",
-    "criticalRisks": "Critical Risks",
-    "kcpDeviations": "KCP Deviations",
-    "actionRequired": "Action required",
-    "allClear": "All clear",
-    "inProgress": "in progress",
-    "opportunities": "opportunities"
+    "totalPipelineValue": "Valore Totale Pipeline",
+    "totalContractValue": "Valore Totale Contratto",
+    "activeOpportunities": "Opportunità Attive",
+    "acrossAllPhases": "In tutte le fasi",
+    "criticalRisks": "Rischi Critici",
+    "kcpDeviations": "Deviazioni KCP",
+    "actionRequired": "Azione richiesta",
+    "allClear": "Tutto a posto",
+    "inProgress": "in corso",
+    "opportunities": "opportunità"
   },
   "activeWorkflows": {
-    "title": "Active Workflows",
-    "total": "Total"
+    "title": "Flussi di Lavoro Attivi",
+    "total": "Totale"
   },
   "opportunityCard": {
-    "highRisk": "High Risk",
-    "value": "Value",
-    "phase": "Phase",
-    "level": "Level",
+    "highRisk": "Alto Rischio",
+    "value": "Valore",
+    "phase": "Fase",
+    "level": "Livello",
     "editLabel": "Modifica opportunità",
-    "deleteLabel": "Elimina opportunità"
+    "deleteLabel": "Elimina opportunità",
+    "defaultClient": "Cliente",
+    "ariaLabel": "Apri opportunità {{title}} per {{client}}, valore €{{value}}k, fase {{phase}}"
   },
   "deleteConfirm": {
     "title": "Elimina Opportunità",

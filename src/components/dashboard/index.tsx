@@ -253,7 +253,12 @@ const OpportunityCard = ({ opp, onClick, onEdit, onDelete, delay = 0, isDeleting
             onKeyDown={handleKeyDown}
             tabIndex={0}
             role="button"
-            aria-label={`Apri opportunità ${opp.title} per ${opp.clientName || 'Cliente'}, valore €${(opp.tcv / 1000).toFixed(0)}k, fase ${opp.currentPhase}`}
+            aria-label={t('opportunityCard.ariaLabel', {
+                title: opp.title,
+                client: opp.clientName || t('opportunityCard.defaultClient'),
+                value: (opp.tcv / 1000).toFixed(0),
+                phase: opp.currentPhase
+            })}
             style={{ animationDelay: `${delay}ms` }}
             className={clsx(
                 "group card-elevated p-0 rounded-2xl cursor-pointer relative overflow-hidden hover:scale-[1.01] active:scale-[0.99] transition-all duration-300 animate-slide-up focus:outline-none focus:ring-4 focus:ring-cyan-300",
@@ -326,7 +331,7 @@ const OpportunityCard = ({ opp, onClick, onEdit, onDelete, delay = 0, isDeleting
                                 )}
                             </div>
                             <div className="flex items-center gap-2 text-sm text-slate-500">
-                                <span className="font-medium">{opp.clientName || 'Cliente'}</span>
+                                <span className="font-medium">{opp.clientName || t('opportunityCard.defaultClient')}</span>
                                 <span className="w-1 h-1 rounded-full bg-slate-300" />
                                 <span>{opp.industry || 'N/A'}</span>
                             </div>
