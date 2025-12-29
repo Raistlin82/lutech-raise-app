@@ -6,15 +6,19 @@ import { OpportunitiesProvider } from '../../stores/OpportunitiesStore';
 import { SettingsProvider } from '../../stores/SettingsStore';
 import { OpportunityWorkflow } from '../../components/workflow';
 import type { Opportunity } from '../../types';
+import { I18nextProvider } from 'react-i18next';
+import i18n from '../../i18n/config';
 
 // Wrapper with all providers
 const AllProviders = ({ children }: { children: React.ReactNode }) => (
   <BrowserRouter>
-    <OpportunitiesProvider>
-      <SettingsProvider>
-        {children}
-      </SettingsProvider>
-    </OpportunitiesProvider>
+    <I18nextProvider i18n={i18n}>
+      <OpportunitiesProvider>
+        <SettingsProvider>
+          {children}
+        </SettingsProvider>
+      </OpportunitiesProvider>
+    </I18nextProvider>
   </BrowserRouter>
 );
 
@@ -77,7 +81,7 @@ describe('Phase Completion Integration', () => {
     });
 
     // Check that Complete ATP button exists but might be disabled
-    const completeButton = screen.getByRole('button', { name: /Complete ATP/i });
+    const completeButton = screen.getByRole('button', { name: /Completa ATP/i });
     expect(completeButton).toBeInTheDocument();
 
     // Note: In real scenario, we'd check all checkboxes first
@@ -101,7 +105,7 @@ describe('Phase Completion Integration', () => {
     });
 
     // Complete Planning button should be available
-    const completeButton = screen.getByRole('button', { name: /Complete Planning/i });
+    const completeButton = screen.getByRole('button', { name: /Completa Planning/i });
     expect(completeButton).toBeInTheDocument();
   });
 
@@ -121,7 +125,7 @@ describe('Phase Completion Integration', () => {
     });
 
     // Complete ATC button should exist
-    expect(screen.getByRole('button', { name: /Complete ATC/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Completa ATC/i })).toBeInTheDocument();
   });
 
   it('should move to Handover phase when opportunity is Won', async () => {
@@ -170,8 +174,8 @@ describe('Phase Completion Integration', () => {
       expect(screen.getByText('Planning Checklist')).toBeInTheDocument();
     });
 
-    // Should show "Completed" indicator for past phases
-    expect(screen.getByText('Completed')).toBeInTheDocument();
+    // Should show "Completato" indicator for past phases
+    expect(screen.getByText('Completato')).toBeInTheDocument();
   });
 
   it('should prevent skipping phases in workflow', async () => {

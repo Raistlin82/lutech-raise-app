@@ -58,11 +58,11 @@ describe('Opportunity Workflow Integration', () => {
 
     // Wait for loading state to finish (300ms delay)
     await waitFor(() => {
-      expect(screen.getByText('Pipeline Overview')).toBeInTheDocument();
+      expect(screen.getByText('Panoramica Pipeline')).toBeInTheDocument();
     }, { timeout: 500 });
 
     // Verify empty state - Active count should be 0
-    const activeOppsText = screen.getByText('Active Opportunities');
+    const activeOppsText = screen.getByText('Opportunità Attive');
     expect(activeOppsText).toBeInTheDocument();
 
     unmount();
