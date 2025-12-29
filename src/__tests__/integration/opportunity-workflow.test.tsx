@@ -5,15 +5,19 @@ import { OpportunitiesProvider } from '../../stores/OpportunitiesStore';
 import { SettingsProvider } from '../../stores/SettingsStore';
 import { Dashboard } from '../../components/dashboard';
 import type { Opportunity } from '../../types';
+import { I18nextProvider } from 'react-i18next';
+import i18n from '../../i18n/config';
 
 // Wrapper with all providers
 const AllProviders = ({ children }: { children: React.ReactNode }) => (
   <BrowserRouter>
-    <OpportunitiesProvider>
-      <SettingsProvider>
-        {children}
-      </SettingsProvider>
-    </OpportunitiesProvider>
+    <I18nextProvider i18n={i18n}>
+      <OpportunitiesProvider>
+        <SettingsProvider>
+          {children}
+        </SettingsProvider>
+      </OpportunitiesProvider>
+    </I18nextProvider>
   </BrowserRouter>
 );
 
