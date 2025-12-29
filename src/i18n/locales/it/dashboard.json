@@ -1,0 +1,19 @@
+{
+  "title": "Dashboard RAISE",
+  "subtitle": "Gestione Workflow Opportunità",
+  "stats": {
+    "totalOpportunities": "Opportunità Totali",
+    "activeWorkflows": "Workflow Attivi",
+    "completedPhases": "Fasi Completate"
+  },
+  "quickActions": {
+    "title": "Azioni Rapide",
+    "newOpportunity": "Nuova Opportunità",
+    "viewAll": "Visualizza Tutte"
+  },
+  "recentOpportunities": {
+    "title": "Opportunità Recenti",
+    "empty": "Nessuna opportunità recente",
+    "viewDetails": "Visualizza Dettagli"
+  }
+}

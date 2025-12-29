@@ -1,0 +1,41 @@
+{
+  "title": "Clienti",
+  "subtitle": "Gestisci i clienti",
+  "list": {
+    "searchPlaceholder": "Cerca clienti...",
+    "empty": "Nessun cliente trovato",
+    "addFirst": "Aggiungi il tuo primo cliente"
+  },
+  "form": {
+    "titleAdd": "Aggiungi Cliente",
+    "titleEdit": "Modifica Cliente",
+    "labelName": "Nome Cliente",
+    "placeholderName": "Acme Corporation",
+    "labelIndustry": "Settore",
+    "labelPublicSector": "Pubblica Amministrazione"
+  },
+  "validation": {
+    "nameRequired": "Il nome del cliente è obbligatorio",
+    "nameMinLength": "Il nome deve essere almeno 2 caratteri",
+    "nameMaxLength": "Il nome deve essere meno di 200 caratteri"
+  },
+  "actions": {
+    "add": "Aggiungi Cliente",
+    "save": "Salva Modifiche",
+    "cancel": "Annulla",
+    "delete": "Elimina",
+    "deleteConfirm": "Eliminare questo cliente?"
+  },
+  "industries": {
+    "technology": "Tecnologia",
+    "manufacturing": "Manifatturiero",
+    "finance": "Finanza",
+    "healthcare": "Sanità",
+    "retail": "Retail",
+    "energy": "Energia",
+    "transportation": "Trasporti",
+    "publicAdministration": "Pubblica Amministrazione",
+    "telecommunications": "Telecomunicazioni",
+    "consulting": "Consulenza"
+  }
+}

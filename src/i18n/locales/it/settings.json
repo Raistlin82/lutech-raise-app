@@ -1,0 +1,49 @@
+{
+  "title": "Impostazioni",
+  "subtitle": "Gestisci controlli e configurazioni workflow",
+  "tabs": {
+    "controls": "Controlli",
+    "general": "Generali"
+  },
+  "controls": {
+    "tableHeaders": {
+      "label": "Controllo",
+      "phase": "Fase",
+      "mandatory": "Obbligatorio",
+      "actions": "Azioni"
+    },
+    "filterPlaceholder": "Filtra controlli...",
+    "addControl": "Aggiungi Controllo",
+    "resetDefaults": "Ripristina Default",
+    "resetConfirm": "Ripristinare le impostazioni di default?",
+    "mandatory": "SI",
+    "optional": "NO"
+  },
+  "form": {
+    "title": "Dettagli Controllo",
+    "labelName": "Nome Controllo",
+    "placeholderName": "es. Opportunity Site Created",
+    "labelDescription": "Descrizione Breve",
+    "placeholderDescription": "Descrizione visualizzata nella card",
+    "labelDetailedDescription": "Istruzioni Dettagliate",
+    "placeholderDetailedDescription": "Istruzioni operative dettagliate",
+    "labelFolderPath": "Percorso Cartella SharePoint",
+    "placeholderFolderPath": "es. /SharePoint/Documents/ATP/ o /RAISE/ATS/MOD-001/",
+    "folderPathHelp": "Dove salvare il documento in SharePoint",
+    "labelTemplates": "Link ai Template",
+    "templateUrl": "URL Template",
+    "templateLabel": "Nome Template",
+    "addTemplate": "Aggiungi Template",
+    "removeTemplate": "Rimuovi",
+    "labelPhase": "Fase",
+    "labelMandatory": "Obbligatorio",
+    "labelActionType": "Tipo Azione"
+  },
+  "actions": {
+    "save": "Salva Controllo",
+    "cancel": "Annulla",
+    "edit": "Modifica",
+    "delete": "Elimina",
+    "deleteConfirm": "Eliminare questo controllo?"
+  }
+}

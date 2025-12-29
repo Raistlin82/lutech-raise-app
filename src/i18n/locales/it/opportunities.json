@@ -1,0 +1,66 @@
+{
+  "list": {
+    "title": "Opportunità",
+    "subtitle": "Gestisci le opportunità RAISE",
+    "searchPlaceholder": "Cerca opportunità...",
+    "filterAll": "Tutte",
+    "filterActive": "Attive",
+    "filterCompleted": "Completate",
+    "empty": "Nessuna opportunità trovata",
+    "createFirst": "Crea la tua prima opportunità"
+  },
+  "new": {
+    "title": "Nuova Opportunità",
+    "subtitle": "Crea una nuova opportunità RAISE workflow",
+    "sectionBasicInfo": "Informazioni Base",
+    "sectionFinancialDetails": "Dettagli Finanziari",
+    "sectionFlags": "Flag Opportunità"
+  },
+  "edit": {
+    "title": "Modifica Opportunità",
+    "subtitle": "Aggiorna i dettagli dell'opportunità {{id}}"
+  },
+  "form": {
+    "labelTitle": "Titolo Opportunità",
+    "placeholderTitle": "es. Cloud Migration Project",
+    "labelCustomer": "Cliente",
+    "placeholderCustomer": "Seleziona Cliente...",
+    "labelTcv": "TCV (€)",
+    "placeholderTcv": "1000000",
+    "labelRaiseTcv": "RAISE TCV (€)",
+    "placeholderRaiseTcv": "Uguale a TCV se vuoto",
+    "labelMargin": "Margine (%)",
+    "placeholderMargin": "25",
+    "labelPhase": "Fase Corrente",
+    "flagRti": "RTI (Joint Venture)",
+    "flagMandataria": "Mandataria",
+    "flagKcp": "KCP Deviations",
+    "flagCashFlow": "Cash Flow Neutral",
+    "flagNewCustomer": "Nuovo Cliente",
+    "quickAddCustomer": "Aggiungi Cliente Rapido"
+  },
+  "validation": {
+    "titleRequired": "Il titolo è obbligatorio",
+    "titleMinLength": "Il titolo deve essere almeno 3 caratteri",
+    "customerRequired": "Seleziona un cliente",
+    "tcvRequired": "Il TCV è obbligatorio",
+    "tcvPositive": "Il TCV deve essere positivo",
+    "raiseTcvGreaterThanTcv": "RAISE TCV deve essere >= TCV"
+  },
+  "actions": {
+    "create": "Crea Opportunità",
+    "save": "Salva Modifiche",
+    "cancel": "Annulla",
+    "delete": "Elimina Opportunità",
+    "deleteConfirm": "Sei sicuro di voler eliminare questa opportunità?"
+  },
+  "raiseLevel": {
+    "label": "Livello RAISE",
+    "l1": "L1 - Firma < €250k",
+    "l2": "L2 - Firma €250k-€1M",
+    "l3": "L3 - Firma €1M-€3M",
+    "l4": "L4 - Firma €3M-€10M",
+    "l5": "L5 - Firma €10M-€25M",
+    "l6": "L6 - Firma > €25M"
+  }
+}

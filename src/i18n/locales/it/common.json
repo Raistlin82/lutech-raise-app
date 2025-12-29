@@ -1,0 +1,26 @@
+{
+  "button": {
+    "save": "Salva",
+    "cancel": "Annulla",
+    "create": "Crea",
+    "edit": "Modifica",
+    "delete": "Elimina",
+    "back": "Indietro",
+    "confirm": "Conferma",
+    "close": "Chiudi"
+  },
+  "label": {
+    "required": "Obbligatorio",
+    "optional": "Opzionale"
+  },
+  "error": {
+    "required": "Campo obbligatorio",
+    "generic": "Si è verificato un errore"
+  },
+  "message": {
+    "loading": "Caricamento...",
+    "noData": "Nessun dato disponibile",
+    "saveSuccess": "Salvato con successo",
+    "deleteSuccess": "Eliminato con successo"
+  }
+}

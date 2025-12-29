@@ -1,0 +1,46 @@
+{
+  "title": "Workflow RAISE",
+  "phases": {
+    "planning": "Planning",
+    "atp": "ATP",
+    "ats": "ATS",
+    "atc": "ATC",
+    "handover": "Handover"
+  },
+  "checkpoints": {
+    "title": "Checkpoint",
+    "mandatory": "Obbligatorio",
+    "optional": "Opzionale",
+    "completed": "Completato",
+    "pending": "In Attesa",
+    "showDetails": "Visualizza dettagli"
+  },
+  "actions": {
+    "completePhase": "Completa Fase",
+    "nextPhase": "Fase Successiva",
+    "previousPhase": "Fase Precedente",
+    "viewPhase": "Visualizza Fase"
+  },
+  "completion": {
+    "title": "Completa Fase {{phase}}",
+    "confirmMessage": "Sei sicuro di voler completare questa fase?",
+    "mandatoryWarning": "Tutti i checkpoint obbligatori devono essere completati",
+    "success": "Fase completata con successo"
+  },
+  "outcome": {
+    "title": "Esito Opportunità",
+    "selectOutcome": "Seleziona esito",
+    "won": "Vinta",
+    "lost": "Persa",
+    "confirmWon": "Conferma Vittoria",
+    "confirmLost": "Conferma Perdita"
+  },
+  "details": {
+    "description": "Descrizione",
+    "instructions": "Istruzioni",
+    "folderPath": "Percorso SharePoint",
+    "folderPathDescription": "Salva il documento in questa cartella su SharePoint",
+    "templates": "Template Disponibili",
+    "downloadTemplate": "Scarica Template"
+  }
+}
