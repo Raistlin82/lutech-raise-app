@@ -2,6 +2,8 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { OpportunitiesPage } from './index';
 import type { Opportunity } from '../../types';
+import { I18nextProvider } from 'react-i18next';
+import i18n from '../../i18n/config';
 
 // Mock dependencies
 const mockNavigate = vi.fn();
@@ -41,6 +43,14 @@ const createMockOpportunity = (overrides: Partial<Opportunity> = {}): Opportunit
   ...overrides,
 });
 
+const renderWithI18n = (component: React.ReactElement) => {
+  return render(
+    <I18nextProvider i18n={i18n}>
+      {component}
+    </I18nextProvider>
+  );
+};
+
 describe('OpportunitiesPage', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -55,9 +65,9 @@ describe('OpportunitiesPage', () => {
         selectedOpp: null,
       });
 
-      render(<OpportunitiesPage />);
-      expect(screen.getByText('All Opportunities')).toBeInTheDocument();
-      expect(screen.getByText(/Manage and track all your RAISE opportunities/i)).toBeInTheDocument();
+      renderWithI18n(<OpportunitiesPage />);
+      expect(screen.getByText('Opportunità')).toBeInTheDocument();
+      expect(screen.getByText('Gestisci le opportunità RAISE')).toBeInTheDocument();
     });
 
     it('should render "New Opportunity" button', () => {
@@ -68,8 +78,8 @@ describe('OpportunitiesPage', () => {
         selectedOpp: null,
       });
 
-      render(<OpportunitiesPage />);
-      expect(screen.getByText('New Opportunity')).toBeInTheDocument();
+      renderWithI18n(<OpportunitiesPage />);
+      expect(screen.getByText('Crea Opportunità')).toBeInTheDocument();
     });
   });
 
@@ -82,9 +92,9 @@ describe('OpportunitiesPage', () => {
         selectedOpp: null,
       });
 
-      render(<OpportunitiesPage />);
-      expect(screen.getByText('No opportunities yet')).toBeInTheDocument();
-      expect(screen.getByText(/Create your first opportunity to get started/i)).toBeInTheDocument();
+      renderWithI18n(<OpportunitiesPage />);
+      expect(screen.getByText('Nessuna opportunità trovata')).toBeInTheDocument();
+      expect(screen.getByText('Crea la tua prima opportunità')).toBeInTheDocument();
     });
   });
 
@@ -102,7 +112,7 @@ describe('OpportunitiesPage', () => {
         selectedOpp: null,
       });
 
-      render(<OpportunitiesPage />);
+      renderWithI18n(<OpportunitiesPage />);
       expect(screen.getByText('Project Alpha')).toBeInTheDocument();
       expect(screen.getByText('Project Beta')).toBeInTheDocument();
     });
@@ -117,8 +127,8 @@ describe('OpportunitiesPage', () => {
         selectedOpp: null,
       });
 
-      render(<OpportunitiesPage />);
-      expect(screen.queryByText('No opportunities yet')).not.toBeInTheDocument();
+      renderWithI18n(<OpportunitiesPage />);
+      expect(screen.queryByText('Nessuna opportunità trovata')).not.toBeInTheDocument();
     });
   });
 
@@ -131,9 +141,9 @@ describe('OpportunitiesPage', () => {
         selectedOpp: null,
       });
 
-      render(<OpportunitiesPage />);
+      renderWithI18n(<OpportunitiesPage />);
 
-      const newButton = screen.getByText('New Opportunity');
+      const newButton = screen.getByText('Crea Opportunità');
       fireEvent.click(newButton);
 
       expect(mockNavigate).toHaveBeenCalledWith('/opportunities/new');
@@ -149,7 +159,7 @@ describe('OpportunitiesPage', () => {
         selectedOpp: null,
       });
 
-      render(<OpportunitiesPage />);
+      renderWithI18n(<OpportunitiesPage />);
 
       const card = screen.getByText('Cloud Migration Project').closest('div[class*="cursor-pointer"]');
       fireEvent.click(card!);
@@ -168,9 +178,9 @@ describe('OpportunitiesPage', () => {
         selectedOpp: null,
       });
 
-      render(<OpportunitiesPage />);
+      renderWithI18n(<OpportunitiesPage />);
 
-      const editButton = screen.getByTitle('Modifica opportunità');
+      const editButton = screen.getByTitle('Modifica');
       fireEvent.click(editButton);
 
       expect(mockNavigate).toHaveBeenCalledWith('/opportunities/OPP-2025-456/edit');
@@ -188,14 +198,14 @@ describe('OpportunitiesPage', () => {
         selectedOpp: null,
       });
 
-      render(<OpportunitiesPage />);
+      renderWithI18n(<OpportunitiesPage />);
 
-      const deleteButton = screen.getByTitle('Elimina opportunità');
+      const deleteButton = screen.getByTitle('Elimina Opportunità');
       fireEvent.click(deleteButton);
 
-      expect(screen.getByText('Elimina Opportunità')).toBeInTheDocument();
+      expect(screen.getAllByText('Elimina Opportunità').length).toBeGreaterThan(0);
       // The modal message contains the title, use more specific matcher
-      expect(screen.getByText(/Sei sicuro di voler eliminare l'opportunità "Test Delete"/)).toBeInTheDocument();
+      expect(screen.getByText(/Sei sicuro di voler eliminare questa opportunità/)).toBeInTheDocument();
     });
 
     it('should delete opportunity and navigate to home when confirming delete of selected opportunity', async () => {
@@ -208,12 +218,12 @@ describe('OpportunitiesPage', () => {
         selectedOpp: mockOpp, // Currently selected
       });
 
-      render(<OpportunitiesPage />);
+      renderWithI18n(<OpportunitiesPage />);
 
-      const deleteButton = screen.getByTitle('Elimina opportunità');
+      const deleteButton = screen.getByTitle('Elimina Opportunità');
       fireEvent.click(deleteButton);
 
-      const confirmButton = screen.getByText('Elimina');
+      const confirmButton = screen.getAllByText('Elimina Opportunità')[1]; // Second one is the button
       fireEvent.click(confirmButton);
 
       expect(mockDeleteOpportunity).toHaveBeenCalledWith('OPP-TO-DELETE');
@@ -232,12 +242,12 @@ describe('OpportunitiesPage', () => {
         selectedOpp: mockOpp2, // Different from the one being deleted
       });
 
-      render(<OpportunitiesPage />);
+      renderWithI18n(<OpportunitiesPage />);
 
-      const deleteButtons = screen.getAllByTitle('Elimina opportunità');
+      const deleteButtons = screen.getAllByTitle('Elimina Opportunità');
       fireEvent.click(deleteButtons[0]); // Delete first opportunity
 
-      const confirmButton = screen.getByText('Elimina');
+      const confirmButton = screen.getAllByText('Elimina Opportunità')[1]; // Second one is the button
       fireEvent.click(confirmButton);
 
       expect(mockDeleteOpportunity).toHaveBeenCalledWith('OPP-001');

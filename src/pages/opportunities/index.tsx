@@ -6,8 +6,10 @@ import { clsx } from 'clsx';
 import { calculateRaiseLevel } from '../../lib/raiseLogic';
 import { useOpportunities } from '../../stores/OpportunitiesStore';
 import { ConfirmModal } from '../../components/common/ConfirmModal';
+import { useTranslation } from 'react-i18next';
 
 export const OpportunitiesPage = () => {
+    const { t } = useTranslation('opportunities');
     const navigate = useNavigate();
     const { opportunities, selectOpportunity, deleteOpportunity, selectedOpp } = useOpportunities();
     const [deleteConfirm, setDeleteConfirm] = useState<{ isOpen: boolean; opp: Opportunity | null }>({
@@ -47,10 +49,10 @@ export const OpportunitiesPage = () => {
         <>
             <ConfirmModal
                 isOpen={deleteConfirm.isOpen}
-                title="Elimina Opportunità"
-                message={`Sei sicuro di voler eliminare l'opportunità "${deleteConfirm.opp?.title}"? Questa azione non può essere annullata.`}
-                confirmLabel="Elimina"
-                cancelLabel="Annulla"
+                title={t('actions.delete')}
+                message={`${t('actions.deleteConfirm').replace('{{title}}', deleteConfirm.opp?.title || '')} Questa azione non può essere annullata.`}
+                confirmLabel={t('actions.delete')}
+                cancelLabel={t('actions.cancel')}
                 variant="danger"
                 onConfirm={handleDeleteConfirm}
                 onCancel={() => setDeleteConfirm({ isOpen: false, opp: null })}
@@ -61,23 +63,23 @@ export const OpportunitiesPage = () => {
                     <div className="flex flex-col gap-2">
                         <div className="flex items-center gap-3">
                             <div className="w-1.5 h-8 bg-gradient-to-b from-cyan-500 to-blue-600 rounded-full" />
-                            <h1 className="text-3xl font-bold text-gradient-primary">All Opportunities</h1>
+                            <h1 className="text-3xl font-bold text-gradient-primary">{t('list.title')}</h1>
                         </div>
-                        <p className="text-slate-500 text-lg ml-6">Manage and track all your RAISE opportunities</p>
+                        <p className="text-slate-500 text-lg ml-6">{t('list.subtitle')}</p>
                     </div>
                     <button
                         onClick={() => navigate('/opportunities/new')}
                         className="btn-primary flex items-center gap-2"
                     >
                         <Plus size={20} strokeWidth={2.5} />
-                        New Opportunity
+                        {t('actions.create')}
                     </button>
                 </div>
                 <div className="grid grid-cols-1 gap-4">
                     {opportunities.length === 0 ? (
                         <div className="text-center py-16 card-elevated">
-                            <p className="text-slate-500 font-semibold text-lg">No opportunities yet</p>
-                            <p className="text-slate-400 text-sm mt-2">Create your first opportunity to get started with RAISE compliance tracking</p>
+                            <p className="text-slate-500 font-semibold text-lg">{t('list.empty')}</p>
+                            <p className="text-slate-400 text-sm mt-2">{t('list.createFirst')}</p>
                         </div>
                     ) : (
                         opportunities.map((opp, idx) => (
@@ -106,6 +108,7 @@ interface OpportunityCardProps {
 }
 
 const OpportunityCard = ({ opp, onClick, onEdit, onDelete, delay = 0 }: OpportunityCardProps) => {
+    const { t } = useTranslation('opportunities');
     const calculatedLevel = calculateRaiseLevel(opp);
     const isRisky = opp.hasKcpDeviations;
 
@@ -120,14 +123,14 @@ const OpportunityCard = ({ opp, onClick, onEdit, onDelete, delay = 0 }: Opportun
                 <button
                     onClick={onEdit}
                     className="p-2.5 text-slate-400 hover:text-cyan-600 hover:bg-white rounded-xl transition-all shadow-md hover:shadow-lg"
-                    title="Modifica opportunità"
+                    title={t('actions.edit')}
                 >
                     <Edit3 size={18} strokeWidth={2.5} />
                 </button>
                 <button
                     onClick={onDelete}
                     className="p-2.5 text-slate-400 hover:text-red-600 hover:bg-white rounded-xl transition-all shadow-md hover:shadow-lg"
-                    title="Elimina opportunità"
+                    title={t('actions.delete')}
                 >
                     <Trash2 size={18} strokeWidth={2.5} />
                 </button>
