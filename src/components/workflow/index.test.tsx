@@ -1,7 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { I18nextProvider } from 'react-i18next';
 import { OpportunityWorkflow } from './index';
 import type { Opportunity, ControlConfig } from '../../types';
+import i18n from '../../i18n/config';
 
 // Mock dependencies
 const mockUpdateOpportunity = vi.fn();
@@ -109,6 +111,15 @@ const createMockOpportunity = (overrides: Partial<Opportunity> = {}): Opportunit
   ...overrides,
 });
 
+// Helper to render with i18n
+const renderWorkflow = (opp: Opportunity) => {
+  return render(
+    <I18nextProvider i18n={i18n}>
+      <OpportunityWorkflow opp={opp} onBack={mockOnBack} />
+    </I18nextProvider>
+  );
+};
+
 describe('OpportunityWorkflow', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -126,7 +137,7 @@ describe('OpportunityWorkflow', () => {
   describe('Rendering', () => {
     it('should render opportunity title and client name', () => {
       const opp = createMockOpportunity();
-      render(<OpportunityWorkflow opp={opp} onBack={mockOnBack} />);
+      renderWorkflow(opp);
 
       expect(screen.getByText('Test Opportunity')).toBeInTheDocument();
       expect(screen.getByText('Test Client')).toBeInTheDocument();
@@ -134,7 +145,7 @@ describe('OpportunityWorkflow', () => {
 
     it('should display opportunity ID and industry', () => {
       const opp = createMockOpportunity();
-      render(<OpportunityWorkflow opp={opp} onBack={mockOnBack} />);
+      renderWorkflow(opp);
 
       expect(screen.getByText(/TEST-001/i)).toBeInTheDocument();
       expect(screen.getByText(/Technology/i)).toBeInTheDocument();
@@ -142,14 +153,14 @@ describe('OpportunityWorkflow', () => {
 
     it('should show RAISE level badge', () => {
       const opp = createMockOpportunity({ raiseLevel: 'L4' });
-      render(<OpportunityWorkflow opp={opp} onBack={mockOnBack} />);
+      renderWorkflow(opp);
 
       expect(screen.getByText('L4')).toBeInTheDocument();
     });
 
     it('should display TCV and RAISE TCV values', () => {
       const opp = createMockOpportunity({ tcv: 500000, raiseTcv: 600000 });
-      render(<OpportunityWorkflow opp={opp} onBack={mockOnBack} />);
+      renderWorkflow(opp);
 
       expect(screen.getByText(/€ 500,000/i)).toBeInTheDocument();
       expect(screen.getByText(/€ 600,000/i)).toBeInTheDocument();
@@ -157,13 +168,17 @@ describe('OpportunityWorkflow', () => {
 
     it('should show KCP status correctly', () => {
       const oppWithDeviations = createMockOpportunity({ hasKcpDeviations: true });
-      const { rerender } = render(<OpportunityWorkflow opp={oppWithDeviations} onBack={mockOnBack} />);
+      const { rerender } = renderWorkflow(oppWithDeviations);
 
       // Verify RAISE level badge is shown (main indication of status)
       expect(screen.getByText('L4')).toBeInTheDocument();
 
       const oppWithoutDeviations = createMockOpportunity({ hasKcpDeviations: false });
-      rerender(<OpportunityWorkflow opp={oppWithoutDeviations} onBack={mockOnBack} />);
+      rerender(
+        <I18nextProvider i18n={i18n}>
+          <OpportunityWorkflow opp={oppWithoutDeviations} onBack={mockOnBack} />
+        </I18nextProvider>
+      );
 
       // Verify RAISE level badge is still shown
       expect(screen.getByText('L4')).toBeInTheDocument();
@@ -171,7 +186,7 @@ describe('OpportunityWorkflow', () => {
 
     it('should render phase navigation tabs', () => {
       const opp = createMockOpportunity();
-      render(<OpportunityWorkflow opp={opp} onBack={mockOnBack} />);
+      renderWorkflow(opp);
 
       // Use getAllByText as phases appear multiple times (tabs and process map)
       expect(screen.getAllByText('Planning').length).toBeGreaterThan(0);
@@ -183,7 +198,7 @@ describe('OpportunityWorkflow', () => {
 
     it('should show process map with all phases', () => {
       const opp = createMockOpportunity();
-      const { container } = render(<OpportunityWorkflow opp={opp} onBack={mockOnBack} />);
+      const { container } = renderWorkflow(opp);
 
       // Process map should contain numbered steps - verify presence of phase elements
       const planningElements = screen.getAllByText('Planning');
@@ -197,7 +212,7 @@ describe('OpportunityWorkflow', () => {
   describe('Phase Progression', () => {
     it('should show checkpoints for current phase', () => {
       const opp = createMockOpportunity({ currentPhase: 'Planning' });
-      render(<OpportunityWorkflow opp={opp} onBack={mockOnBack} />);
+      renderWorkflow(opp);
 
       expect(screen.getByText('Planning Checklist')).toBeInTheDocument();
       expect(screen.getByText('Opportunity Site Created')).toBeInTheDocument();
@@ -206,7 +221,7 @@ describe('OpportunityWorkflow', () => {
 
     it('should filter checkpoints by phase correctly', () => {
       const opp = createMockOpportunity({ currentPhase: 'ATS', raiseLevel: 'L4' });
-      render(<OpportunityWorkflow opp={opp} onBack={mockOnBack} />);
+      renderWorkflow(opp);
 
       expect(screen.getByText('ATS Checklist')).toBeInTheDocument();
       expect(screen.getByText('MOD-001 P&L')).toBeInTheDocument();
@@ -218,7 +233,7 @@ describe('OpportunityWorkflow', () => {
 
     it('should apply conditional checkpoints based on RAISE level', () => {
       const oppL4 = createMockOpportunity({ currentPhase: 'Planning', raiseLevel: 'L4' });
-      render(<OpportunityWorkflow opp={oppL4} onBack={mockOnBack} />);
+      renderWorkflow(oppL4);
 
       // Should show Planning checklist
       expect(screen.getByText('Planning Checklist')).toBeInTheDocument();
@@ -233,7 +248,7 @@ describe('OpportunityWorkflow', () => {
 
     it('should show mandatory checkpoints with asterisk', () => {
       const opp = createMockOpportunity({ currentPhase: 'Planning' });
-      render(<OpportunityWorkflow opp={opp} onBack={mockOnBack} />);
+      renderWorkflow(opp);
 
       const checkpointLabels = screen.getAllByText(/\*/);
       expect(checkpointLabels.length).toBeGreaterThan(0);
@@ -241,19 +256,19 @@ describe('OpportunityWorkflow', () => {
 
     it('should allow switching between completed phases', () => {
       const opp = createMockOpportunity({ currentPhase: 'ATS' });
-      render(<OpportunityWorkflow opp={opp} onBack={mockOnBack} />);
+      renderWorkflow(opp);
 
       const planningTab = screen.getByRole('button', { name: /Planning/i });
       fireEvent.click(planningTab);
 
-      // Should show Planning checklist with "Completed" badge
+      // Should show Planning checklist with "Completato" badge
       expect(screen.getByText('Planning Checklist')).toBeInTheDocument();
-      expect(screen.getByText('Completed')).toBeInTheDocument();
+      expect(screen.getByText('Completato')).toBeInTheDocument();
     });
 
     it('should disable future phase tabs', () => {
       const opp = createMockOpportunity({ currentPhase: 'ATP' });
-      render(<OpportunityWorkflow opp={opp} onBack={mockOnBack} />);
+      renderWorkflow(opp);
 
       const atsTab = screen.getByRole('button', { name: /ATS/i });
       expect(atsTab).toBeDisabled();
@@ -263,7 +278,7 @@ describe('OpportunityWorkflow', () => {
   describe('Checkpoint Interaction', () => {
     it('should toggle checkpoint when checkbox clicked', () => {
       const opp = createMockOpportunity({ currentPhase: 'Planning' });
-      render(<OpportunityWorkflow opp={opp} onBack={mockOnBack} />);
+      renderWorkflow(opp);
 
       const checkboxes = screen.getAllByRole('checkbox');
       const firstCheckbox = checkboxes[0];
@@ -276,9 +291,9 @@ describe('OpportunityWorkflow', () => {
 
     it('should enable Complete button only when all required checkpoints checked', () => {
       const opp = createMockOpportunity({ currentPhase: 'Planning' });
-      render(<OpportunityWorkflow opp={opp} onBack={mockOnBack} />);
+      renderWorkflow(opp);
 
-      const completeButton = screen.getByRole('button', { name: /Complete Planning/i });
+      const completeButton = screen.getByRole('button', { name: /Completa Planning/i });
       expect(completeButton).toBeDisabled();
 
       // Check all checkpoints
@@ -290,7 +305,7 @@ describe('OpportunityWorkflow', () => {
 
     it('should show checkpoint count progress', () => {
       const opp = createMockOpportunity({ currentPhase: 'Planning' });
-      render(<OpportunityWorkflow opp={opp} onBack={mockOnBack} />);
+      renderWorkflow(opp);
 
       expect(screen.getByText(/0 \/ \d+ Steps/i)).toBeInTheDocument();
     });
@@ -299,13 +314,13 @@ describe('OpportunityWorkflow', () => {
   describe('Phase Completion', () => {
     it('should advance to next phase when Complete button clicked', async () => {
       const opp = createMockOpportunity({ currentPhase: 'Planning' });
-      render(<OpportunityWorkflow opp={opp} onBack={mockOnBack} />);
+      renderWorkflow(opp);
 
       // Check all checkpoints
       const checkboxes = screen.getAllByRole('checkbox');
       checkboxes.forEach(checkbox => fireEvent.click(checkbox));
 
-      const completeButton = screen.getByRole('button', { name: /Complete Planning/i });
+      const completeButton = screen.getByRole('button', { name: /Completa Planning/i });
       fireEvent.click(completeButton);
 
       // Wait for async operation to complete (500ms delay)
@@ -318,13 +333,13 @@ describe('OpportunityWorkflow', () => {
 
     it('should show outcome modal after ATC completion', async () => {
       const opp = createMockOpportunity({ currentPhase: 'ATC' });
-      render(<OpportunityWorkflow opp={opp} onBack={mockOnBack} />);
+      renderWorkflow(opp);
 
       // Check all checkpoints
       const checkboxes = screen.getAllByRole('checkbox');
       checkboxes.forEach(checkbox => fireEvent.click(checkbox));
 
-      const completeButton = screen.getByRole('button', { name: /Complete ATC/i });
+      const completeButton = screen.getByRole('button', { name: /Completa ATC/i });
       fireEvent.click(completeButton);
 
       // Wait for outcome modal to appear after async operation
@@ -337,13 +352,13 @@ describe('OpportunityWorkflow', () => {
 
     it('should handle Won outcome correctly', async () => {
       const opp = createMockOpportunity({ currentPhase: 'ATC' });
-      render(<OpportunityWorkflow opp={opp} onBack={mockOnBack} />);
+      renderWorkflow(opp);
 
       // Trigger outcome modal
       const checkboxes = screen.getAllByRole('checkbox');
       checkboxes.forEach(checkbox => fireEvent.click(checkbox));
 
-      const completeButton = screen.getByRole('button', { name: /Complete ATC/i });
+      const completeButton = screen.getByRole('button', { name: /Completa ATC/i });
       fireEvent.click(completeButton);
 
       // Wait for outcome modal to appear
@@ -363,13 +378,13 @@ describe('OpportunityWorkflow', () => {
 
     it('should handle Lost outcome correctly', async () => {
       const opp = createMockOpportunity({ currentPhase: 'ATC' });
-      render(<OpportunityWorkflow opp={opp} onBack={mockOnBack} />);
+      renderWorkflow(opp);
 
       // Trigger outcome modal
       const checkboxes = screen.getAllByRole('checkbox');
       checkboxes.forEach(checkbox => fireEvent.click(checkbox));
 
-      const completeButton = screen.getByRole('button', { name: /Complete ATC/i });
+      const completeButton = screen.getByRole('button', { name: /Completa ATC/i });
       fireEvent.click(completeButton);
 
       // Wait for outcome modal to appear
@@ -389,30 +404,34 @@ describe('OpportunityWorkflow', () => {
   });
 
   describe('Flag Management', () => {
-    it('should show Edit Details button in Planning and ATP phases', () => {
+    it('should show Modifica Dettagli button in Planning and ATP phases', () => {
       const opp = createMockOpportunity({ currentPhase: 'Planning' });
-      const { rerender } = render(<OpportunityWorkflow opp={opp} onBack={mockOnBack} />);
+      const { rerender } = renderWorkflow(opp);
 
-      expect(screen.getByRole('button', { name: /Edit Details/i })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /Modifica Dettagli/i })).toBeInTheDocument();
 
       const oppATP = createMockOpportunity({ currentPhase: 'ATP' });
-      rerender(<OpportunityWorkflow opp={oppATP} onBack={mockOnBack} />);
+      rerender(
+        <I18nextProvider i18n={i18n}>
+          <OpportunityWorkflow opp={oppATP} onBack={mockOnBack} />
+        </I18nextProvider>
+      );
 
-      expect(screen.getByRole('button', { name: /Edit Details/i })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /Modifica Dettagli/i })).toBeInTheDocument();
     });
 
-    it('should not show Edit Details button after ATP phase', () => {
+    it('should not show Modifica Dettagli button after ATP phase', () => {
       const opp = createMockOpportunity({ currentPhase: 'ATS' });
-      render(<OpportunityWorkflow opp={opp} onBack={mockOnBack} />);
+      renderWorkflow(opp);
 
-      expect(screen.queryByRole('button', { name: /Edit Details/i })).not.toBeInTheDocument();
+      expect(screen.queryByRole('button', { name: /Modifica Dettagli/i })).not.toBeInTheDocument();
     });
 
-    it('should open edit modal when Edit Details clicked', () => {
+    it('should open edit modal when Modifica Dettagli clicked', () => {
       const opp = createMockOpportunity({ currentPhase: 'Planning' });
-      render(<OpportunityWorkflow opp={opp} onBack={mockOnBack} />);
+      renderWorkflow(opp);
 
-      const editButton = screen.getByRole('button', { name: /Edit Details/i });
+      const editButton = screen.getByRole('button', { name: /Modifica Dettagli/i });
       fireEvent.click(editButton);
 
       expect(screen.getByText('Modifica Dettagli Opportunità')).toBeInTheDocument();
@@ -420,9 +439,9 @@ describe('OpportunityWorkflow', () => {
 
     it('should show warning when ATS completed in edit modal', () => {
       const opp = createMockOpportunity({ currentPhase: 'Planning' });
-      render(<OpportunityWorkflow opp={opp} onBack={mockOnBack} />);
+      renderWorkflow(opp);
 
-      const editButton = screen.getByRole('button', { name: /Edit Details/i });
+      const editButton = screen.getByRole('button', { name: /Modifica Dettagli/i });
       fireEvent.click(editButton);
 
       // Should not show warning in Planning phase
@@ -431,9 +450,9 @@ describe('OpportunityWorkflow', () => {
 
     it('should allow flag editing in edit modal', () => {
       const opp = createMockOpportunity({ currentPhase: 'Planning', isRti: false });
-      render(<OpportunityWorkflow opp={opp} onBack={mockOnBack} />);
+      renderWorkflow(opp);
 
-      const editButton = screen.getByRole('button', { name: /Edit Details/i });
+      const editButton = screen.getByRole('button', { name: /Modifica Dettagli/i });
       fireEvent.click(editButton);
 
       const rtiCheckbox = screen.getByLabelText(/RTI.*Raggruppamento/i);
@@ -445,9 +464,9 @@ describe('OpportunityWorkflow', () => {
 
     it('should close edit modal when Cancel clicked', () => {
       const opp = createMockOpportunity({ currentPhase: 'Planning' });
-      render(<OpportunityWorkflow opp={opp} onBack={mockOnBack} />);
+      renderWorkflow(opp);
 
-      const editButton = screen.getByRole('button', { name: /Edit Details/i });
+      const editButton = screen.getByRole('button', { name: /Modifica Dettagli/i });
       fireEvent.click(editButton);
 
       const cancelButton = screen.getByRole('button', { name: /Annulla/i });
@@ -475,7 +494,7 @@ describe('OpportunityWorkflow', () => {
       });
 
       const opp = createMockOpportunity({ currentPhase: 'Planning' });
-      render(<OpportunityWorkflow opp={opp} onBack={mockOnBack} />);
+      renderWorkflow(opp);
 
       const infoButton = screen.getByTitle(/Visualizza dettagli/i);
       fireEvent.click(infoButton);
@@ -504,7 +523,7 @@ describe('OpportunityWorkflow', () => {
       });
 
       const opp = createMockOpportunity({ currentPhase: 'Planning' });
-      render(<OpportunityWorkflow opp={opp} onBack={mockOnBack} />);
+      renderWorkflow(opp);
 
       const infoButton = screen.getByTitle(/Visualizza dettagli/i);
       fireEvent.click(infoButton);
@@ -528,7 +547,7 @@ describe('OpportunityWorkflow', () => {
       });
 
       const opp = createMockOpportunity({ currentPhase: 'Planning' });
-      render(<OpportunityWorkflow opp={opp} onBack={mockOnBack} />);
+      renderWorkflow(opp);
 
       const infoButton = screen.getByTitle(/Visualizza dettagli/i);
       fireEvent.click(infoButton);
@@ -543,9 +562,9 @@ describe('OpportunityWorkflow', () => {
   describe('Navigation', () => {
     it('should call onBack when back button clicked', () => {
       const opp = createMockOpportunity();
-      render(<OpportunityWorkflow opp={opp} onBack={mockOnBack} />);
+      renderWorkflow(opp);
 
-      const backButton = screen.getByRole('button', { name: /Back to Dashboard/i });
+      const backButton = screen.getByRole('button', { name: /Torna alla Dashboard/i });
       fireEvent.click(backButton);
 
       expect(mockOnBack).toHaveBeenCalledTimes(1);
@@ -560,7 +579,7 @@ describe('OpportunityWorkflow', () => {
         isNewCustomer: false,
         raiseLevel: 'L6'
       });
-      render(<OpportunityWorkflow opp={opp} onBack={mockOnBack} />);
+      renderWorkflow(opp);
 
       expect(screen.getByText(/Fast Track Eligible/i)).toBeInTheDocument();
     });
@@ -570,7 +589,7 @@ describe('OpportunityWorkflow', () => {
         raiseTcv: 300000,
         raiseLevel: 'L5'
       });
-      render(<OpportunityWorkflow opp={opp} onBack={mockOnBack} />);
+      renderWorkflow(opp);
 
       expect(screen.queryByText(/Fast Track Eligible/i)).not.toBeInTheDocument();
     });

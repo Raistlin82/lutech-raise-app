@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { Opportunity, Checkpoint, ControlConfig, Phase } from '../../types';
 import { calculateRaiseLevel, isFastTrackEligible, getRequiredCheckpoints } from '../../lib/raiseLogic';
 import { useSettings } from '../../stores/SettingsStore';
@@ -10,6 +11,8 @@ import { showToast } from '../../lib/toast';
 import { LoadingSpinner } from '../common/LoadingSpinner';
 
 export const OpportunityWorkflow = ({ opp, onBack }: { opp: Opportunity, onBack: () => void }) => {
+    const { t } = useTranslation('workflow');
+    const { t: tCommon } = useTranslation('common');
     const [currentOpp, setCurrentOpp] = useState(opp);
     const [activeTab, setActiveTab] = useState<Phase>(opp.currentPhase);
     const [showEditModal, setShowEditModal] = useState(false);
@@ -58,10 +61,10 @@ export const OpportunityWorkflow = ({ opp, onBack }: { opp: Opportunity, onBack:
                 setCurrentOpp(updatedOpp);
                 updateOpportunity(updatedOpp);
                 setActiveTab(nextPhase);
-                showToast.success(`Fase ${phase} completata! Avanzamento a ${nextPhase}.`);
+                showToast.success(t('completion.successAdvance', { phase, nextPhase }));
             }
         } catch {
-            showToast.error('Errore durante il completamento della fase.');
+            showToast.error(t('completion.error'));
         } finally {
             setIsCompleting(false);
         }
@@ -75,14 +78,14 @@ export const OpportunityWorkflow = ({ opp, onBack }: { opp: Opportunity, onBack:
             updateOpportunity(updatedOpp);
             setActiveTab('Handover');
             setShowOutcomeModal(false);
-            showToast.success('Opportunità VINTA! Avanzamento a Handover.');
+            showToast.success(t('outcome.wonSuccess'));
         } else {
             // Lost -> mark as Lost (final phase)
             const updatedOpp: Opportunity = { ...currentOpp, currentPhase: 'Lost' };
             setCurrentOpp(updatedOpp);
             updateOpportunity(updatedOpp);
             setShowOutcomeModal(false);
-            showToast.info('Opportunità segnata come PERSA.');
+            showToast.info(t('outcome.lostInfo'));
         }
     };
 
@@ -91,15 +94,15 @@ export const OpportunityWorkflow = ({ opp, onBack }: { opp: Opportunity, onBack:
             fallback={
                 <div className="p-8 max-w-4xl mx-auto">
                     <div className="bg-red-50 border border-red-200 rounded-xl p-6">
-                        <h2 className="text-xl font-bold text-red-900 mb-2">Errore nel Workflow</h2>
+                        <h2 className="text-xl font-bold text-red-900 mb-2">{t('error.title')}</h2>
                         <p className="text-red-700 mb-4">
-                            Si è verificato un errore durante il caricamento del workflow di questa opportunità.
+                            {t('error.message')}
                         </p>
                         <button
                             onClick={onBack}
                             className="px-6 py-2 bg-red-600 text-white font-semibold rounded-xl hover:bg-red-700"
                         >
-                            Torna alla Dashboard
+                            {t('actions.backToDashboard')}
                         </button>
                     </div>
                 </div>
@@ -119,7 +122,7 @@ export const OpportunityWorkflow = ({ opp, onBack }: { opp: Opportunity, onBack:
                         setCurrentOpp(oppWithLevel);
                         updateOpportunity(oppWithLevel);
                         setShowEditModal(false);
-                        showToast.success('Modifiche salvate.');
+                        showToast.success(t('completion.changesSaved'));
                     }}
                     onClose={() => setShowEditModal(false)}
                 />
@@ -129,9 +132,9 @@ export const OpportunityWorkflow = ({ opp, onBack }: { opp: Opportunity, onBack:
             {showOutcomeModal && (
                 <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in duration-200">
                     <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full p-8 animate-in zoom-in-95 duration-200">
-                        <h3 className="text-2xl font-bold text-slate-900 mb-2">Esito Opportunità</h3>
+                        <h3 className="text-2xl font-bold text-slate-900 mb-2">{t('outcome.title')}</h3>
                         <p className="text-slate-600 mb-8">
-                            Seleziona l'esito finale dell'opportunità dopo l'Authorization To Commit (ATC).
+                            {t('outcome.selectOutcomeMessage')}
                         </p>
 
                         <div className="grid grid-cols-2 gap-4">
@@ -141,8 +144,8 @@ export const OpportunityWorkflow = ({ opp, onBack }: { opp: Opportunity, onBack:
                                 className="group relative flex flex-col items-center justify-center p-6 bg-gradient-to-br from-emerald-50 to-green-50 hover:from-emerald-100 hover:to-green-100 border-2 border-emerald-200 hover:border-emerald-400 rounded-xl transition-all duration-200 hover:scale-105 active:scale-95"
                             >
                                 <TrendingUp size={48} className="text-emerald-600 mb-3 group-hover:scale-110 transition-transform" strokeWidth={2} />
-                                <span className="text-xl font-bold text-emerald-900">WON</span>
-                                <span className="text-sm text-emerald-700 mt-1">Opportunità Vinta</span>
+                                <span className="text-xl font-bold text-emerald-900">{t('outcome.wonLabel')}</span>
+                                <span className="text-sm text-emerald-700 mt-1">{t('outcome.wonMessage')}</span>
                             </button>
 
                             {/* Lost Button */}
@@ -151,8 +154,8 @@ export const OpportunityWorkflow = ({ opp, onBack }: { opp: Opportunity, onBack:
                                 className="group relative flex flex-col items-center justify-center p-6 bg-gradient-to-br from-slate-50 to-gray-50 hover:from-slate-100 hover:to-gray-100 border-2 border-slate-200 hover:border-slate-400 rounded-xl transition-all duration-200 hover:scale-105 active:scale-95"
                             >
                                 <TrendingDown size={48} className="text-slate-600 mb-3 group-hover:scale-110 transition-transform" strokeWidth={2} />
-                                <span className="text-xl font-bold text-slate-900">LOST</span>
-                                <span className="text-sm text-slate-700 mt-1">Opportunità Persa</span>
+                                <span className="text-xl font-bold text-slate-900">{t('outcome.lostLabel')}</span>
+                                <span className="text-sm text-slate-700 mt-1">{t('outcome.lostMessage')}</span>
                             </button>
                         </div>
 
@@ -160,7 +163,7 @@ export const OpportunityWorkflow = ({ opp, onBack }: { opp: Opportunity, onBack:
                             onClick={() => setShowOutcomeModal(false)}
                             className="mt-6 w-full px-4 py-2 text-slate-600 hover:text-slate-900 font-semibold transition-colors"
                         >
-                            Annulla
+                            {tCommon('button.cancel')}
                         </button>
                     </div>
                 </div>
@@ -168,7 +171,7 @@ export const OpportunityWorkflow = ({ opp, onBack }: { opp: Opportunity, onBack:
 
             <button onClick={onBack} className="text-slate-500 hover:text-slate-800 text-sm font-medium mb-4 flex items-center gap-1 group transition-colors">
                 <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
-                Back to Dashboard
+                {t('actions.backToDashboard')}
             </button>
 
             <div className="glass-card rounded-2xl overflow-hidden border border-slate-200/60 shadow-xl">
@@ -192,10 +195,10 @@ export const OpportunityWorkflow = ({ opp, onBack }: { opp: Opportunity, onBack:
                                     <button
                                         onClick={() => setShowEditModal(true)}
                                         className="px-3 py-2 bg-white/10 hover:bg-white/20 border border-white/20 rounded-lg transition-all flex items-center gap-2 text-sm font-semibold"
-                                        title="Modifica dettagli opportunità (solo fino ad ATP)"
+                                        title={t('editModal.tooltip')}
                                     >
                                         <Edit3 size={16} strokeWidth={2.5} />
-                                        <span className="hidden sm:inline">Edit Details</span>
+                                        <span className="hidden sm:inline">{t('actions.editDetails')}</span>
                                     </button>
                                 )}
                                 <div className={clsx(
@@ -208,7 +211,7 @@ export const OpportunityWorkflow = ({ opp, onBack }: { opp: Opportunity, onBack:
                                 </div>
                             </div>
                             <span className="text-xs text-slate-500 uppercase tracking-widest font-semibold flex items-center gap-1">
-                                <Shield size={10} /> Auth Level
+                                <Shield size={10} /> {t('authLevel')}
                             </span>
                         </div>
                     </div>
@@ -223,8 +226,8 @@ export const OpportunityWorkflow = ({ opp, onBack }: { opp: Opportunity, onBack:
                         <Metric label="TCV" value={`€ ${currentOpp.tcv.toLocaleString()}`} />
                         <Metric label="RAISE TCV" value={`€ ${currentOpp.raiseTcv.toLocaleString()}`} color="text-blue-300" />
                         <Metric
-                            label="KCP Status"
-                            value={currentOpp.hasKcpDeviations ? 'Deviations Detected' : 'Standard Check'}
+                            label={t('kcp.status')}
+                            value={currentOpp.hasKcpDeviations ? t('kcp.deviations') : t('kcp.standard')}
                             color={currentOpp.hasKcpDeviations ? 'text-amber-400' : 'text-emerald-400'}
                             icon={currentOpp.hasKcpDeviations ? <AlertTriangle size={16} /> : <Check size={16} />}
                         />
@@ -233,7 +236,7 @@ export const OpportunityWorkflow = ({ opp, onBack }: { opp: Opportunity, onBack:
                         {isFastTrackEligible(currentOpp) && (
                             <div className="bg-blue-500/20 border border-blue-400/30 px-3 py-1.5 rounded-lg text-xs font-medium text-blue-200 flex items-center gap-2">
                                 <Activity size={12} />
-                                Fast Track Eligible (TCV &lt; 250k, no KCP deviations)
+                                {t('fastTrack.eligible')}
                             </div>
                         )}
                     </div>
@@ -311,6 +314,8 @@ const PhaseChecklist = ({
     isCurrentPhase: boolean,
     isCompleting: boolean
 }) => {
+    const { t } = useTranslation('workflow');
+    const { t: tCommon } = useTranslation('common');
     const [localCheckpoints, setLocalCheckpoints] = useState<Checkpoint[]>(() =>
         getRequiredCheckpoints(phase, currentOpp, controls)
     );
@@ -330,26 +335,26 @@ const PhaseChecklist = ({
         <div className="max-w-3xl mx-auto animate-in fade-in zoom-in-95 duration-300">
             <div className="flex items-center justify-between mb-6">
                 <h2 className="text-2xl font-bold text-slate-900 flex items-center gap-3">
-                    {phase} Checklist
+                    {phase} {t('checkpoints.checklist')}
                     {!isCurrentPhase && (
                         <span className="text-sm font-normal text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
-                            Completed
+                            {t('checkpoints.completed')}
                         </span>
                     )}
                 </h2>
                 <span className="text-xs font-semibold text-slate-500 border border-slate-200 px-3 py-1 rounded-full bg-slate-100/50">
-                    {localCheckpoints.filter(c => c.checked).length} / {localCheckpoints.length} Steps
+                    {localCheckpoints.filter(c => c.checked).length} / {localCheckpoints.length} {t('checkpoints.steps')}
                 </span>
             </div>
 
             <div className="space-y-4">
                 {localCheckpoints.length === 0 ? (
                     <div className="text-center p-12 bg-slate-50/50 rounded-xl border-2 border-dashed border-slate-200">
-                        <p className="text-slate-500 font-medium">No checks required for this phase.</p>
+                        <p className="text-slate-500 font-medium">{t('checkpoints.noChecksRequired')}</p>
                         <p className="text-slate-400 text-sm mt-1">
                             {(phase === 'ATP' || phase === 'ATS')
-                                ? "Checks may be conditional based on opportunity characteristics."
-                                : "All checks clear or not applicable."}
+                                ? t('checkpoints.checksConditional')
+                                : t('checkpoints.allChecksClear')}
                         </p>
                     </div>
                 ) : (
@@ -369,7 +374,7 @@ const PhaseChecklist = ({
                             className="px-6 py-2.5 rounded-xl text-slate-600 font-medium hover:bg-slate-100 bg-white border border-slate-200 shadow-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                             disabled={isCompleting}
                         >
-                            Save Draft
+                            {t('actions.saveDraft')}
                         </button>
                         <button
                             onClick={onAuthorize}
@@ -384,12 +389,12 @@ const PhaseChecklist = ({
                             {isCompleting ? (
                                 <>
                                     <LoadingSpinner size={18} className="text-white" />
-                                    Completamento...
+                                    {t('actions.completing')}
                                 </>
                             ) : (
                                 <>
                                     <CheckCircle size={18} />
-                                    Complete {phase}
+                                    {t('actions.complete', { phase })}
                                 </>
                             )}
                         </button>
@@ -705,6 +710,8 @@ interface EditOpportunityDetailsModalProps {
 }
 
 const EditOpportunityDetailsModal = ({ opp, onSave, onClose }: EditOpportunityDetailsModalProps) => {
+    const { t } = useTranslation('workflow');
+    const { t: tCommon } = useTranslation('common');
     const [formData, setFormData] = useState({
         isRti: opp.isRti,
         isMandataria: opp.isMandataria || false,
@@ -722,7 +729,7 @@ const EditOpportunityDetailsModal = ({ opp, onSave, onClose }: EditOpportunityDe
         e.preventDefault();
 
         if (isATSCompleted) {
-            showToast.error('Le modifiche ai flag sono bloccate dopo il completamento della fase ATS.');
+            showToast.error(t('completion.flagsLockedAfterATS'));
             return;
         }
 
@@ -746,11 +753,11 @@ const EditOpportunityDetailsModal = ({ opp, onSave, onClose }: EditOpportunityDe
                 <div className="p-6 border-b border-slate-200 bg-gradient-to-r from-cyan-50 to-blue-50">
                     <div className="flex items-start justify-between">
                         <div>
-                            <h2 className="text-2xl font-bold text-slate-900">Modifica Dettagli Opportunità</h2>
+                            <h2 className="text-2xl font-bold text-slate-900">{t('editModal.title')}</h2>
                             <p className="text-slate-600 mt-1">
                                 {isATSCompleted
-                                    ? '⚠️ Modifiche bloccate: ATS completata. I flag possono essere modificati solo fino al completamento della fase ATS.'
-                                    : 'Modifica RTI, KCP deviations e altri flag (modificabili fino al completamento di ATS)'}
+                                    ? t('editModal.atsCompletedWarning')
+                                    : t('editModal.editableFlagsNote')}
                             </p>
                         </div>
                         <button
