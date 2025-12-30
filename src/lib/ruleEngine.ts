@@ -20,6 +20,8 @@ const SAFE_OPERATORS = {
   lessThanOrEqual: (a: number, b: number) => a <= b,
   includes: (arr: any[], val: any) => arr.includes(val),
   in: (val: any, arr: any[]) => arr.includes(val),
+  exists: (a: any) => a !== undefined && a !== null,
+  notExists: (a: any) => a === undefined || a === null,
 };
 
 export interface ConditionRule {
@@ -39,8 +41,13 @@ export interface CompoundCondition {
  *   "opp.raiseLevel === 'L1'" -> { field: 'raiseLevel', operator: 'equals', value: 'L1' }
  *   "opp.tcv > 1000000" -> { field: 'tcv', operator: 'greaterThan', value: 1000000 }
  */
-export function parseLegacyCondition(condition: string): CompoundCondition | null {
+export function parseLegacyCondition(condition: string, silent = false): CompoundCondition | null {
   if (!condition || condition.trim() === '') return null;
+
+  // Handle literal 'false' - always false condition (used to disable checkpoints)
+  if (condition.trim() === 'false') {
+    return { all: [{ field: 'id' as keyof Opportunity, operator: 'equals', value: '__NEVER_MATCH__' }] };
+  }
 
   // Remove 'opp.' prefix
   const cleaned = condition.replace(/opp\./g, '');
@@ -60,6 +67,42 @@ export function parseLegacyCondition(condition: string): CompoundCondition | nul
     };
   }
 
+  // Pattern: field !== 'value' or field != 'value' (notEquals with string)
+  const notEqualsStrMatch = cleaned.match(/^(\w+)\s*!==?\s*["'](.+?)["']$/);
+  if (notEqualsStrMatch) {
+    return {
+      all: [{
+        field: notEqualsStrMatch[1] as keyof Opportunity,
+        operator: 'notEquals',
+        value: notEqualsStrMatch[2]
+      }]
+    };
+  }
+
+  // Pattern: field !== undefined (exists check)
+  const existsMatch = cleaned.match(/^(\w+)\s*!==\s*undefined$/);
+  if (existsMatch) {
+    return {
+      all: [{
+        field: existsMatch[1] as keyof Opportunity,
+        operator: 'exists',
+        value: true
+      }]
+    };
+  }
+
+  // Pattern: field === undefined (not exists check)
+  const notExistsMatch = cleaned.match(/^(\w+)\s*===\s*undefined$/);
+  if (notExistsMatch) {
+    return {
+      all: [{
+        field: notExistsMatch[1] as keyof Opportunity,
+        operator: 'notExists',
+        value: true
+      }]
+    };
+  }
+
   // Pattern: field === true/false
   const boolMatch = cleaned.match(/^(\w+)\s*===\s*(true|false)$/);
   if (boolMatch) {
@@ -68,6 +111,18 @@ export function parseLegacyCondition(condition: string): CompoundCondition | nul
         field: boolMatch[1] as keyof Opportunity,
         operator: 'equals',
         value: boolMatch[2] === 'true'
+      }]
+    };
+  }
+
+  // Pattern: field !== true/false (notEquals with boolean)
+  const notEqualsBoolMatch = cleaned.match(/^(\w+)\s*!==?\s*(true|false)$/);
+  if (notEqualsBoolMatch) {
+    return {
+      all: [{
+        field: notEqualsBoolMatch[1] as keyof Opportunity,
+        operator: 'notEquals',
+        value: notEqualsBoolMatch[2] === 'true'
       }]
     };
   }
@@ -130,7 +185,8 @@ export function parseLegacyCondition(condition: string): CompoundCondition | nul
     const conditions: ConditionRule[] = [];
 
     for (const part of parts) {
-      const parsed = parseLegacyCondition(part);
+      // Use silent=true for recursive parsing to avoid warning spam
+      const parsed = parseLegacyCondition(part, true);
       if (parsed?.all) {
         conditions.push(...parsed.all);
       }
@@ -153,7 +209,8 @@ export function parseLegacyCondition(condition: string): CompoundCondition | nul
     const conditions: ConditionRule[] = [];
 
     for (const part of parts) {
-      const parsed = parseLegacyCondition(part);
+      // Use silent=true for recursive parsing to avoid warning spam
+      const parsed = parseLegacyCondition(part, true);
       if (parsed?.all) {
         conditions.push(...parsed.all);
       }
@@ -166,7 +223,9 @@ export function parseLegacyCondition(condition: string): CompoundCondition | nul
     }
   }
 
-  console.warn('Could not parse legacy condition:', condition);
+  if (!silent) {
+    console.warn('Could not parse legacy condition:', condition);
+  }
   return null;
 }
 
