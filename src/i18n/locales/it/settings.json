@@ -15,6 +15,16 @@
       "actions": "Azioni"
     },
     "filterPlaceholder": "Filtra controlli...",
+    "filters": {
+      "phase": "Filtra per Fase",
+      "level": "Filtra per Livello RAISE",
+      "allPhases": "Tutte le Fasi",
+      "allLevels": "Tutti i Livelli",
+      "showing": "Visualizzati",
+      "of": "di",
+      "controls": "controlli",
+      "clearFilters": "Azzera Filtri"
+    },
     "addControl": "Aggiungi Controllo",
     "resetDefaults": "Ripristina Default",
     "resetConfirm": "Ripristinare le impostazioni di default?",

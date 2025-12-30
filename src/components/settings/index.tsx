@@ -1,9 +1,12 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSettings } from '../../stores/SettingsStore';
 import type { ControlConfig, RaiseLevel } from '../../types';
-import { Plus, Trash2, Edit2, RotateCcw, Save, X } from 'lucide-react';
+import { Plus, Trash2, Edit2, RotateCcw, Save, X, Filter, XCircle } from 'lucide-react';
 import { clsx } from 'clsx';
+
+const PHASES = ['Planning', 'ATP', 'ATS', 'ATC', 'Handover'] as const;
+const LEVELS = ['L1', 'L2', 'L3', 'L4', 'L5', 'L6'] as const;
 
 // Helper function to extract RAISE levels from condition string
 const extractRaiseLevels = (condition?: string): RaiseLevel[] | 'ALL' => {
@@ -28,6 +31,39 @@ export const Settings = () => {
     const { controls, addControl, updateControl, deleteControl, resetDefaults } = useSettings();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingControl, setEditingControl] = useState<ControlConfig | null>(null);
+    const [phaseFilter, setPhaseFilter] = useState<string>('');
+    const [levelFilter, setLevelFilter] = useState<string>('');
+
+    // Filter controls based on selected filters
+    const filteredControls = useMemo(() => {
+        return controls.filter(control => {
+            // Phase filter
+            if (phaseFilter && control.phase !== phaseFilter) {
+                return false;
+            }
+
+            // Level filter
+            if (levelFilter) {
+                const controlLevels = extractRaiseLevels(control.condition);
+                if (controlLevels === 'ALL') {
+                    // 'ALL' matches any level filter
+                    return true;
+                }
+                if (!controlLevels.includes(levelFilter as RaiseLevel)) {
+                    return false;
+                }
+            }
+
+            return true;
+        });
+    }, [controls, phaseFilter, levelFilter]);
+
+    const hasActiveFilters = phaseFilter || levelFilter;
+
+    const clearFilters = () => {
+        setPhaseFilter('');
+        setLevelFilter('');
+    };
 
     const handleSave = (control: ControlConfig) => {
         if (editingControl) {
@@ -66,6 +102,68 @@ export const Settings = () => {
                 </div>
             </div>
 
+            {/* Filters */}
+            <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-4">
+                <div className="flex flex-wrap items-center gap-4">
+                    <div className="flex items-center gap-2 text-slate-500">
+                        <Filter size={18} />
+                        <span className="font-medium text-sm">Filtri:</span>
+                    </div>
+
+                    {/* Phase Filter */}
+                    <div className="flex items-center gap-2">
+                        <label htmlFor="phase-filter" className="text-sm text-slate-600">
+                            {t('controls.filters.phase')}:
+                        </label>
+                        <select
+                            id="phase-filter"
+                            value={phaseFilter}
+                            onChange={(e) => setPhaseFilter(e.target.value)}
+                            className="px-3 py-1.5 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        >
+                            <option value="">{t('controls.filters.allPhases')}</option>
+                            {PHASES.map(phase => (
+                                <option key={phase} value={phase}>{phase}</option>
+                            ))}
+                        </select>
+                    </div>
+
+                    {/* Level Filter */}
+                    <div className="flex items-center gap-2">
+                        <label htmlFor="level-filter" className="text-sm text-slate-600">
+                            {t('controls.filters.level')}:
+                        </label>
+                        <select
+                            id="level-filter"
+                            value={levelFilter}
+                            onChange={(e) => setLevelFilter(e.target.value)}
+                            className="px-3 py-1.5 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        >
+                            <option value="">{t('controls.filters.allLevels')}</option>
+                            {LEVELS.map(level => (
+                                <option key={level} value={level}>{level}</option>
+                            ))}
+                        </select>
+                    </div>
+
+                    {/* Clear Filters Button */}
+                    {hasActiveFilters && (
+                        <button
+                            onClick={clearFilters}
+                            className="flex items-center gap-1 px-3 py-1.5 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                        >
+                            <XCircle size={16} />
+                            {t('controls.filters.clearFilters')}
+                        </button>
+                    )}
+
+                    {/* Results count */}
+                    <div className="ml-auto text-sm text-slate-500">
+                        {t('controls.filters.showing')} <span className="font-bold text-slate-700">{filteredControls.length}</span> {t('controls.filters.of')} <span className="font-bold text-slate-700">{controls.length}</span> {t('controls.filters.controls')}
+                    </div>
+                </div>
+            </div>
+
             <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
                 <table className="w-full text-left text-sm">
                     <thead className="bg-slate-50 border-b border-slate-200">
@@ -80,7 +178,7 @@ export const Settings = () => {
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-100">
-                        {controls
+                        {filteredControls
                             .sort((a, b) => {
                                 // Sort by phase order, then by control order
                                 const phaseOrder = { 'Planning': 1, 'ATP': 2, 'ATS': 3, 'ATC': 4, 'Handover': 5, 'ALL': 6 };

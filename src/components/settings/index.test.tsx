@@ -301,13 +301,16 @@ describe('Settings', () => {
     it('should show phase-specific styling', () => {
       renderSettings();
 
-      // Find the Planning phase badge
-      const planningBadge = screen.getByText('Planning');
-      expect(planningBadge.className).toContain('bg-blue-50');
+      // Find the Planning phase badges (in table and filter dropdown)
+      const planningBadges = screen.getAllByText('Planning');
+      // At least one should have the phase badge styling (not the dropdown option)
+      const planningTableBadge = planningBadges.find(el => el.className.includes('bg-blue-50'));
+      expect(planningTableBadge).toBeTruthy();
 
-      // Find the ATP phase badge
-      const atpBadge = screen.getByText('ATP');
-      expect(atpBadge.className).toContain('bg-indigo-50');
+      // Find the ATP phase badges
+      const atpBadges = screen.getAllByText('ATP');
+      const atpTableBadge = atpBadges.find(el => el.className.includes('bg-indigo-50'));
+      expect(atpTableBadge).toBeTruthy();
     });
   });
 
