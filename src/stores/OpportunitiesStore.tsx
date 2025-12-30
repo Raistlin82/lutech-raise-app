@@ -1,16 +1,19 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import type { Opportunity } from '../types';
 import { calculateRaiseLevel } from '../lib/raiseLogic';
 import { validateStorageData, validateOpportunity } from '../lib/validation';
 import { showToast } from '../lib/toast';
+import * as opportunityService from '../services/opportunityService';
 
 interface OpportunitiesContextType {
     opportunities: Opportunity[];
+    loading: boolean;
     selectedOpp: Opportunity | null;
     selectOpportunity: (opp: Opportunity | null) => void;
-    updateOpportunity: (opp: Opportunity) => void;
-    addOpportunity: (opp: Opportunity) => void;
-    deleteOpportunity: (id: string) => void;
+    updateOpportunity: (opp: Opportunity) => Promise<void>;
+    addOpportunity: (opp: Opportunity) => Promise<void>;
+    deleteOpportunity: (id: string) => Promise<void>;
+    refreshOpportunities: () => Promise<void>;
 }
 
 const OpportunitiesContext = createContext<OpportunitiesContextType | undefined>(undefined);
@@ -19,85 +22,117 @@ const OpportunitiesContext = createContext<OpportunitiesContextType | undefined>
 const INITIAL_OPPORTUNITIES: Opportunity[] = [];
 
 export const OpportunitiesProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    const [opportunities, setOpportunities] = useState<Opportunity[]>(() => {
-        const saved = localStorage.getItem('raise_opportunities');
-        if (!saved) return INITIAL_OPPORTUNITIES;
+    const [opportunities, setOpportunities] = useState<Opportunity[]>(INITIAL_OPPORTUNITIES);
+    const [loading, setLoading] = useState(true);
+    const [selectedOpp, setSelectedOpp] = useState<Opportunity | null>(null);
 
+    // Load opportunities from service on mount
+    const loadOpportunities = useCallback(async () => {
         try {
-            const parsed = JSON.parse(saved);
-            const validation = validateStorageData(parsed);
+            setLoading(true);
+            const data = await opportunityService.getOpportunities();
 
+            // Validate and recalculate raiseLevel
+            const validation = validateStorageData(data);
             if (!validation.success) {
-                console.error('Invalid data in localStorage:', validation.error);
-                // Optionally show error to user
-                return INITIAL_OPPORTUNITIES;
+                console.error('Invalid opportunity data from service:', validation.error);
+                setOpportunities(INITIAL_OPPORTUNITIES);
+                return;
             }
 
-            const opps = validation.data;
-
-            // Recalculate raiseLevel for all opportunities
-            return opps.map((opp: Opportunity) => ({
+            const opps = validation.data.map((opp: Opportunity) => ({
                 ...opp,
                 raiseLevel: calculateRaiseLevel(opp)
             }));
-        } catch (e) {
-            console.error('Failed to parse localStorage data:', e);
-            return INITIAL_OPPORTUNITIES;
-        }
-    });
 
-    const [selectedOpp, setSelectedOpp] = useState<Opportunity | null>(null);
+            setOpportunities(opps);
+        } catch (error) {
+            console.error('Failed to load opportunities:', error);
+            showToast.error('Errore nel caricamento opportunità');
+        } finally {
+            setLoading(false);
+        }
+    }, []);
 
     useEffect(() => {
-        localStorage.setItem('raise_opportunities', JSON.stringify(opportunities));
-    }, [opportunities]);
+        loadOpportunities();
+    }, [loadOpportunities]);
+
+    const refreshOpportunities = useCallback(async () => {
+        await loadOpportunities();
+    }, [loadOpportunities]);
 
     const selectOpportunity = (opp: Opportunity | null) => {
         setSelectedOpp(opp);
     };
 
-    const updateOpportunity = (updatedOpp: Opportunity) => {
+    const updateOpportunity = async (updatedOpp: Opportunity): Promise<void> => {
         const validation = validateOpportunity(updatedOpp);
         if (!validation.success) {
             console.error('Invalid opportunity:', validation.error);
             showToast.error('Dati non validi. Controlla i campi e riprova.');
             throw new Error('Invalid opportunity data: ' + validation.error.message);
         }
-        setOpportunities(prev => prev.map(o => o.id === updatedOpp.id ? updatedOpp : o));
-        if (selectedOpp && selectedOpp.id === updatedOpp.id) {
-            setSelectedOpp(updatedOpp);
+
+        try {
+            await opportunityService.updateOpportunity(updatedOpp);
+            setOpportunities(prev => prev.map(o => o.id === updatedOpp.id ? updatedOpp : o));
+            if (selectedOpp && selectedOpp.id === updatedOpp.id) {
+                setSelectedOpp(updatedOpp);
+            }
+            showToast.success(`Opportunità "${updatedOpp.title}" aggiornata!`);
+        } catch (error) {
+            console.error('Failed to update opportunity:', error);
+            showToast.error('Errore nell\'aggiornamento dell\'opportunità');
+            throw error;
         }
-        showToast.success(`Opportunità "${updatedOpp.title}" aggiornata!`);
     };
 
-    const addOpportunity = (opp: Opportunity) => {
+    const addOpportunity = async (opp: Opportunity): Promise<void> => {
         const validation = validateOpportunity(opp);
         if (!validation.success) {
             console.error('Invalid opportunity:', validation.error);
             showToast.error('Dati non validi. Controlla i campi e riprova.');
             throw new Error('Invalid opportunity data: ' + validation.error.message);
         }
-        setOpportunities(prev => [...prev, opp]);
-        showToast.success(`Opportunità "${opp.title}" creata con successo!`);
+
+        try {
+            await opportunityService.createOpportunity(opp);
+            setOpportunities(prev => [...prev, opp]);
+            showToast.success(`Opportunità "${opp.title}" creata con successo!`);
+        } catch (error) {
+            console.error('Failed to add opportunity:', error);
+            showToast.error('Errore nella creazione dell\'opportunità');
+            throw error;
+        }
     };
 
-    const deleteOpportunity = (id: string) => {
+    const deleteOpportunity = async (id: string): Promise<void> => {
         const opp = opportunities.find(o => o.id === id);
-        setOpportunities(prev => prev.filter(o => o.id !== id));
-        if (selectedOpp && selectedOpp.id === id) {
-            setSelectedOpp(null);
+        try {
+            await opportunityService.deleteOpportunity(id);
+            setOpportunities(prev => prev.filter(o => o.id !== id));
+            if (selectedOpp && selectedOpp.id === id) {
+                setSelectedOpp(null);
+            }
+            showToast.success(`Opportunità "${opp?.title}" eliminata.`);
+        } catch (error) {
+            console.error('Failed to delete opportunity:', error);
+            showToast.error('Errore nell\'eliminazione dell\'opportunità');
+            throw error;
         }
-        showToast.success(`Opportunità "${opp?.title}" eliminata.`);
     };
 
     return (
         <OpportunitiesContext.Provider value={{
             opportunities,
+            loading,
             selectedOpp,
             selectOpportunity,
             updateOpportunity,
             addOpportunity,
-            deleteOpportunity
+            deleteOpportunity,
+            refreshOpportunities,
         }}>
             {children}
         </OpportunitiesContext.Provider>

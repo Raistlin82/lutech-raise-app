@@ -2,8 +2,9 @@ import { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSettings } from '../../stores/SettingsStore';
 import type { ControlConfig, RaiseLevel } from '../../types';
-import { Plus, Trash2, Edit2, RotateCcw, Save, X, Filter, XCircle } from 'lucide-react';
+import { Plus, Trash2, Edit2, RotateCcw, Save, X, Filter, XCircle, Settings2, Database } from 'lucide-react';
 import { clsx } from 'clsx';
+import { DataMigrationPanel } from './DataMigrationPanel';
 
 const PHASES = ['Planning', 'ATP', 'ATS', 'ATC', 'Handover'] as const;
 const LEVELS = ['L1', 'L2', 'L3', 'L4', 'L5', 'L6'] as const;
@@ -26,9 +27,12 @@ const extractRaiseLevels = (condition?: string): RaiseLevel[] | 'ALL' => {
     return levels.length > 0 ? levels.sort() : 'ALL';
 };
 
+type TabType = 'controls' | 'data';
+
 export const Settings = () => {
     const { t } = useTranslation('settings');
     const { controls, addControl, updateControl, deleteControl, resetDefaults } = useSettings();
+    const [activeTab, setActiveTab] = useState<TabType>('controls');
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingControl, setEditingControl] = useState<ControlConfig | null>(null);
     const [phaseFilter, setPhaseFilter] = useState<string>('');
@@ -92,16 +96,50 @@ export const Settings = () => {
                     <h1 className="text-2xl font-bold text-slate-900">{t('title')}</h1>
                     <p className="text-slate-500">{t('subtitle')}</p>
                 </div>
-                <div className="flex gap-2">
-                    <button onClick={resetDefaults} className="px-4 py-2 border border-slate-200 text-slate-600 rounded-lg hover:bg-slate-50 flex items-center gap-2">
-                        <RotateCcw size={16} /> {t('controls.resetDefaults')}
-                    </button>
-                    <button onClick={openNew} className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2 shadow-lg shadow-blue-500/30">
-                        <Plus size={16} /> {t('controls.addControl')}
-                    </button>
-                </div>
+                {activeTab === 'controls' && (
+                    <div className="flex gap-2">
+                        <button onClick={resetDefaults} className="px-4 py-2 border border-slate-200 text-slate-600 rounded-lg hover:bg-slate-50 flex items-center gap-2">
+                            <RotateCcw size={16} /> {t('controls.resetDefaults')}
+                        </button>
+                        <button onClick={openNew} className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2 shadow-lg shadow-blue-500/30">
+                            <Plus size={16} /> {t('controls.addControl')}
+                        </button>
+                    </div>
+                )}
             </div>
 
+            {/* Tabs */}
+            <div className="flex gap-1 bg-slate-100 p-1 rounded-lg w-fit">
+                <button
+                    onClick={() => setActiveTab('controls')}
+                    className={clsx(
+                        'flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-colors',
+                        activeTab === 'controls'
+                            ? 'bg-white text-slate-900 shadow-sm'
+                            : 'text-slate-600 hover:text-slate-900'
+                    )}
+                >
+                    <Settings2 size={16} />
+                    {t('tabs.controls')}
+                </button>
+                <button
+                    onClick={() => setActiveTab('data')}
+                    className={clsx(
+                        'flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-colors',
+                        activeTab === 'data'
+                            ? 'bg-white text-slate-900 shadow-sm'
+                            : 'text-slate-600 hover:text-slate-900'
+                    )}
+                >
+                    <Database size={16} />
+                    {t('tabs.data')}
+                </button>
+            </div>
+
+            {activeTab === 'data' && <DataMigrationPanel />}
+
+            {activeTab === 'controls' && (
+            <>
             {/* Filters */}
             <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-4">
                 <div className="flex flex-wrap items-center gap-4">
@@ -261,6 +299,8 @@ export const Settings = () => {
                     </tbody>
                 </table>
             </div>
+            </>
+            )}
 
             {isModalOpen && (
                 <ControlModal

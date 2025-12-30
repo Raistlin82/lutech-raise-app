@@ -3,7 +3,30 @@
   "subtitle": "Gestisci controlli e configurazioni workflow",
   "tabs": {
     "controls": "Controlli",
-    "general": "Generali"
+    "general": "Generali",
+    "data": "Dati"
+  },
+  "migration": {
+    "title": "Migrazione Dati",
+    "subtitle": "Migra i dati tra localStorage e Supabase",
+    "notConfigured": "Supabase non configurato",
+    "notConfiguredDesc": "Per abilitare la migrazione, configura le variabili d'ambiente Supabase.",
+    "localStorage": "Storage Locale",
+    "customers": "Clienti",
+    "opportunities": "Opportunit\u00e0",
+    "controls": "Controlli",
+    "hasData": "Dati presenti",
+    "migrateToSupabase": "Migra a Supabase",
+    "exportToLocal": "Esporta in locale",
+    "success": "Operazione completata con successo!",
+    "error": "Si \u00e8 verificato un errore",
+    "migratedCounts": "Migrati: {{customers}} clienti, {{opportunities}} opportunit\u00e0, {{controls}} controlli",
+    "confirmTitle": "Conferma operazione",
+    "confirmOverwrite": "Esistono gi\u00e0 dati in Supabase. Sovrascrivere i dati esistenti?",
+    "confirmExport": "Esistono gi\u00e0 dati locali. Sovrascrivere con i dati da Supabase?",
+    "confirm": "Conferma",
+    "cancel": "Annulla",
+    "hint": "La migrazione copia i dati senza eliminarli dalla sorgente"
   },
   "controls": {
     "tableHeaders": {

@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { renderHook, act } from '@testing-library/react';
+import { renderHook, act, waitFor } from '@testing-library/react';
 import { CustomerProvider, useCustomers } from '../../stores/CustomerStore';
 import { OpportunitiesProvider, useOpportunities } from '../../stores/OpportunitiesStore';
 import { SettingsProvider } from '../../stores/SettingsStore';
@@ -22,7 +22,7 @@ describe('Customer-Opportunity Integration Flow', () => {
     localStorage.clear();
   });
 
-  it('should create a customer and use it in an opportunity', () => {
+  it('should create a customer and use it in an opportunity', async () => {
     // Setup customer hook
     const { result: customerResult } = renderHook(() => useCustomers(), {
       wrapper: AllProviders
@@ -33,6 +33,14 @@ describe('Customer-Opportunity Integration Flow', () => {
       wrapper: AllProviders
     });
 
+    // Wait for initial loads
+    await waitFor(() => {
+      expect(customerResult.current.loading).toBe(false);
+    });
+    await waitFor(() => {
+      expect(oppResult.current.loading).toBe(false);
+    });
+
     // Step 1: Create a customer
     const newCustomer: Omit<Customer, 'id'> = {
       name: 'Acme Corporation',
@@ -41,8 +49,8 @@ describe('Customer-Opportunity Integration Flow', () => {
     };
 
     let customerId: string = '';
-    act(() => {
-      customerId = customerResult.current.addCustomer(newCustomer);
+    await act(async () => {
+      customerId = await customerResult.current.addCustomer(newCustomer);
     });
 
     expect(customerResult.current.customers).toHaveLength(1);
@@ -69,8 +77,8 @@ describe('Customer-Opportunity Integration Flow', () => {
       isNewCustomer: false,
     };
 
-    act(() => {
-      oppResult.current.addOpportunity(newOpportunity);
+    await act(async () => {
+      await oppResult.current.addOpportunity(newOpportunity);
     });
 
     expect(oppResult.current.opportunities).toHaveLength(1);
@@ -84,9 +92,13 @@ describe('Customer-Opportunity Integration Flow', () => {
     expect(opportunity.customerId).toBe(customer!.id);
   });
 
-  it('should auto-fill industry and public sector from customer', () => {
+  it('should auto-fill industry and public sector from customer', async () => {
     const { result: customerResult } = renderHook(() => useCustomers(), {
       wrapper: AllProviders
+    });
+
+    await waitFor(() => {
+      expect(customerResult.current.loading).toBe(false);
     });
 
     // Create a public sector customer
@@ -97,8 +109,8 @@ describe('Customer-Opportunity Integration Flow', () => {
     };
 
     let customerId: string = '';
-    act(() => {
-      customerId = customerResult.current.addCustomer(publicCustomer);
+    await act(async () => {
+      customerId = await customerResult.current.addCustomer(publicCustomer);
     });
 
     const customer = customerResult.current.getCustomer(customerId);
@@ -106,9 +118,13 @@ describe('Customer-Opportunity Integration Flow', () => {
     expect(customer?.industry).toBe('Public Administration');
   });
 
-  it('should handle backward compatibility with old opportunities', () => {
+  it('should handle backward compatibility with old opportunities', async () => {
     const { result: oppResult } = renderHook(() => useOpportunities(), {
       wrapper: AllProviders
+    });
+
+    await waitFor(() => {
+      expect(oppResult.current.loading).toBe(false);
     });
 
     // Create an old-style opportunity (with clientName, no customerId)
@@ -133,8 +149,8 @@ describe('Customer-Opportunity Integration Flow', () => {
       isNewCustomer: false,
     };
 
-    act(() => {
-      oppResult.current.addOpportunity(oldOpportunity);
+    await act(async () => {
+      await oppResult.current.addOpportunity(oldOpportunity);
     });
 
     expect(oppResult.current.opportunities).toHaveLength(1);
@@ -143,7 +159,7 @@ describe('Customer-Opportunity Integration Flow', () => {
     expect(oppResult.current.opportunities[0].customerId).toBeUndefined();
   });
 
-  it('should update opportunity customer reference', () => {
+  it('should update opportunity customer reference', async () => {
     const { result: customerResult } = renderHook(() => useCustomers(), {
       wrapper: AllProviders
     });
@@ -152,18 +168,27 @@ describe('Customer-Opportunity Integration Flow', () => {
       wrapper: AllProviders
     });
 
+    await waitFor(() => {
+      expect(customerResult.current.loading).toBe(false);
+    });
+    await waitFor(() => {
+      expect(oppResult.current.loading).toBe(false);
+    });
+
     // Create two customers
     let customer1Id: string = '';
     let customer2Id: string = '';
 
-    act(() => {
-      customer1Id = customerResult.current.addCustomer({
+    await act(async () => {
+      customer1Id = await customerResult.current.addCustomer({
         name: 'Customer One',
         industry: 'Technology',
         isPublicSector: false,
       });
+    });
 
-      customer2Id = customerResult.current.addCustomer({
+    await act(async () => {
+      customer2Id = await customerResult.current.addCustomer({
         name: 'Customer Two',
         industry: 'Finance',
         isPublicSector: true,
@@ -191,8 +216,8 @@ describe('Customer-Opportunity Integration Flow', () => {
       isNewCustomer: false,
     };
 
-    act(() => {
-      oppResult.current.addOpportunity(opportunity);
+    await act(async () => {
+      await oppResult.current.addOpportunity(opportunity);
     });
 
     expect(oppResult.current.opportunities[0].customerId).toBe(customer1Id);
@@ -204,15 +229,15 @@ describe('Customer-Opportunity Integration Flow', () => {
       isPublicSector: true, // Should be updated based on customer2
     };
 
-    act(() => {
-      oppResult.current.updateOpportunity(updatedOpp);
+    await act(async () => {
+      await oppResult.current.updateOpportunity(updatedOpp);
     });
 
     expect(oppResult.current.opportunities[0].customerId).toBe(customer2Id);
     expect(oppResult.current.opportunities[0].isPublicSector).toBe(true);
   });
 
-  it('should validate customer data on load from localStorage', () => {
+  it('should validate customer data on load from localStorage', async () => {
     // Manually set invalid customer data in localStorage
     const invalidData = [
       {
@@ -230,11 +255,15 @@ describe('Customer-Opportunity Integration Flow', () => {
       wrapper: AllProviders
     });
 
+    await waitFor(() => {
+      expect(result.current.loading).toBe(false);
+    });
+
     // Should fall back to empty array due to validation failure
     expect(result.current.customers).toEqual([]);
   });
 
-  it('should prevent deleting customer with active opportunities', () => {
+  it('should prevent deleting customer with active opportunities', async () => {
     const { result: customerResult } = renderHook(() => useCustomers(), {
       wrapper: AllProviders
     });
@@ -243,10 +272,17 @@ describe('Customer-Opportunity Integration Flow', () => {
       wrapper: AllProviders
     });
 
+    await waitFor(() => {
+      expect(customerResult.current.loading).toBe(false);
+    });
+    await waitFor(() => {
+      expect(oppResult.current.loading).toBe(false);
+    });
+
     // Create customer
     let customerId: string = '';
-    act(() => {
-      customerId = customerResult.current.addCustomer({
+    await act(async () => {
+      customerId = await customerResult.current.addCustomer({
         name: 'Protected Customer',
         industry: 'Healthcare',
         isPublicSector: false,
@@ -274,8 +310,8 @@ describe('Customer-Opportunity Integration Flow', () => {
       isNewCustomer: false,
     };
 
-    act(() => {
-      oppResult.current.addOpportunity(opportunity);
+    await act(async () => {
+      await oppResult.current.addOpportunity(opportunity);
     });
 
     // Verify customer exists

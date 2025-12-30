@@ -29,6 +29,7 @@
     "test:e2e:debug": "playwright test --debug"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.89.0",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
     "i18next": "^25.7.3",

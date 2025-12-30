@@ -53,7 +53,7 @@ export const QuickAddCustomerModal: React.FC<QuickAddCustomerModalProps> = ({
         }
     }, [isOpen]);
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
         // Validate with temporary ID (will be replaced by addCustomer)
@@ -79,7 +79,7 @@ export const QuickAddCustomerModal: React.FC<QuickAddCustomerModalProps> = ({
 
         try {
             // Add customer and get the new ID
-            const newCustomerId = addCustomer({
+            const newCustomerId = await addCustomer({
                 ...formData,
             });
 

@@ -1,12 +1,16 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import type { ControlConfig } from '../types';
+import { showToast } from '../lib/toast';
+import * as controlService from '../services/controlService';
 
 interface SettingsContextType {
     controls: ControlConfig[];
-    addControl: (control: ControlConfig) => void;
-    updateControl: (control: ControlConfig) => void;
-    deleteControl: (id: string) => void;
-    resetDefaults: () => void;
+    loading: boolean;
+    addControl: (control: ControlConfig) => Promise<void>;
+    updateControl: (control: ControlConfig) => Promise<void>;
+    deleteControl: (id: string) => Promise<void>;
+    resetDefaults: () => Promise<void>;
+    refreshControls: () => Promise<void>;
 }
 
 const SettingsContext = createContext<SettingsContextType | undefined>(undefined);
@@ -847,34 +851,99 @@ const DEFAULT_CONTROLS: ControlConfig[] = [
 ];
 
 export const SettingsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    const [controls, setControls] = useState<ControlConfig[]>(() => {
-        const saved = localStorage.getItem('raise_controls');
-        return saved ? JSON.parse(saved) : DEFAULT_CONTROLS;
-    });
+    const [controls, setControls] = useState<ControlConfig[]>(DEFAULT_CONTROLS);
+    const [loading, setLoading] = useState(true);
+
+    // Load controls from service on mount
+    const loadControls = useCallback(async () => {
+        try {
+            setLoading(true);
+            const data = await controlService.getControls();
+
+            // If no controls in DB, use defaults and persist them
+            if (!data || data.length === 0) {
+                setControls(DEFAULT_CONTROLS);
+                // Save defaults to storage so they can be updated later
+                await controlService.resetControls(DEFAULT_CONTROLS);
+            } else {
+                setControls(data);
+            }
+        } catch (error) {
+            console.error('Failed to load controls:', error);
+            showToast.error('Errore nel caricamento controlli');
+            // Fallback to defaults on error
+            setControls(DEFAULT_CONTROLS);
+        } finally {
+            setLoading(false);
+        }
+    }, []);
 
     useEffect(() => {
-        localStorage.setItem('raise_controls', JSON.stringify(controls));
-    }, [controls]);
+        loadControls();
+    }, [loadControls]);
 
-    const addControl = (control: ControlConfig) => {
-        setControls([...controls, control]);
+    const refreshControls = useCallback(async () => {
+        await loadControls();
+    }, [loadControls]);
+
+    const addControl = async (control: ControlConfig): Promise<void> => {
+        try {
+            await controlService.createControl(control);
+            setControls(prev => [...prev, control]);
+            showToast.success('Controllo aggiunto!');
+        } catch (error) {
+            console.error('Failed to add control:', error);
+            showToast.error('Errore nell\'aggiunta del controllo');
+            throw error;
+        }
     };
 
-    const updateControl = (updated: ControlConfig) => {
-        setControls(controls.map(c => c.id === updated.id ? updated : c));
+    const updateControl = async (updated: ControlConfig): Promise<void> => {
+        try {
+            await controlService.updateControl(updated);
+            setControls(prev => prev.map(c => c.id === updated.id ? updated : c));
+            showToast.success('Controllo aggiornato!');
+        } catch (error) {
+            console.error('Failed to update control:', error);
+            showToast.error('Errore nell\'aggiornamento del controllo');
+            throw error;
+        }
     };
 
-    const deleteControl = (id: string) => {
-        setControls(controls.filter(c => c.id !== id));
+    const deleteControl = async (id: string): Promise<void> => {
+        try {
+            await controlService.deleteControl(id);
+            setControls(prev => prev.filter(c => c.id !== id));
+            showToast.success('Controllo eliminato!');
+        } catch (error) {
+            console.error('Failed to delete control:', error);
+            showToast.error('Errore nell\'eliminazione del controllo');
+            throw error;
+        }
     };
 
-    const resetDefaults = () => {
-        setControls(DEFAULT_CONTROLS);
-        localStorage.setItem('raise_controls', JSON.stringify(DEFAULT_CONTROLS));
+    const resetDefaults = async (): Promise<void> => {
+        try {
+            await controlService.resetControls(DEFAULT_CONTROLS);
+            setControls(DEFAULT_CONTROLS);
+            showToast.success('Controlli ripristinati ai valori default!');
+        } catch (error) {
+            console.error('Failed to reset controls:', error);
+            showToast.error('Errore nel ripristino dei controlli');
+            throw error;
+        }
     };
 
     return (
-        <SettingsContext.Provider value={{ controls, addControl, updateControl, deleteControl, resetDefaults }}>
+        <SettingsContext.Provider value={{
+            controls,
+            loading,
+            addControl,
+            updateControl,
+            deleteControl,
+            resetDefaults,
+            refreshControls,
+        }}>
             {children}
         </SettingsContext.Provider>
     );
