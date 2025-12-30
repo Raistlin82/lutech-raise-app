@@ -240,7 +240,8 @@ describe('Opportunity Workflow Integration', () => {
       expect(screen.getByText('Persistent Opportunity')).toBeInTheDocument();
     });
 
-    // Verify TCV is correct
-    expect(screen.getByText('€5000k')).toBeInTheDocument();
+    // Verify TCV is correct (appears in card and distribution)
+    const tcvElements = screen.getAllByText('€5000k');
+    expect(tcvElements.length).toBeGreaterThan(0);
   });
 });

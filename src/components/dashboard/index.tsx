@@ -7,6 +7,8 @@ import { useOpportunities } from '../../stores/OpportunitiesStore';
 import { ConfirmModal } from '../common/ConfirmModal';
 import { LoadingSpinner } from '../common/LoadingSpinner';
 import { SkeletonCard } from '../common/SkeletonCard';
+import { PhaseDistribution } from './PhaseDistribution';
+import { LevelDistribution } from './LevelDistribution';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
@@ -125,6 +127,12 @@ export const Dashboard = ({ onSelectOpp }: { onSelectOpp: (opp: Opportunity) => 
                     trend={criticalCount > 0 ? t('stats.actionRequired') : t('stats.allClear')}
                     trendUp={false}
                 />
+            </div>
+
+            {/* Distribution Charts */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <PhaseDistribution opportunities={opportunities} />
+                <LevelDistribution opportunities={opportunities} />
             </div>
 
             {/* Opportunities List */}

@@ -42,5 +42,19 @@
     "title": "Opportunità Recenti",
     "empty": "Nessuna opportunità recente",
     "viewDetails": "Visualizza Dettagli"
+  },
+  "phaseDistribution": {
+    "title": "Distribuzione per Fase",
+    "subtitle": "Opportunità attive per fase del workflow",
+    "noData": "Nessuna opportunità",
+    "opportunities": "opportunità",
+    "opportunity": "opportunità"
+  },
+  "levelDistribution": {
+    "title": "Distribuzione per RAISE Level",
+    "subtitle": "Classificazione opportunità per livello di autorizzazione",
+    "noData": "Nessuna opportunità",
+    "opportunities": "opportunità",
+    "totalValue": "Valore totale"
   }
 }
