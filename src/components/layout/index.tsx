@@ -2,11 +2,14 @@ import React, { useState } from 'react';
 import { LayoutDashboard, FileText, Building2, Settings, Menu as MenuIcon, X } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
 import { clsx } from 'clsx';
+import { useTranslation } from 'react-i18next';
 import { SkipLink } from '../common/SkipLink';
 import lutechLogo from '/assets/lutech-logo.png';
 import lutechIcon from '/assets/lutech-icon.png';
 
 export const Sidebar = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) => {
+    const { t } = useTranslation();
+
     return (
         <>
             {/* Mobile Overlay */}
@@ -54,7 +57,7 @@ export const Sidebar = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => v
                         <button
                             onClick={onClose}
                             className="md:hidden text-slate-400 hover:text-white transition-colors"
-                            aria-label="Chiudi menu"
+                            aria-label={t('sidebar.closeMenu')}
                         >
                             <X size={24} />
                         </button>
@@ -86,23 +89,23 @@ export const Sidebar = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => v
                 </div>
 
                 <div className="flex-1 p-4 space-y-2 overflow-y-auto">
-                    <NavItem to="/" icon={<LayoutDashboard size={20} />} label="Dashboard" end onClick={onClose} />
-                    <NavItem to="/opportunities" icon={<FileText size={20} />} label="Opportunities" onClick={onClose} />
-                    <NavItem to="/customers" icon={<Building2 size={20} />} label="Customers" onClick={onClose} />
-                    <NavItem to="/settings" icon={<Settings size={20} />} label="Settings" onClick={onClose} />
+                    <NavItem to="/" icon={<LayoutDashboard size={20} />} label={t('nav.dashboard')} end onClick={onClose} />
+                    <NavItem to="/opportunities" icon={<FileText size={20} />} label={t('nav.opportunities')} onClick={onClose} />
+                    <NavItem to="/customers" icon={<Building2 size={20} />} label={t('nav.customers')} onClick={onClose} />
+                    <NavItem to="/settings" icon={<Settings size={20} />} label={t('nav.settings')} onClick={onClose} />
                 </div>
 
                 <div className="p-5 border-t border-slate-800/50 bg-slate-950/50">
-                    <div className="text-[10px] text-slate-500 uppercase font-bold mb-3 tracking-widest">System Status</div>
+                    <div className="text-[10px] text-slate-500 uppercase font-bold mb-3 tracking-widest">{t('sidebar.systemStatus')}</div>
                     <div className="flex items-center gap-2.5 text-emerald-400 text-sm font-semibold">
                         <div className="relative">
                             <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse-slow" />
                             <div className="absolute inset-0 bg-emerald-400 rounded-full blur-sm opacity-70" />
                         </div>
-                        <span>Operational</span>
+                        <span>{t('sidebar.operational')}</span>
                     </div>
                     <div className="mt-4 pt-4 border-t border-slate-800/50">
-                        <div className="text-[10px] text-slate-600 uppercase font-semibold tracking-wider mb-3">Version 1.2.0</div>
+                        <div className="text-[10px] text-slate-600 uppercase font-semibold tracking-wider mb-3">{t('sidebar.version')} 1.2.0</div>
 
                         {/* Footer Logo & Copyright */}
                         <div className="flex items-center justify-between pt-3 border-t border-slate-800/30">
@@ -177,13 +180,15 @@ const NavItem = ({ icon, label, to, badge, end, onClick }: NavItemProps) => (
 );
 
 export const Header = ({ onOpenSidebar }: { onOpenSidebar: () => void }) => {
+    const { t } = useTranslation();
+
     return (
         <header className="h-16 md:pl-72 bg-white/90 backdrop-blur-xl border-b border-slate-200/80 fixed w-full top-0 z-20 flex items-center justify-between px-4 md:px-8 transition-all duration-300 shadow-sm">
             <div className="flex items-center gap-4">
                 <button
                     onClick={onOpenSidebar}
                     className="md:hidden p-2 text-slate-500 hover:text-slate-900 hover:bg-slate-100 rounded-xl transition-all duration-200"
-                    aria-label="Apri menu"
+                    aria-label={t('sidebar.openMenu')}
                     aria-expanded={false}
                 >
                     <MenuIcon size={24} />
@@ -191,7 +196,7 @@ export const Header = ({ onOpenSidebar }: { onOpenSidebar: () => void }) => {
                 <div className="flex items-center gap-2 text-sm hidden sm:flex">
                     <span className="px-2 py-1 bg-gradient-to-r from-cyan-50 to-blue-50 text-cyan-700 font-bold rounded-lg border border-cyan-200/50 text-xs">PSQ-003 v17</span>
                     <span className="text-slate-400">/</span>
-                    <span className="font-semibold text-slate-700">RAISE Workflow Management</span>
+                    <span className="font-semibold text-slate-700">{t('header.workflowManagement')}</span>
                 </div>
             </div>
 
