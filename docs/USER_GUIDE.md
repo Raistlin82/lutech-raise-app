@@ -3,13 +3,14 @@
 ## Indice
 
 1. [Introduzione](#introduzione)
-2. [Interfaccia e Lingua](#interfaccia-e-lingua) **(NEW v1.2.0)**
-3. [Gestione Clienti](#gestione-clienti) **(NEW v1.1.0)**
-4. [Dashboard](#dashboard)
-5. [Creazione Opportunità](#creazione-opportunità)
-6. [Workflow ATP/ATS/ATC](#workflow-atpatsatc)
-7. [Gestione Checkpoint](#gestione-checkpoint)
-8. [FAQ](#faq)
+2. [Autenticazione SAP IAS](#autenticazione-sap-ias) **(NEW v1.3.0)**
+3. [Interfaccia e Lingua](#interfaccia-e-lingua)
+4. [Gestione Clienti](#gestione-clienti)
+5. [Dashboard](#dashboard)
+6. [Creazione Opportunità](#creazione-opportunità)
+7. [Workflow ATP/ATS/ATC](#workflow-atpatsatc)
+8. [Gestione Checkpoint](#gestione-checkpoint)
+9. [FAQ](#faq)
 
 ---
 
@@ -21,7 +22,7 @@
 
 ### Versione Corrente
 
-**v1.2.0** - Interfaccia Completa in Italiano con sistema i18n
+**v1.3.0** - Integrazione Autenticazione Enterprise SAP IAS
 
 ### Concetti Chiave
 

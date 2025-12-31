@@ -3,12 +3,13 @@
 ## 📋 Checklist Pre-Produzione
 
 ### ✅ Completato
-- [x] Test automatici (91.8% passing)
+- [x] Test automatici (100% passing)
 - [x] Build production senza errori TypeScript
 - [x] Tutte le funzionalità core operative
 - [x] Form validation implementata
 - [x] ATP Checklist bug risolto
 - [x] Settings page con RAISE Levels
+- [x] Integrazione SAP IAS (Auth Enterprise)
 
 ### 🔧 Da Completare per Produzione
 
@@ -21,11 +22,12 @@
 # Production Configuration
 VITE_APP_ENV=production
 VITE_APP_NAME=RAISE App
-VITE_APP_VERSION=1.0.0
+VITE_APP_VERSION=1.3.0
 
-# API Configuration (se applicabile)
-# VITE_API_URL=https://api.tuodominio.com
-# VITE_API_KEY=your-production-key
+# SAP IAS Configuration (Mandatory for Kyma)
+VITE_IAS_AUTHORITY=https://your-tenant.accounts.ondemand.com
+VITE_IAS_CLIENT_ID=your-client-id
+VITE_BASE_PATH=/
 
 # Feature Flags
 VITE_ENABLE_ANALYTICS=true
@@ -142,7 +144,18 @@ gzip -9 < dist/assets/index-*.js | wc -c
 
 ## 5. 🌐 Hosting Options
 
-### Opzione A: Vercel (Raccomandato - Gratuito)
+### Opzione A: SAP BTP Kyma (Raccomandato per Lutech)
+**Vantaggi:** Enterprise standard, integrazione nativa IAS, scalabilità Kubernetes.
+
+**Setup:**
+1. Configura SAP IAS (vedi [SAP_IAS_CONFIG.md](./SAP_IAS_CONFIG.md))
+2. Build Docker image usando il `Dockerfile` in root
+3. Applica i manifesti in `k8s/`
+4. Configura APIRule per l'ingress
+
+---
+
+### Opzione B: Vercel (Alternativa Cloud)
 **Vantaggi:** Deploy automatico, HTTPS gratuito, CDN globale, zero-config
 
 **Setup:**
