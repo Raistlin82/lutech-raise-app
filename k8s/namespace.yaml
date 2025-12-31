@@ -7,3 +7,5 @@ metadata:
   labels:
     app: raise-app
     managed-by: github-actions
+    # Enable Istio sidecar injection for APIRule to work
+    istio-injection: enabled

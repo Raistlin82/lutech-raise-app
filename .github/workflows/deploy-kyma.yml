@@ -156,6 +156,10 @@ jobs:
         run: |
           kubectl apply -k k8s/
 
+      - name: Restart deployment to inject Istio sidecar
+        run: |
+          kubectl rollout restart deployment/raise-app -n raise-app
+
       - name: Check pod status before rollout
         run: |
           echo "=== Pod Status ==="
