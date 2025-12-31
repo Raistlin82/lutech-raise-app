@@ -1,6 +1,6 @@
-# RAISE App - Kyma APIRule (Ingress)
+# RAISE App - Kyma APIRule v2 (Ingress)
 # This is the Kyma-specific resource for exposing services externally
-apiVersion: gateway.kyma-project.io/v1beta1
+apiVersion: gateway.kyma-project.io/v2
 kind: APIRule
 metadata:
   name: raise-app
@@ -8,12 +8,13 @@ metadata:
   labels:
     app: raise-app
 spec:
+  # Host for the application
+  # ${KYMA_CLUSTER_DOMAIN} will be replaced by CI/CD
+  hosts:
+    - raise-app.${KYMA_CLUSTER_DOMAIN}
+
   # The Kyma gateway to use
   gateway: kyma-system/kyma-gateway
-
-  # Host for the application
-  # Replace with your actual Kyma cluster domain
-  host: raise-app.${KYMA_CLUSTER_DOMAIN}
 
   # Backend service reference
   service:
@@ -22,7 +23,7 @@ spec:
 
   # Access rules - allow all for SPA (auth handled in frontend)
   rules:
-    - path: /.*
+    - path: /*
       methods:
         - GET
         - POST
@@ -30,42 +31,4 @@ spec:
         - DELETE
         - PATCH
         - OPTIONS
-      accessStrategies:
-        - handler: noop
-          config: {}
-      mutators: []
-
----
-# Alternative: APIRule with JWT authentication via SAP IAS
-# Uncomment this section if you want to enforce auth at the gateway level
-# apiVersion: gateway.kyma-project.io/v1beta1
-# kind: APIRule
-# metadata:
-#   name: raise-app-secured
-#   namespace: raise-app
-# spec:
-#   gateway: kyma-system/kyma-gateway
-#   host: raise-app.${KYMA_CLUSTER_DOMAIN}
-#   service:
-#     name: raise-app
-#     port: 80
-#   rules:
-#     # Public routes (no auth)
-#     - path: /health
-#       methods: ["GET"]
-#       accessStrategies:
-#         - handler: noop
-#     - path: /ready
-#       methods: ["GET"]
-#       accessStrategies:
-#         - handler: noop
-#     # Protected routes (require JWT)
-#     - path: /.*
-#       methods: ["GET", "POST", "PUT", "DELETE", "PATCH"]
-#       accessStrategies:
-#         - handler: jwt
-#           config:
-#             jwks_urls:
-#               - "https://your-tenant.accounts.ondemand.com/oauth2/certs"
-#             trusted_issuers:
-#               - "https://your-tenant.accounts.ondemand.com"
+      noAuth: true
