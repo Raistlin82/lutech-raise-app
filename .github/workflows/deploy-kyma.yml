@@ -19,7 +19,8 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
+  # Note: github.repository preserves case but container registries require lowercase
+  IMAGE_NAME: raistlin82/lutech-raise-app
 
 permissions:
   contents: read
@@ -145,7 +146,7 @@ jobs:
       - name: Update deployment image tag
         run: |
           cd k8s
-          kustomize edit set image ghcr.io/raistlin82/raise-app=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}@${{ needs.build-and-push.outputs.image-digest }}
+          kustomize edit set image ghcr.io/raistlin82/lutech-raise-app=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}@${{ needs.build-and-push.outputs.image-digest }}
 
       - name: Replace cluster domain in APIRule
         run: |

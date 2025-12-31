@@ -19,5 +19,5 @@ commonLabels:
 
 # Image customization (override in CI/CD)
 images:
-  - name: ghcr.io/raistlin82/raise-app
+  - name: ghcr.io/raistlin82/lutech-raise-app
     newTag: latest

@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
         - name: raise-app
-          image: ghcr.io/raistlin82/raise-app:latest
+          image: ghcr.io/raistlin82/lutech-raise-app:latest
           imagePullPolicy: Always
           ports:
             - name: http
