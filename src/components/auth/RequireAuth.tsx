@@ -1,7 +1,8 @@
+import type { ReactNode } from "react";
 import { useAuth } from "react-oidc-context";
 import { LoadingSpinner } from "../common/LoadingSpinner";
 
-export function RequireAuth({ children }: { children: JSX.Element }) {
+export function RequireAuth({ children }: { children: ReactNode }) {
     const auth = useAuth();
 
     if (auth.isLoading) {
