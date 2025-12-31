@@ -1,9 +1,18 @@
+import { useEffect } from "react";
 import type { ReactNode } from "react";
-import { useAuth } from "react-oidc-context";
+import { useAuth } from "../../hooks/useAuth";
+import { useTranslation } from "react-i18next";
 import { LoadingSpinner } from "../common/LoadingSpinner";
 
 export function RequireAuth({ children }: { children: ReactNode }) {
     const auth = useAuth();
+    const { t } = useTranslation();
+
+    useEffect(() => {
+        if (!auth.isLoading && !auth.isAuthenticated && !auth.error) {
+            void auth.signinRedirect();
+        }
+    }, [auth.isLoading, auth.isAuthenticated, auth.error, auth.signinRedirect]);
 
     if (auth.isLoading) {
         return (
@@ -13,26 +22,31 @@ export function RequireAuth({ children }: { children: ReactNode }) {
         );
     }
 
+    if (auth.error) {
+        return (
+            <div className="flex min-h-screen items-center justify-center bg-red-50">
+                <div className="text-center space-y-4 p-8 bg-white rounded-2xl shadow-xl max-w-md w-full mx-4 border border-red-200">
+                    <h1 className="text-2xl font-bold text-red-700">{t('auth.errorTitle')}</h1>
+                    <p className="text-slate-600">{t('auth.errorMessage')}</p>
+                    <pre className="text-xs text-left bg-slate-100 p-4 rounded overflow-auto text-red-600 mb-4">
+                        {auth.error.message}
+                    </pre>
+                    <button
+                        onClick={() => void auth.signinRedirect()}
+                        className="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
+                    >
+                        {t('auth.retry')}
+                    </button>
+                </div>
+            </div>
+        );
+    }
+
     if (!auth.isAuthenticated) {
         return (
-            <div className="flex min-h-screen items-center justify-center bg-slate-50">
-                <div className="text-center space-y-4 p-8 bg-white rounded-2xl shadow-xl max-w-md w-full mx-4">
-                    <div className="w-16 h-16 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-2xl mx-auto flex items-center justify-center shadow-lg mb-6">
-                        <svg className="w-8 h-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                        </svg>
-                    </div>
-                    <h1 className="text-2xl font-bold text-slate-900">Autenticazione Richiesta</h1>
-                    <p className="text-slate-600">Accesso riservato. Effettua il login con il tuo account aziendale SAP.</p>
-                    <div className="pt-4">
-                        <button
-                            onClick={() => void auth.signinRedirect()}
-                            className="w-full px-6 py-3 text-base font-semibold text-white bg-gradient-to-r from-cyan-600 to-blue-600 rounded-xl hover:from-cyan-700 hover:to-blue-700 focus:outline-none focus:ring-4 focus:ring-cyan-500/20 shadow-lg transition-all transform hover:scale-[1.02] active:scale-[0.98]"
-                        >
-                            Accedi con SAP IAS
-                        </button>
-                    </div>
-                </div>
+            <div className="flex h-screen items-center justify-center flex-col gap-4 bg-slate-50">
+                <LoadingSpinner size={48} />
+                <p className="text-slate-500 font-medium">{t('auth.redirecting')}</p>
             </div>
         );
     }

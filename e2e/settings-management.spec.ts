@@ -135,7 +135,9 @@ test.describe('Settings Management Journey', () => {
 
     await waitForAppReady(page);
 
-    // Should navigate back to home (base path /lutech-raise-app/)
-    await expect(page).toHaveURL(/\/lutech-raise-app\/?$/);
+    // Should navigate back to home (root path)
+    // In dev/test mode, base path is /, in prod it might be /lutech-raise-app/
+    const url = page.url();
+    expect(url).toMatch(/517[34]\/?$/);
   });
 });

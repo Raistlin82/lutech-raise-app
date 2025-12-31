@@ -6,7 +6,7 @@ import { Page } from '@playwright/test';
  */
 
 // Base path for the application (matches vite.config.ts base)
-const BASE_PATH = '/lutech-raise-app';
+const BASE_PATH = '';
 
 /**
  * Navigate to a path within the application
@@ -48,7 +48,7 @@ export interface TestOpportunity {
  * Generate a valid UUID v4
  */
 function generateUUID(): string {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
     const r = Math.random() * 16 | 0;
     const v = c === 'x' ? r : (r & 0x3 | 0x8);
     return v.toString(16);
@@ -107,7 +107,7 @@ export async function waitForAppReady(page: Page): Promise<void> {
   await page.waitForFunction(() => {
     const spinners = document.querySelectorAll('[class*="animate-spin"]');
     return spinners.length === 0;
-  }, { timeout: 5000 }).catch(() => {});
+  }, { timeout: 5000 }).catch(() => { });
 }
 
 /**

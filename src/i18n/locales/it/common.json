@@ -1,4 +1,15 @@
 {
+  "auth": {
+    "loginWithSap": "Accedi con SAP IAS",
+    "logout": "Esci",
+    "redirecting": "Reindirizzamento al login SAP...",
+    "errorTitle": "Errore di Autenticazione",
+    "errorMessage": "Si è verificato un problema durante il login.",
+    "signingIn": "Accesso in corso...",
+    "signingOut": "Uscita in corso...",
+    "loading": "Caricamento...",
+    "retry": "Riprova"
+  },
   "nav": {
     "dashboard": "Dashboard",
     "opportunities": "Opportunità",
