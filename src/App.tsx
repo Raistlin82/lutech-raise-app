@@ -5,6 +5,7 @@ import { Layout } from './components/layout';
 import { useOpportunities } from './stores/OpportunitiesStore';
 import { ErrorBoundary } from './components/common/ErrorBoundary';
 import { LoadingSpinner } from './components/common/LoadingSpinner';
+import { RequireAuth } from './components/auth/RequireAuth';
 
 // Lazy load route components for code splitting
 const Dashboard = lazy(() => import('./components/dashboard').then(m => ({ default: m.Dashboard })));
@@ -33,34 +34,34 @@ function AppRoutes() {
   return (
     <Suspense fallback={<PageLoader />}>
       <Routes>
-      <Route path="/" element={
-        <Dashboard onSelectOpp={(opp) => {
-          selectOpportunity(opp);
-          navigate(`/opportunity/${opp.id}`);
-        }} />
-      } />
-      <Route path="/opportunities" element={<OpportunitiesPage />} />
-      <Route path="/opportunities/new" element={<NewOpportunityPage />} />
-      <Route path="/opportunities/:id/edit" element={<EditOpportunityPage />} />
-      <Route path="/approvals" element={<ApprovalsPage />} />
-      <Route path="/customers" element={<CustomersPage />} />
-      <Route path="/settings" element={<SettingsPage />} />
-      <Route
-        path="/opportunity/:id"
-        element={
-          selectedOpp ? (
-            <OpportunityWorkflow
-              opp={selectedOpp}
-              onBack={() => {
-                selectOpportunity(null);
-                navigate('/');
-              }}
-            />
-          ) : (
-            <Navigate to="/" replace />
-          )
-        }
-      />
+        <Route path="/" element={
+          <Dashboard onSelectOpp={(opp) => {
+            selectOpportunity(opp);
+            navigate(`/opportunity/${opp.id}`);
+          }} />
+        } />
+        <Route path="/opportunities" element={<OpportunitiesPage />} />
+        <Route path="/opportunities/new" element={<NewOpportunityPage />} />
+        <Route path="/opportunities/:id/edit" element={<EditOpportunityPage />} />
+        <Route path="/approvals" element={<ApprovalsPage />} />
+        <Route path="/customers" element={<CustomersPage />} />
+        <Route path="/settings" element={<SettingsPage />} />
+        <Route
+          path="/opportunity/:id"
+          element={
+            selectedOpp ? (
+              <OpportunityWorkflow
+                opp={selectedOpp}
+                onBack={() => {
+                  selectOpportunity(null);
+                  navigate('/');
+                }}
+              />
+            ) : (
+              <Navigate to="/" replace />
+            )
+          }
+        />
       </Routes>
     </Suspense>
   );
@@ -71,9 +72,11 @@ function App() {
     <ErrorBoundary>
       <Toaster />
       <BrowserRouter basename={import.meta.env.BASE_URL}>
-        <Layout>
-          <AppRoutes />
-        </Layout>
+        <RequireAuth>
+          <Layout>
+            <AppRoutes />
+          </Layout>
+        </RequireAuth>
       </BrowserRouter>
     </ErrorBoundary>
   );

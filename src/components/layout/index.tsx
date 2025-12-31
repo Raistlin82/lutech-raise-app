@@ -4,6 +4,7 @@ import { NavLink } from 'react-router-dom';
 import { clsx } from 'clsx';
 import { useTranslation } from 'react-i18next';
 import { SkipLink } from '../common/SkipLink';
+import { LoginButton } from '../auth/LoginButton';
 import lutechLogo from '/assets/lutech-logo.png';
 import lutechIcon from '/assets/lutech-icon.png';
 
@@ -78,7 +79,7 @@ export const Sidebar = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => v
                                     if (fallback) fallback.style.display = 'block';
                                 }}
                             />
-                            <span className="text-white font-bold text-sm hidden" style={{display: 'none'}}>
+                            <span className="text-white font-bold text-sm hidden" style={{ display: 'none' }}>
                                 Lutech
                             </span>
                         </div>
@@ -120,7 +121,7 @@ export const Sidebar = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => v
                                         if (fallback) fallback.style.display = 'block';
                                     }}
                                 />
-                                <span className="text-slate-500 font-bold text-[10px] hidden" style={{display: 'none'}}>
+                                <span className="text-slate-500 font-bold text-[10px] hidden" style={{ display: 'none' }}>
                                     Lutech
                                 </span>
                             </div>
@@ -201,7 +202,7 @@ export const Header = ({ onOpenSidebar }: { onOpenSidebar: () => void }) => {
             </div>
 
             <div className="flex items-center gap-4">
-                {/* Notifications and user info removed as per requirements */}
+                <LoginButton />
             </div>
         </header>
     );
