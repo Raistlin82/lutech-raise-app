@@ -27,6 +27,7 @@
     "previousPhase": "Fase Precedente",
     "viewPhase": "Visualizza Fase",
     "saveDraft": "Salva Bozza",
+    "saving": "Salvataggio...",
     "completing": "Completamento...",
     "backToDashboard": "Torna alla Dashboard",
     "editDetails": "Modifica Dettagli"
@@ -36,6 +37,7 @@
     "confirmMessage": "Sei sicuro di voler completare questa fase?",
     "mandatoryWarning": "Tutti i checkpoint obbligatori devono essere completati",
     "success": "Fase completata con successo",
+    "draftSaved": "Bozza salvata con successo!",
     "successAdvance": "Fase {{phase}} completata! Avanzamento a {{nextPhase}}.",
     "error": "Errore durante il completamento della fase.",
     "changesSaved": "Modifiche salvate.",

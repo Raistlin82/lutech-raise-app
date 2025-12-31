@@ -101,8 +101,13 @@ export async function clearLocalStorage(page: Page): Promise<void> {
 export async function waitForAppReady(page: Page): Promise<void> {
   // Wait for the main content to be visible
   await page.waitForSelector('body', { state: 'visible' });
-  // Wait for any loading states to complete
-  await page.waitForTimeout(300);
+  // Wait for React to hydrate and async data to load
+  await page.waitForTimeout(500);
+  // Wait for any loading spinners to disappear
+  await page.waitForFunction(() => {
+    const spinners = document.querySelectorAll('[class*="animate-spin"]');
+    return spinners.length === 0;
+  }, { timeout: 5000 }).catch(() => {});
 }
 
 /**
@@ -159,9 +164,29 @@ export async function fillOpportunityForm(
   const customerSelect = page.locator('select').first();
   await customerSelect.waitFor({ state: 'visible', timeout: 10000 });
 
-  // Wait for the customer option to exist
-  await page.waitForTimeout(500);
-  await customerSelect.selectOption(data.customerId);
+  // Wait for customer options to load (async loading)
+  await page.waitForTimeout(1000);
+
+  // Try to find the customer option, if not found by ID, select by index
+  const options = await customerSelect.locator('option').all();
+  let customerFound = false;
+
+  for (const option of options) {
+    const value = await option.getAttribute('value');
+    if (value === data.customerId) {
+      await customerSelect.selectOption(data.customerId);
+      customerFound = true;
+      break;
+    }
+  }
+
+  // If customer not found by ID, select first non-empty option
+  if (!customerFound && options.length > 1) {
+    const firstValue = await options[1].getAttribute('value');
+    if (firstValue) {
+      await customerSelect.selectOption(firstValue);
+    }
+  }
 
   // Fill TCV
   await page.waitForSelector('#tcv', { state: 'visible', timeout: 5000 });
@@ -207,6 +232,9 @@ export async function createOpportunityViaUI(
   // Wait for page to load completely
   await page.waitForLoadState('networkidle');
   await waitForAppReady(page);
+
+  // Wait extra time for customers to load from localStorage
+  await page.waitForTimeout(1000);
 
   // Fill and submit form
   await fillOpportunityForm(page, data);

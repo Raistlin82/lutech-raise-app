@@ -34,14 +34,10 @@ function AppRoutes() {
     <Suspense fallback={<PageLoader />}>
       <Routes>
       <Route path="/" element={
-        selectedOpp ? (
-          <Navigate to={`/opportunity/${selectedOpp.id}`} replace />
-        ) : (
-          <Dashboard onSelectOpp={(opp) => {
-            selectOpportunity(opp);
-            navigate(`/opportunity/${opp.id}`);
-          }} />
-        )
+        <Dashboard onSelectOpp={(opp) => {
+          selectOpportunity(opp);
+          navigate(`/opportunity/${opp.id}`);
+        }} />
       } />
       <Route path="/opportunities" element={<OpportunitiesPage />} />
       <Route path="/opportunities/new" element={<NewOpportunityPage />} />

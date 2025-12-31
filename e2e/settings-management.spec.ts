@@ -17,8 +17,8 @@ test.describe('Settings Management Journey', () => {
     await navigateTo(page, '/');
     await waitForAppReady(page);
 
-    // Click Settings link in sidebar (English label)
-    await page.click('text=Settings');
+    // Click Settings link in sidebar (Italian: Impostazioni)
+    await page.click('text=Impostazioni');
 
     // Verify we're on settings page
     await expect(page).toHaveURL(/\/settings/);

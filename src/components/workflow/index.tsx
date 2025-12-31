@@ -287,6 +287,18 @@ export const OpportunityWorkflow = ({ opp, onBack }: { opp: Opportunity, onBack:
                             currentOpp={currentOpp}
                             controls={controls}
                             onAuthorize={() => handlePhaseAuthorization(activeTab)}
+                            onSaveDraft={(checkpoints) => {
+                                const updatedOpp = {
+                                    ...currentOpp,
+                                    checkpoints: {
+                                        ...currentOpp.checkpoints,
+                                        [activeTab]: checkpoints
+                                    }
+                                };
+                                setCurrentOpp(updatedOpp);
+                                updateOpportunity(updatedOpp);
+                                showToast.success(t('completion.draftSaved'));
+                            }}
                             isCurrentPhase={activeTab === (currentOpp.currentPhase as Phase)}
                             isCompleting={isCompleting}
                         />
@@ -304,6 +316,7 @@ const PhaseChecklist = ({
     currentOpp,
     controls,
     onAuthorize,
+    onSaveDraft,
     isCurrentPhase,
     isCompleting
 }: {
@@ -311,13 +324,21 @@ const PhaseChecklist = ({
     currentOpp: Opportunity,
     controls: ControlConfig[],
     onAuthorize: () => void,
+    onSaveDraft: (checkpoints: Checkpoint[]) => void,
     isCurrentPhase: boolean,
     isCompleting: boolean
 }) => {
     const { t } = useTranslation('workflow');
-    const [localCheckpoints, setLocalCheckpoints] = useState<Checkpoint[]>(() =>
-        getRequiredCheckpoints(phase, currentOpp, controls)
-    );
+    const [isSaving, setIsSaving] = useState(false);
+    const [localCheckpoints, setLocalCheckpoints] = useState<Checkpoint[]>(() => {
+        // First check if there are saved checkpoints for this phase
+        const savedCheckpoints = currentOpp.checkpoints?.[phase];
+        if (savedCheckpoints && savedCheckpoints.length > 0) {
+            return savedCheckpoints;
+        }
+        // Otherwise compute from controls
+        return getRequiredCheckpoints(phase, currentOpp, controls);
+    });
 
     const toggleCheck = (cpId: string) => {
         setLocalCheckpoints(prev => prev.map(cp => {
@@ -326,6 +347,17 @@ const PhaseChecklist = ({
             }
             return cp;
         }));
+    };
+
+    const handleSaveDraft = async () => {
+        setIsSaving(true);
+        try {
+            // Simulate async save operation
+            await new Promise(resolve => setTimeout(resolve, 300));
+            onSaveDraft(localCheckpoints);
+        } finally {
+            setIsSaving(false);
+        }
     };
 
     const allRequiredChecked = localCheckpoints.every(c => !c.required || c.checked);
@@ -370,10 +402,21 @@ const PhaseChecklist = ({
                 {isCurrentPhase && (
                     <div className="mt-12 pt-6 border-t border-slate-100 flex flex-col sm:flex-row justify-end gap-3">
                         <button
-                            className="px-6 py-2.5 rounded-xl text-slate-600 font-medium hover:bg-slate-100 bg-white border border-slate-200 shadow-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                            disabled={isCompleting}
+                            onClick={handleSaveDraft}
+                            className="px-6 py-2.5 rounded-xl text-slate-600 font-medium hover:bg-slate-100 bg-white border border-slate-200 shadow-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                            disabled={isCompleting || isSaving}
                         >
-                            {t('actions.saveDraft')}
+                            {isSaving ? (
+                                <>
+                                    <LoadingSpinner size={16} className="text-slate-600" />
+                                    {t('actions.saving')}
+                                </>
+                            ) : (
+                                <>
+                                    <Save size={16} />
+                                    {t('actions.saveDraft')}
+                                </>
+                            )}
                         </button>
                         <button
                             onClick={onAuthorize}

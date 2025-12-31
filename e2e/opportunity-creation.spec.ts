@@ -47,8 +47,8 @@ test.describe('Opportunity Creation', () => {
     // Wait for navigation to workflow page
     await page.waitForURL(/\/opportunity\/OPP-/, { timeout: 15000 });
 
-    // Verify opportunity details are shown
-    await expect(page.locator('text=E2E Test Opportunity')).toBeVisible();
+    // Verify opportunity details are shown (use h1 to avoid matching toast)
+    await expect(page.locator('h1:has-text("E2E Test Opportunity")')).toBeVisible();
   });
 
   test('should show validation errors for missing required fields', async ({ page }) => {
@@ -124,8 +124,8 @@ test.describe('Opportunity Creation', () => {
     await submitOpportunityForm(page);
     await page.waitForURL(/\/opportunity\/OPP-/, { timeout: 15000 });
 
-    // Opportunity should be created and visible
-    await expect(page.locator('text=Small Opportunity')).toBeVisible();
+    // Opportunity should be created and visible (use h1 to avoid matching toast)
+    await expect(page.locator('h1:has-text("Small Opportunity")')).toBeVisible();
   });
 
   test('should handle KCP deviations flag correctly', async ({ page }) => {
@@ -142,7 +142,7 @@ test.describe('Opportunity Creation', () => {
     await submitOpportunityForm(page);
     await page.waitForURL(/\/opportunity\/OPP-/, { timeout: 15000 });
 
-    // Should show opportunity was created
-    await expect(page.locator('text=High Risk Opportunity')).toBeVisible();
+    // Should show opportunity was created (use h1 to avoid matching toast)
+    await expect(page.locator('h1:has-text("High Risk Opportunity")')).toBeVisible();
   });
 });

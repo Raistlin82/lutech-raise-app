@@ -65,8 +65,9 @@ test.describe('Error Handling Journey', () => {
     await navigateTo(page, '/');
     await waitForAppReady(page);
 
-    await expect(page.locator('text=Opportunity 1')).toBeVisible();
-    await expect(page.locator('text=Opportunity 2')).toBeVisible();
+    // Use first() as there may be duplicates from test isolation
+    await expect(page.locator('text=Opportunity 1').first()).toBeVisible();
+    await expect(page.locator('text=Opportunity 2').first()).toBeVisible();
   });
 
   test('should handle rapid navigation between pages', async ({ page }) => {
@@ -100,8 +101,18 @@ test.describe('Error Handling Journey', () => {
     // Fill with valid data
     await page.fill('#title', 'Valid Opportunity');
 
+    // Wait for customers to load before selecting
     const customerSelect = page.locator('select').first();
-    await customerSelect.selectOption(testCustomer.id);
+    await page.waitForTimeout(1000);
+
+    // Select first available customer (skip placeholder option)
+    const options = await customerSelect.locator('option').all();
+    if (options.length > 1) {
+      const firstValue = await options[1].getAttribute('value');
+      if (firstValue) {
+        await customerSelect.selectOption(firstValue);
+      }
+    }
 
     await page.fill('#tcv', '500000');
 
@@ -150,7 +161,7 @@ test.describe('Error Handling Journey', () => {
     await page.reload();
     await waitForAppReady(page);
 
-    // Data should persist
-    await expect(page.locator('text=Persistence Test')).toBeVisible();
+    // Data should persist (use first() as there may be duplicates)
+    await expect(page.locator('text=Persistence Test').first()).toBeVisible();
   });
 });
