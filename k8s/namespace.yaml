@@ -1,0 +1,9 @@
+# RAISE App - Kubernetes Namespace
+# Optional: Use if you want a dedicated namespace for RAISE
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: raise-app
+  labels:
+    app: raise-app
+    managed-by: github-actions

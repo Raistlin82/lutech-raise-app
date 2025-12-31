@@ -70,7 +70,7 @@ function App() {
   return (
     <ErrorBoundary>
       <Toaster />
-      <BrowserRouter basename="/lutech-raise-app">
+      <BrowserRouter basename={import.meta.env.BASE_URL}>
         <Layout>
           <AppRoutes />
         </Layout>

@@ -1,0 +1,23 @@
+# RAISE App - Kustomization
+# Use: kubectl apply -k k8s/
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: raise-app
+
+resources:
+  - namespace.yaml
+  - configmap.yaml
+  - secret.yaml
+  - deployment.yaml
+  - service.yaml
+  - apirule.yaml
+
+commonLabels:
+  app.kubernetes.io/name: raise-app
+  app.kubernetes.io/managed-by: kustomize
+
+# Image customization (override in CI/CD)
+images:
+  - name: ghcr.io/raistlin82/raise-app
+    newTag: latest

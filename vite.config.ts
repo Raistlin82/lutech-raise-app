@@ -3,7 +3,9 @@ import react from '@vitejs/plugin-react'
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: '/lutech-raise-app/', // GitHub Pages base path
+  // Use VITE_BASE_PATH env var for Kyma (/), default to GitHub Pages path
+  // process.env is available during Vite config loading (Node.js context)
+  base: process.env.VITE_BASE_PATH || '/lutech-raise-app/',
   plugins: [react()],
   build: {
     rollupOptions: {
