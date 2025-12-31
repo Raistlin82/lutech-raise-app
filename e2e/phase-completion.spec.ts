@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { createTestCustomer, setupTestEnvironment, createOpportunityViaUI, waitForAppReady } from './helpers';
+import { createTestCustomer, setupTestEnvironment, createOpportunityViaUI } from './helpers';
 
 /**
  * E2E Tests: Phase Completion Journey
