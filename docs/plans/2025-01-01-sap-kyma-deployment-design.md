@@ -1,8 +1,8 @@
 # SAP BTP Kyma Deployment Design
 
 **Data:** 2025-01-01
-**Branch:** `feature/sap-kyma-deployment`
-**Stato:** In progress
+**Branch:** `raise-btp-ias-auth`
+**Stato:** SAP IAS Integration Completed ✅ / Kyma Deployment In Progress 🚧
 
 ## Obiettivi
 
@@ -193,11 +193,12 @@ data:
 - [ ] Secrets configuration
 - [ ] Deploy automatico
 
-### Fase 4: SAP IAS (branch separato o stesso)
-- [ ] Configurazione IAS tenant
-- [ ] Integrazione React OIDC
-- [ ] Test autenticazione
-- [ ] Protezione route
+### Fase 4: SAP IAS (Completata ✅)
+- [x] Configurazione IAS tenant
+- [x] Integrazione React OIDC (PKCE)
+- [x] Test autenticazione & Logout
+- [x] Protezione route (RequireAuth)
+- [x] Mock Auth per E2E (Test Mode)
 
 ## Prerequisiti
 

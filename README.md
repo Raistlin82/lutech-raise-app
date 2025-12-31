@@ -56,7 +56,8 @@
 
 ### Quality & Testing
 
-- **100% Test Pass Rate** - 342/342 test passing (Vitest + Playwright)
+- **100% Test Pass Rate** - 378/378 test passing (339 Vitest + 39 Playwright)
+- **SAP IAS Integration** - Enterprise auth ready with OIDC PKCE flow
 - **TypeScript** - Type safety completo con strict mode e zero errori
 - **Production Ready** - Bundle ottimizzato (89.9KB gzipped)
 - **Error Boundaries** - Gestione errori robusta con fallback UI
@@ -88,10 +89,12 @@
 - **react-i18next** - Sistema i18n completo
 - **i18next** - Framework traduzione con namespace modulari
 
-### Testing
+### Testing & Auth
+- **react-oidc-context** - OIDC integration for SAP IAS
+- **oidc-client-ts** - Core OIDC client library
 - **Vitest** - Unit e integration testing
 - **Testing Library** - Component testing best practices
-- **Playwright** - End-to-end testing
+- **Playwright** - End-to-end testing with Mock Auth support
 
 ### Build & Deploy
 - **ESLint** - Code quality e consistency
@@ -292,8 +295,10 @@ Quando si seleziona un cliente in un'opportunità:
 ### Test Coverage
 
 ```
-Test Suites: 22 total (18 passed, 4 E2E config issues)
-Tests:       342 passed, 0 failed, 342 total
+Test Suites: 23 total (23 passed)
+Tests:       378 passed, 0 failed, 378 total
+  - Unit/Integration: 339
+  - End-to-End: 39
 Pass Rate:   100%
 ```
 
@@ -463,8 +468,10 @@ Sviluppato con ❤️ da **Lutech Professional Services**
 - [x] Customer Management System
 - [x] Lutech Branding & Author Credits
 - [x] Controls Ordering & Checkpoint Numbering
-- [x] Integration Tests (342 tests, 100% passing)
+- [x] Integration Tests (339 tests, 100% passing)
 - [x] **Internationalization (i18n) - Italian** ✨ **v1.0.0**
+- [x] **SAP IAS Integration (OIDC/Kyma)** ✅
+- [x] **E2E Test Automation (39 tests, 100% passing)** ✅
 
 ### In Progress 🚧
 - [ ] Advanced reporting & analytics

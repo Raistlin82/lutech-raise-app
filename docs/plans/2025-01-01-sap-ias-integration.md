@@ -1,7 +1,7 @@
 # SAP IAS Integration Guide
 
 **Data:** 2025-01-01
-**Stato:** Documentazione
+**Stato:** Completata ✅
 
 ## Overview
 
@@ -333,6 +333,21 @@ SAP IAS supporta CORS automaticamente per i domini configurati. Verifica:
 
 - Verifica `silent_redirect_uri` configurato
 - Aggiungi pagina `/silent-callback` con iframe handler
+
+## Testing E2E con Autenticazione Moccata
+
+Per mantenere la stabilità dei test E2E senza dipendere da un tenant IAS reale (evitando redirect infiniti in ambiente headless), abbiamo introdotto un sistema di mocking basato su `VITE_TEST_MODE`.
+
+### Funzionamento
+1.  **`src/hooks/useAuth.ts`**: Un wrapper che intercetta la modalità test. Se attiva, restituisce un contesto utente finto ma valido (`isAuthenticated: true`).
+2.  **`main.tsx`**: Se in test mode, scarica l'app direttamente senza inizializzare `AuthProvider` di `react-oidc-context`.
+3.  **`.env.test`**: Contiene `VITE_TEST_MODE=true` per forzare questo comportamento durante i test suite.
+
+### Esecuzione Test
+```bash
+# Esegue il server in modalità test e lancia Playwright
+npm run test:e2e
+```
 
 ---
 
