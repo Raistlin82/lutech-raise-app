@@ -59,6 +59,29 @@ Possono seguire un processo accelerato con meno checkpoint.
 
 ---
 
+## Autenticazione SAP IAS
+
+### Panoramica (NEW v1.3.0)
+
+RAISE App utilizza **SAP Identity Authentication Service (IAS)** per garantire un accesso sicuro e conforme agli standard enterprise.
+
+### Accesso (Login)
+
+1. Al primo accesso, verrai reindirizzato automaticamente alla pagina di login di SAP IAS.
+2. Puoi accedere usando:
+   - Le tue credenziali aziendali (Azure AD/Entra ID)
+   - Account SAP (S-User)
+   - Social Login (se abilitato dall'amministratore)
+3. Dopo il login, verrai riportato sulla Dashboard di RAISE.
+
+### Uscita (Logout)
+
+1. Clicca sul pulsante **"Log out"** in alto a destra nella testata (Header).
+2. Il sistema eseguirà il logout sia dall'applicazione che dalla sessione SAP IAS.
+3. Verrai reindirizzato alla pagina iniziale o di login.
+
+---
+
 ## Interfaccia e Lingua
 
 ### Interfaccia Italiana (NEW v1.2.0)
