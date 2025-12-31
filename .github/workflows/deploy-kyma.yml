@@ -147,6 +147,10 @@ jobs:
           cd k8s
           kustomize edit set image ghcr.io/raistlin82/raise-app=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}@${{ needs.build-and-push.outputs.image-digest }}
 
+      - name: Replace cluster domain in APIRule
+        run: |
+          sed -i 's/\${KYMA_CLUSTER_DOMAIN}/${{ secrets.KYMA_CLUSTER_DOMAIN }}/g' k8s/apirule.yaml
+
       - name: Deploy to Kyma
         run: |
           kubectl apply -k k8s/
