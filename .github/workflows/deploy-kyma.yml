@@ -155,6 +155,17 @@ jobs:
         run: |
           kubectl apply -k k8s/
 
+      - name: Check pod status before rollout
+        run: |
+          echo "=== Pod Status ==="
+          kubectl get pods -n raise-app -o wide
+          echo ""
+          echo "=== Pod Events ==="
+          kubectl get events -n raise-app --sort-by='.lastTimestamp' | tail -20
+          echo ""
+          echo "=== Describe deployment ==="
+          kubectl describe deployment/raise-app -n raise-app | tail -30
+
       - name: Wait for deployment rollout
         run: |
           kubectl rollout status deployment/raise-app -n raise-app --timeout=300s
