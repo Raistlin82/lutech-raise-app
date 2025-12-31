@@ -66,11 +66,14 @@ function AppRoutes() {
   );
 }
 
+// Base path for router (GitHub Pages needs /lutech-raise-app, Vercel uses /)
+const basePath = import.meta.env.BASE_URL || '/';
+
 function App() {
   return (
     <ErrorBoundary>
       <Toaster />
-      <BrowserRouter basename="/lutech-raise-app">
+      <BrowserRouter basename={basePath}>
         <Layout>
           <AppRoutes />
         </Layout>

@@ -3,7 +3,8 @@ import react from '@vitejs/plugin-react'
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: '/lutech-raise-app/', // GitHub Pages base path
+  // base path: use /lutech-raise-app/ for GitHub Pages, / for Vercel
+  base: process.env.GITHUB_ACTIONS ? '/lutech-raise-app/' : '/',
   plugins: [react()],
   build: {
     rollupOptions: {
