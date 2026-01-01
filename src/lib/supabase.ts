@@ -18,7 +18,7 @@ const getSupabaseAnonKey = (): string => {
 
 // Lazy initialization of Supabase client
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-let supabaseClient: SupabaseClient<any> | null = null;
+let supabaseClient: SupabaseClient<any> | null | undefined = undefined;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const initSupabase = (): SupabaseClient<any> | null => {
@@ -42,20 +42,32 @@ const initSupabase = (): SupabaseClient<any> | null => {
     });
 };
 
-// Export getter that initializes client on first access
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const supabase: SupabaseClient<any> | null = (() => {
-    if (!supabaseClient) {
+// Getter function for lazy initialization - only initializes when first called
+function getSupabaseClient() {
+    if (supabaseClient === undefined) {
         supabaseClient = initSupabase();
     }
     return supabaseClient;
-})();
+}
+
+// Export as getter property for backward compatibility with `import { supabase }`
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const supabase: SupabaseClient<any> | null = new Proxy({} as any, {
+    get: (_target, prop) => {
+        const client = getSupabaseClient();
+        if (client === null) return null;
+        return (client as any)[prop];
+    },
+    apply: () => {
+        return getSupabaseClient();
+    }
+});
 
 /**
  * Check if Supabase is configured and available
  */
 export const isSupabaseConfigured = (): boolean => {
-    return supabase !== null;
+    return getSupabaseClient() !== null;
 };
 
 /**
@@ -63,8 +75,9 @@ export const isSupabaseConfigured = (): boolean => {
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const getSupabase = (): SupabaseClient<any> => {
-    if (!supabase) {
+    const client = getSupabaseClient();
+    if (!client) {
         throw new Error('Supabase is not configured. Please set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY');
     }
-    return supabase;
+    return client;
 };
