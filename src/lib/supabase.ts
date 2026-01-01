@@ -56,6 +56,7 @@ export const supabase: SupabaseClient<any> | null = new Proxy({} as any, {
     get: (_target, prop) => {
         const client = getSupabaseClient();
         if (client === null) return null;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         return (client as any)[prop];
     },
     apply: () => {
