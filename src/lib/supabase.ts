@@ -1,20 +1,7 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
-// Runtime configuration interface
-interface RuntimeConfig {
-    VITE_SUPABASE_URL?: string;
-    VITE_SUPABASE_ANON_KEY?: string;
-}
-
-// Extend window interface for runtime config
-declare global {
-    interface Window {
-        __RUNTIME_CONFIG__?: RuntimeConfig;
-    }
-}
-
 // Get runtime config from window global (set by main.tsx after loading /config.json)
-const getRuntimeConfig = (): RuntimeConfig => {
+const getRuntimeConfig = (): Partial<RuntimeConfig> => {
     return window.__RUNTIME_CONFIG__ || {};
 };
 

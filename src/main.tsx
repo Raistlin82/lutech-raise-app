@@ -7,21 +7,6 @@ import { SettingsProvider } from './stores/SettingsStore'
 import { CustomerProvider } from './stores/CustomerStore'
 import { OpportunitiesProvider } from './stores/OpportunitiesStore'
 
-// Runtime configuration interface
-interface RuntimeConfig {
-  VITE_IAS_AUTHORITY: string;
-  VITE_IAS_CLIENT_ID: string;
-  VITE_SUPABASE_URL: string;
-  VITE_SUPABASE_ANON_KEY: string;
-}
-
-// Extend window interface for runtime config
-declare global {
-  interface Window {
-    __RUNTIME_CONFIG__?: Partial<RuntimeConfig>;
-  }
-}
-
 // Load runtime configuration from /config.json
 async function loadRuntimeConfig(): Promise<Partial<RuntimeConfig>> {
   try {
