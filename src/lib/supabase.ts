@@ -6,9 +6,16 @@ interface RuntimeConfig {
     VITE_SUPABASE_ANON_KEY?: string;
 }
 
+// Extend window interface for runtime config
+declare global {
+    interface Window {
+        __RUNTIME_CONFIG__?: RuntimeConfig;
+    }
+}
+
 // Get runtime config from window global (set by main.tsx after loading /config.json)
 const getRuntimeConfig = (): RuntimeConfig => {
-    return (window as any).__RUNTIME_CONFIG__ || {};
+    return window.__RUNTIME_CONFIG__ || {};
 };
 
 // Get Supabase credentials with runtime config fallback
@@ -23,8 +30,10 @@ const getSupabaseAnonKey = (): string => {
 };
 
 // Lazy initialization of Supabase client
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 let supabaseClient: SupabaseClient<any> | null = null;
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const initSupabase = (): SupabaseClient<any> | null => {
     const supabaseUrl = getSupabaseUrl();
     const supabaseAnonKey = getSupabaseAnonKey();

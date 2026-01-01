@@ -15,6 +15,13 @@ interface RuntimeConfig {
   VITE_SUPABASE_ANON_KEY: string;
 }
 
+// Extend window interface for runtime config
+declare global {
+  interface Window {
+    __RUNTIME_CONFIG__?: Partial<RuntimeConfig>;
+  }
+}
+
 // Load runtime configuration from /config.json
 async function loadRuntimeConfig(): Promise<Partial<RuntimeConfig>> {
   try {
@@ -36,7 +43,7 @@ async function loadRuntimeConfig(): Promise<Partial<RuntimeConfig>> {
     console.log('Runtime configuration loaded:', Object.keys(filteredConfig));
 
     // Expose runtime config as global variable for other modules (e.g., supabase.ts)
-    (window as any).__RUNTIME_CONFIG__ = filteredConfig;
+    window.__RUNTIME_CONFIG__ = filteredConfig;
 
     return filteredConfig;
   } catch (error) {
