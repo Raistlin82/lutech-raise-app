@@ -1,17 +1,13 @@
-# Guida Internazionalizzazione (i18n)
-
-## 📚 Indice
-- [Panoramica](#panoramica)
-- [Architettura](#architettura)
-- [Uso per Sviluppatori](#uso-per-sviluppatori)
-- [Aggiungere Traduzioni](#aggiungere-traduzioni)
-- [Espandere a Nuove Lingue](#espandere-a-nuove-lingue)
-- [Best Practices](#best-practices)
-- [Troubleshooting](#troubleshooting)
+# i18n Architecture & Localization Guide
 
 ---
+**Global Readiness Framework**
+- **Framework:** react-i18next
+- **Status:** Italian (Complete), EN/FR/DE (Ready)
+- **Compliance:** i18n Standard v2
+---
 
-## Panoramica
+## 1. Panoramica
 
 RAISE App v1.2.0 include un sistema completo di internazionalizzazione basato su **react-i18next**.
 

@@ -1,6 +1,13 @@
-# 🚀 RAISE App - Quick Deploy Guide
+# Quick Start & Deployment Guide
 
-## Deployment Rapido (5 minuti)
+---
+**Speed & Automation**
+- **Hosting:** GitHub Pages
+- **Automation:** GitHub Actions
+- **Time to Live:** < 5 Minutes
+---
+
+## 1. Panoramica
 
 ### Opzione 1: Vercel (Raccomandato) ⚡
 
