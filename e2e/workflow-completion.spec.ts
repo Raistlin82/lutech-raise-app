@@ -77,6 +77,7 @@ test.describe('Complete Workflow Lifecycle', () => {
     // Step 9: Verify terminal state
     const opportunity = await page.evaluate(() => {
       const opps = JSON.parse(localStorage.getItem('raise_opportunities') || '[]');
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       return opps.find((o: any) => o.title === 'E2E Test Opportunity');
     });
     expect(opportunity.currentPhase).toBe('Handover');
@@ -108,6 +109,7 @@ test.describe('Complete Workflow Lifecycle', () => {
 
     const opportunity = await page.evaluate(() => {
       const opps = JSON.parse(localStorage.getItem('raise_opportunities') || '[]');
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       return opps.find((o: any) => o.title === 'Lost Opportunity Test');
     });
     expect(opportunity.currentPhase).toBe('Lost');
@@ -317,6 +319,7 @@ test.describe('Regression Tests for Bug Fixes', () => {
     // Verify terminal state
     const opp = await page.evaluate(() => {
       const opps = JSON.parse(localStorage.getItem('raise_opportunities') || '[]');
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       return opps.find((o: any) => o.title === 'Handover Regression Test');
     });
     expect(opp.currentPhase).toBe('Handover');
