@@ -65,9 +65,6 @@ spec:
             capabilities:
               drop:
                 - ALL
-      # Pull image from GitHub Container Registry
-      imagePullSecrets:
-        - name: ghcr-secret
       # Pod security context
       securityContext:
         fsGroup: 1001
