@@ -34,6 +34,10 @@ async function loadRuntimeConfig(): Promise<Partial<RuntimeConfig>> {
     }
 
     console.log('Runtime configuration loaded:', Object.keys(filteredConfig));
+
+    // Expose runtime config as global variable for other modules (e.g., supabase.ts)
+    (window as any).__RUNTIME_CONFIG__ = filteredConfig;
+
     return filteredConfig;
   } catch (error) {
     console.warn('Failed to load runtime config:', error);

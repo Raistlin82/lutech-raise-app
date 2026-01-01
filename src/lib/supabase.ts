@@ -1,27 +1,59 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
-
-// Check if Supabase is configured
-const isConfigured = Boolean(supabaseUrl && supabaseAnonKey);
-
-if (!isConfigured) {
-    console.warn(
-        'Supabase credentials not configured. Using localStorage fallback.\n' +
-        'To enable Supabase, create a .env.local file with VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY'
-    );
+// Runtime configuration interface
+interface RuntimeConfig {
+    VITE_SUPABASE_URL?: string;
+    VITE_SUPABASE_ANON_KEY?: string;
 }
 
-// Create client only if configured (using untyped client for flexibility)
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const supabase: SupabaseClient<any> | null = isConfigured
-    ? createClient(supabaseUrl, supabaseAnonKey, {
+// Get runtime config from window global (set by main.tsx after loading /config.json)
+const getRuntimeConfig = (): RuntimeConfig => {
+    return (window as any).__RUNTIME_CONFIG__ || {};
+};
+
+// Get Supabase credentials with runtime config fallback
+const getSupabaseUrl = (): string => {
+    const runtimeConfig = getRuntimeConfig();
+    return runtimeConfig.VITE_SUPABASE_URL || import.meta.env.VITE_SUPABASE_URL || '';
+};
+
+const getSupabaseAnonKey = (): string => {
+    const runtimeConfig = getRuntimeConfig();
+    return runtimeConfig.VITE_SUPABASE_ANON_KEY || import.meta.env.VITE_SUPABASE_ANON_KEY || '';
+};
+
+// Lazy initialization of Supabase client
+let supabaseClient: SupabaseClient<any> | null = null;
+
+const initSupabase = (): SupabaseClient<any> | null => {
+    const supabaseUrl = getSupabaseUrl();
+    const supabaseAnonKey = getSupabaseAnonKey();
+
+    const isConfigured = Boolean(supabaseUrl && supabaseAnonKey);
+
+    if (!isConfigured) {
+        console.warn(
+            'Supabase credentials not configured. Using localStorage fallback.\n' +
+            'To enable Supabase, set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in Kubernetes secrets or .env.local'
+        );
+        return null;
+    }
+
+    return createClient(supabaseUrl, supabaseAnonKey, {
         auth: {
             persistSession: false, // No auth for now
         },
-    })
-    : null;
+    });
+};
+
+// Export getter that initializes client on first access
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const supabase: SupabaseClient<any> | null = (() => {
+    if (!supabaseClient) {
+        supabaseClient = initSupabase();
+    }
+    return supabaseClient;
+})();
 
 /**
  * Check if Supabase is configured and available
