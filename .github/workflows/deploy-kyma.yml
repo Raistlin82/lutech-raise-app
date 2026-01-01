@@ -123,16 +123,7 @@ jobs:
         run: |
           kubectl apply -f k8s/namespace.yaml
 
-      - name: Create/Update ConfigMap
-        run: |
-          kubectl apply -f k8s/configmap.yaml
-
-      - name: Create/Update Secrets
-        run: |
-          kubectl create secret generic raise-app-secrets \
-            --namespace=raise-app \
-            --from-literal=VITE_SUPABASE_ANON_KEY="${{ secrets.VITE_SUPABASE_ANON_KEY }}" \
-            --dry-run=client -o yaml | kubectl apply -f -
+      # Note: ConfigMap and Secrets removed - env vars are baked into Docker image at build time
 
       - name: Create GitHub Container Registry secret
         run: |
