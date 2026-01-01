@@ -52,6 +52,7 @@ Il **RAISE Level** determina il livello di autorizzazione necessario per un'oppo
 #### Fast Track
 
 Opportunità con:
+
 - TCV < €250K
 - Nessuna deviazione KCP
 
@@ -148,6 +149,7 @@ Click **"New Customer"** per aprire il form di creazione.
   - ✅ Esempio: "Ministero dell'Interno"
 
 - **Industry*** - Settore industriale (selezione da dropdown)
+
   - 10 settori predefiniti:
     - Technology
     - Manufacturing
@@ -161,6 +163,7 @@ Click **"New Customer"** per aprire il form di creazione.
     - Consulting
 
 - **Public Sector** - Flag Pubblica Amministrazione (checkbox)
+
   - ✅ Seleziona se cliente è PA/Ente Pubblico
   - ⬜ Deseleziona se cliente privato
 
@@ -370,7 +373,7 @@ Click **"Create Opportunity"**:
 
 ### Esempio Pratico
 
-```
+```text
 Scenario: Opportunità Cloud Migration €750K
 
 1. Title: "Cloud Migration & Modernization - Acme Corp"
@@ -455,6 +458,33 @@ Durante il completamento:
 - Pulsante mostra loading spinner
 - Fase in processing viene evidenziata
 - Toast notification conferma successo
+
+### Completamento Handover (Fase Finale)
+
+La fase **Handover** è la fase finale del workflow e rappresenta il passaggio dell'opportunità vinta al team di delivery.
+
+#### Procedura Completamento Handover
+
+1. Dopo aver completato la fase **ATC** e selezionato l'esito **WON**, passi automaticamente alla fase Handover
+2. Completa tutti i checkpoint della fase Handover
+3. Click sul pulsante **"Completa Handover"**
+4. **Messaggio di successo**: Appare la notifica **"Workflow completato!"**
+5. L'opportunità rimane nello stato **Handover** (stato terminale)
+
+#### Stati Terminali
+
+Il workflow può concludersi in tre stati finali:
+
+| Stato | Trigger | Fase Finale |
+|-------|---------|-------------|
+| **Won** → **Handover** | Esito positivo dopo ATC | Handover (delivery) |
+| **Lost** | Esito negativo dopo ATC | Lost (archiviata) |
+| **Handover Completato** | Completamento consegna | Handover (finale) |
+
+**Nota Importante (Fix 2026-01-01):**
+- ✅ Il completamento Handover ora mostra correttamente il messaggio di conferma
+- ✅ L'opportunità resta consultabile nella dashboard con stato "Handover completato"
+- ✅ Non è possibile procedere oltre: Handover è la fase finale del ciclo di vita
 
 ### Navigazione
 
@@ -548,7 +578,7 @@ A: No, le fasi devono essere completate in ordine sequenziale (Planning → ATP 
 **Q: Cosa significa Fast Track?**
 A: Opportunità con TCV < €250K senza deviazioni KCP seguono un processo semplificato con meno checkpoint.
 
-### Interfaccia e Lingua (v1.2.0)
+### Interfaccia e Lingua
 
 **Q: L'interfaccia è completamente in italiano?**
 A: Sì! A partire dalla v1.2.0, l'intera interfaccia è tradotta in italiano, inclusi form, messaggi di validazione, notifiche e tutti i testi UI.

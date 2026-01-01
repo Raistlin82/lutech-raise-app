@@ -1,28 +1,20 @@
-# RAISE App - SAP BTP Kyma Deployment Guide
-
-Guida completa per il deployment dell'applicazione RAISE su SAP Business Technology Platform (BTP) Kyma Runtime.
-
-## 📋 Indice
-
-1. [Overview](#overview)
-2. [Architettura](#architettura)
-3. [Prerequisiti](#prerequisiti)
-4. [Configurazione SAP IAS](#configurazione-sap-ias)
-5. [CI/CD con GitHub Actions](#cicd-con-github-actions)
-6. [Manifesti Kubernetes](#manifesti-kubernetes)
-7. [Security & Hardening](#security--hardening)
-8. [Monitoring & Observability](#monitoring--observability)
-9. [Troubleshooting](#troubleshooting)
-10. [Manutenzione](#manutenzione)
+# Kyma Enterprise Deployment Guide
 
 ---
+**Infrastructure as Code (IaC)**
+- **Platform:** SAP BTP Kyma (Kubernetes)
+- **CI/CD:** GitHub Actions + GHCR
+- **Runtime:** Nginx (Static Site Hosting)
+---
+
+## 1. Overview
 
 ## Overview
 
 ### Status Deployment
 
 - **✅ Stato:** ATTIVO
-- **🌐 URL Produzione:** https://raise-app.b66a502.kyma.ondemand.com
+- **🌐 URL Produzione:** `https://raise-app.YOUR_CLUSTER.kyma.ondemand.com`
 - **🔐 Autenticazione:** SAP Identity Authentication Service (IAS)
 - **📦 Namespace:** `raise-app`
 - **🚀 CI/CD:** GitHub Actions (deploy automatico)
@@ -86,7 +78,7 @@ Guida completa per il deployment dell'applicazione RAISE su SAP Business Technol
 ### 1. Accessi Richiesti
 
 - [x] **SAP BTP Account** con Kyma Runtime abilitato
-- [x] **SAP IAS Tenant** (`https://asojzafbi.accounts.ondemand.com`)
+- [x] **SAP IAS Tenant** (`https://YOUR_IAS_TENANT.accounts.ondemand.com`)
 - [x] **GitHub Repository** con secrets configurati
 - [x] **Kubeconfig** per accesso al cluster Kyma
 
@@ -109,10 +101,10 @@ I seguenti secrets devono essere configurati in GitHub (Settings → Secrets):
 
 | Secret | Descrizione | Esempio |
 |---|---|---|
-| `VITE_IAS_AUTHORITY` | URL tenant SAP IAS | `https://asojzafbi.accounts.ondemand.com` |
-| `VITE_IAS_CLIENT_ID` | Client ID applicazione IAS | `ae93584a-a420-4944-b4de-bfc3bacb8467` |
-| `VITE_SUPABASE_URL` | URL istanza Supabase | `https://xxx.supabase.co` |
-| `VITE_SUPABASE_ANON_KEY` | Chiave anonima Supabase | `eyJhbGciOi...` |
+| `VITE_IAS_AUTHORITY` | URL tenant SAP IAS | `https://YOUR_IAS_TENANT.accounts.ondemand.com` |
+| `VITE_IAS_CLIENT_ID` | Client ID applicazione IAS | `YOUR_CLIENT_ID_HERE` |
+| `VITE_SUPABASE_URL` | URL istanza Supabase | `https://YOUR_PROJECT.supabase.co` |
+| `VITE_SUPABASE_ANON_KEY` | Chiave anonima Supabase | `YOUR_SUPABASE_ANON_KEY` |
 | `KYMA_KUBECONFIG` | Kubeconfig in base64 | `cat kubeconfig.yaml \| base64` |
 
 ---
@@ -129,14 +121,14 @@ Vedi la guida completa: [SAP_IAS_CONFIG.md](./SAP_IAS_CONFIG.md)
 |---|---|
 | **Application Name** | RAISE App Kyma |
 | **Protocol** | OpenID Connect |
-| **Client ID** | `ae93584a-a420-4944-b4de-bfc3bacb8467` |
+| **Client ID** | `YOUR_CLIENT_ID_HERE` |
 | **Client Authentication** | Public Client (No Secret) |
 
 ### 2. Redirect URIs
 
 ```
-https://raise-app.b66a502.kyma.ondemand.com/
-https://raise-app.b66a502.kyma.ondemand.com
+https://raise-app.YOUR_CLUSTER.kyma.ondemand.com/
+https://raise-app.YOUR_CLUSTER.kyma.ondemand.com
 http://localhost:5173/
 http://localhost:5173
 ```
@@ -144,14 +136,14 @@ http://localhost:5173
 ### 3. Post-Logout Redirect URIs
 
 ```
-https://raise-app.b66a502.kyma.ondemand.com/
+https://raise-app.YOUR_CLUSTER.kyma.ondemand.com/
 http://localhost:5173/
 ```
 
 ### 4. Trusted Domains (CORS)
 
 ```
-https://raise-app.b66a502.kyma.ondemand.com
+https://raise-app.YOUR_CLUSTER.kyma.ondemand.com
 http://localhost:5173
 ```
 
@@ -253,7 +245,7 @@ add_header Content-Security-Policy "
   script-src 'self' 'unsafe-inline';
   style-src 'self' 'unsafe-inline';
   img-src 'self' data: https:;
-  connect-src 'self' https://asojzafbi.accounts.ondemand.com https://*.supabase.co;
+  connect-src 'self' https://YOUR_IAS_TENANT.accounts.ondemand.com https://*.supabase.co;
   frame-ancestors 'self';
 " always;
 ```
