@@ -38,14 +38,14 @@ spec:
       cpu: "1"           # Max 1 CPU core per container
       memory: 2Gi        # Max 2GB RAM per container
     min:
-      cpu: "100m"        # Min 100 milliCPU (0.1 core)
-      memory: 128Mi      # Min 128MB RAM
+      cpu: "10m"         # Min 10 milliCPU (allows Istio sidecar)
+      memory: 32Mi       # Min 32MB RAM (allows Istio sidecar)
     default:
       cpu: "500m"        # Default limit: 0.5 CPU core
       memory: 512Mi      # Default limit: 512MB RAM
     defaultRequest:
-      cpu: "200m"        # Default request: 0.2 CPU core
-      memory: 256Mi      # Default request: 256MB RAM
+      cpu: "100m"        # Default request: 0.1 CPU core
+      memory: 128Mi      # Default request: 128MB RAM
 
   # Pod Limits
   - type: Pod
