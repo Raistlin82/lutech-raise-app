@@ -33,6 +33,28 @@ spec:
             - name: http
               containerPort: 8080
               protocol: TCP
+          # Environment variables from Kubernetes secret
+          env:
+            - name: VITE_IAS_AUTHORITY
+              valueFrom:
+                secretKeyRef:
+                  name: raise-app-secrets
+                  key: VITE_IAS_AUTHORITY
+            - name: VITE_IAS_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: raise-app-secrets
+                  key: VITE_IAS_CLIENT_ID
+            - name: VITE_SUPABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: raise-app-secrets
+                  key: VITE_SUPABASE_URL
+            - name: VITE_SUPABASE_ANON_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: raise-app-secrets
+                  key: VITE_SUPABASE_ANON_KEY
           resources:
             requests:
               memory: "128Mi"

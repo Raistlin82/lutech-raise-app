@@ -88,11 +88,8 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          build-args: |
-            VITE_SUPABASE_URL=${{ secrets.VITE_SUPABASE_URL }}
-            VITE_SUPABASE_ANON_KEY=${{ secrets.VITE_SUPABASE_ANON_KEY }}
-            VITE_IAS_AUTHORITY=${{ secrets.VITE_IAS_AUTHORITY }}
-            VITE_IAS_CLIENT_ID=${{ secrets.VITE_IAS_CLIENT_ID }}
+          # Note: Environment variables are now injected at runtime from Kubernetes secrets
+          # Build-time values are set to RUNTIME_INJECTED placeholders in Dockerfile
 
   deploy-kyma:
     runs-on: ubuntu-latest
@@ -123,7 +120,23 @@ jobs:
         run: |
           kubectl apply -f k8s/namespace.yaml
 
-      # Note: ConfigMap and Secrets removed - env vars are baked into Docker image at build time
+      - name: Verify/Create application secrets
+        run: |
+          # Check if secret exists
+          if kubectl get secret raise-app-secrets -n raise-app &> /dev/null; then
+            echo "✓ Secret 'raise-app-secrets' already exists in Kyma"
+            echo "Verifying required keys..."
+            kubectl get secret raise-app-secrets -n raise-app -o jsonpath='{.data}' | jq 'keys'
+          else
+            echo "⚠ Secret 'raise-app-secrets' not found, creating from GitHub Secrets..."
+            kubectl create secret generic raise-app-secrets \
+              --namespace=raise-app \
+              --from-literal=VITE_IAS_AUTHORITY="${{ secrets.VITE_IAS_AUTHORITY }}" \
+              --from-literal=VITE_IAS_CLIENT_ID="${{ secrets.VITE_IAS_CLIENT_ID }}" \
+              --from-literal=VITE_SUPABASE_URL="${{ secrets.VITE_SUPABASE_URL }}" \
+              --from-literal=VITE_SUPABASE_ANON_KEY="${{ secrets.VITE_SUPABASE_ANON_KEY }}"
+            echo "✓ Secret 'raise-app-secrets' created successfully"
+          fi
 
       - name: Create GitHub Container Registry secret
         run: |
