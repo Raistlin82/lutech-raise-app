@@ -22,8 +22,10 @@ export default defineConfig({
   // Opt out of parallel tests on CI
   workers: process.env.CI ? 1 : undefined,
 
-  // Reporter to use
-  reporter: 'html',
+  // Reporter to use - JUnit XML for CI/CD + HTML for local
+  reporter: process.env.CI
+    ? [['html'], ['junit', { outputFile: 'test-results/e2e-results.xml' }], ['list']]
+    : [['html'], ['list']],
 
   // Shared settings for all the projects below
   use: {
@@ -40,11 +42,31 @@ export default defineConfig({
     video: 'retain-on-failure',
   },
 
-  // Configure projects for major browsers
+  // Configure projects for major browsers + mobile
   projects: [
     {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
+    },
+
+    // Cross-browser testing
+    {
+      name: 'firefox',
+      use: { ...devices['Desktop Firefox'] },
+    },
+    {
+      name: 'webkit',
+      use: { ...devices['Desktop Safari'] },
+    },
+
+    // Mobile testing
+    {
+      name: 'Mobile Chrome',
+      use: { ...devices['Pixel 5'] },
+    },
+    {
+      name: 'Mobile Safari',
+      use: { ...devices['iPhone 13'] },
     },
   ],
 
