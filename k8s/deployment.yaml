@@ -17,6 +17,13 @@ spec:
       labels:
         app: raise-app
         version: v1
+      annotations:
+        # Prometheus monitoring
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8080"
+        prometheus.io/path: "/health"
+        # Sidecar injection
+        sidecar.istio.io/inject: "true"
     spec:
       containers:
         - name: raise-app

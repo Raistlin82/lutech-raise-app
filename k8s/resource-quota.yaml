@@ -1,0 +1,54 @@
+# RAISE App - Resource Quotas and Limits
+# Prevents resource exhaustion and controls costs
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: raise-app-quota
+  namespace: raise-app
+  labels:
+    app: raise-app
+spec:
+  hard:
+    # CPU Limits
+    requests.cpu: "2"      # Max 2 CPU cores requested across all pods
+    limits.cpu: "4"        # Max 4 CPU cores limit across all pods
+
+    # Memory Limits
+    requests.memory: 4Gi   # Max 4GB RAM requested across all pods
+    limits.memory: 8Gi     # Max 8GB RAM limit across all pods
+
+    # Resource Counts
+    pods: "10"             # Max 10 pods in namespace
+    services: "5"          # Max 5 services
+    persistentvolumeclaims: "5"  # Max 5 PVCs
+
+---
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: raise-app-limits
+  namespace: raise-app
+  labels:
+    app: raise-app
+spec:
+  limits:
+  # Container Limits
+  - type: Container
+    max:
+      cpu: "1"           # Max 1 CPU core per container
+      memory: 2Gi        # Max 2GB RAM per container
+    min:
+      cpu: "100m"        # Min 100 milliCPU (0.1 core)
+      memory: 128Mi      # Min 128MB RAM
+    default:
+      cpu: "500m"        # Default limit: 0.5 CPU core
+      memory: 512Mi      # Default limit: 512MB RAM
+    defaultRequest:
+      cpu: "200m"        # Default request: 0.2 CPU core
+      memory: 256Mi      # Default request: 256MB RAM
+
+  # Pod Limits
+  - type: Pod
+    max:
+      cpu: "2"           # Max 2 CPU cores per pod (all containers)
+      memory: 4Gi        # Max 4GB RAM per pod

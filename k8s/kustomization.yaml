@@ -7,11 +7,11 @@ namespace: raise-app
 
 resources:
   - namespace.yaml
-  - configmap.yaml
-  - secret.yaml
   - deployment.yaml
   - service.yaml
   - apirule.yaml
+  - resource-quota.yaml
+  - network-policy.yaml
 
 commonLabels:
   app.kubernetes.io/name: raise-app

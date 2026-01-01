@@ -10,6 +10,11 @@
 - [x] ATP Checklist bug risolto
 - [x] Settings page con RAISE Levels
 - [x] Integrazione SAP IAS (Auth Enterprise)
+- [x] Deployment su SAP BTP Kyma
+- [x] CSP e Security Headers configurati
+- [x] OIDC configuration esplicita con auto-refresh
+- [x] Resource Quotas e Network Policies
+- [x] Monitoring annotations (Prometheus)
 
 ### 🔧 Da Completare per Produzione
 
@@ -144,14 +149,24 @@ gzip -9 < dist/assets/index-*.js | wc -c
 
 ## 5. 🌐 Hosting Options
 
-### Opzione A: SAP BTP Kyma (Raccomandato per Lutech)
+### Opzione A: SAP BTP Kyma ✅ (ATTIVO)
 **Vantaggi:** Enterprise standard, integrazione nativa IAS, scalabilità Kubernetes.
 
-**Setup:**
-1. Configura SAP IAS (vedi [SAP_IAS_CONFIG.md](./SAP_IAS_CONFIG.md))
-2. Build Docker image usando il `Dockerfile` in root
-3. Applica i manifesti in `k8s/`
-4. Configura APIRule per l'ingress
+**Status:** ✅ **DEPLOYED**
+- **URL Produzione:** `https://raise-app.b66a502.kyma.ondemand.com`
+- **SAP IAS Authority:** `https://asojzafbi.accounts.ondemand.com`
+- **Namespace:** `raise-app`
+- **CI/CD:** GitHub Actions (automatico su push)
+
+**Configurazione Completa:**
+1. ✅ SAP IAS configurato (vedi [SAP_IAS_CONFIG.md](./SAP_IAS_CONFIG.md))
+2. ✅ Docker image su GHCR: `ghcr.io/raistlin82/lutech-raise-app`
+3. ✅ Manifesti Kubernetes applicati (`k8s/`)
+4. ✅ APIRule configurato e attivo
+5. ✅ Resource Quotas e Network Policies
+6. ✅ Security Headers (CSP, Permissions Policy)
+
+**Vedi:** [KYMA_DEPLOYMENT.md](./KYMA_DEPLOYMENT.md) per dettagli completi
 
 ---
 

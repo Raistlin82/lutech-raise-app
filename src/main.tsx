@@ -49,6 +49,19 @@ if (isTestMode) {
       client_id: clientId,
       redirect_uri: window.location.origin,
       post_logout_redirect_uri: window.location.origin,
+
+      // Explicit OIDC Configuration
+      response_type: 'code',  // Authorization Code Flow with PKCE
+      scope: 'openid profile email',  // Requested user information scopes
+
+      // Token Management
+      automaticSilentRenew: true,  // Auto-refresh tokens before expiry
+      accessTokenExpiringNotificationTimeInSeconds: 60,  // Alert 60s before expiry
+
+      // Security & Session Management
+      loadUserInfo: true,  // Load full user profile from /userinfo endpoint
+      monitorSession: true,  // Monitor session state changes
+
       onSigninCallback: () => {
         window.history.replaceState({}, document.title, window.location.pathname);
       }

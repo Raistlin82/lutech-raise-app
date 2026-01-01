@@ -1,5 +1,6 @@
 import { useAuth as useOidcAuth } from "react-oidc-context";
 import { User } from "oidc-client-ts";
+import { useEffect } from "react";
 
 // Wrapper hook to handle Test Mode mocking
 export const useAuth = () => {
@@ -8,6 +9,25 @@ export const useAuth = () => {
 
     // Always call the hook (Rules of Hooks requirement)
     const oidcAuth = useOidcAuth();
+
+    // Token expiration monitoring (production only)
+    useEffect(() => {
+        if (!isTestMode && oidcAuth.user) {
+            const expiresAt = oidcAuth.user.expires_at;
+            if (expiresAt) {
+                const timeUntilExpiry = (expiresAt * 1000) - Date.now();
+                const warningTime = 60000; // 1 minute warning
+
+                if (timeUntilExpiry > warningTime) {
+                    const timeout = setTimeout(() => {
+                        console.warn("Your session will expire soon. Activity will extend it automatically.");
+                    }, timeUntilExpiry - warningTime);
+
+                    return () => clearTimeout(timeout);
+                }
+            }
+        }
+    }, [isTestMode, oidcAuth.user]);
 
     // In test mode, return mock data instead of real auth
     if (isTestMode) {

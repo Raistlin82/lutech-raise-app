@@ -1,0 +1,57 @@
+# RAISE App - Network Policy
+# Implements network isolation and least-privilege access
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: raise-app-policy
+  namespace: raise-app
+  labels:
+    app: raise-app
+spec:
+  podSelector:
+    matchLabels:
+      app: raise-app
+  policyTypes:
+  - Ingress
+  - Egress
+
+  # INGRESS RULES: Who can access our pods
+  ingress:
+  # Allow traffic from Istio Ingress Gateway (Kyma)
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: kyma-system
+      podSelector:
+        matchLabels:
+          app: istio-ingressgateway
+    ports:
+    - protocol: TCP
+      port: 8080  # nginx port
+
+  # EGRESS RULES: What our pods can access
+  egress:
+  # Allow DNS resolution (kube-dns/coredns)
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: kube-system
+    ports:
+    - protocol: UDP
+      port: 53
+
+  # Allow HTTPS to external services (SAP IAS, Supabase)
+  # Note: This allows ALL external HTTPS. For stricter control,
+  # use a service mesh policy or egress gateway.
+  - to:
+    - namespaceSelector: {}
+    ports:
+    - protocol: TCP
+      port: 443
+
+  # Allow HTTP/HTTPS to internet (for SAP IAS, Supabase, etc.)
+  - ports:
+    - protocol: TCP
+      port: 80
+    - protocol: TCP
+      port: 443
