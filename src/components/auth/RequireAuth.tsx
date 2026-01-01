@@ -12,7 +12,7 @@ export function RequireAuth({ children }: { children: ReactNode }) {
         if (!auth.isLoading && !auth.isAuthenticated && !auth.error) {
             void auth.signinRedirect();
         }
-    }, [auth.isLoading, auth.isAuthenticated, auth.error, auth.signinRedirect]);
+    }, [auth]);
 
     if (auth.isLoading) {
         return (

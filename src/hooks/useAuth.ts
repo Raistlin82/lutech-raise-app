@@ -6,8 +6,11 @@ export const useAuth = () => {
     // Check if we are in Test Mode (E2E)
     const isTestMode = import.meta.env.VITE_TEST_MODE === 'true';
 
+    // Always call the hook (Rules of Hooks requirement)
+    const oidcAuth = useOidcAuth();
+
+    // In test mode, return mock data instead of real auth
     if (isTestMode) {
-        // Return a mock auth context that simulates a logged-in user
         return {
             isAuthenticated: true,
             isLoading: false,
@@ -29,6 +32,6 @@ export const useAuth = () => {
         };
     }
 
-    // In production/dev, use the real OIDC Auth hook
-    return useOidcAuth();
+    // In production/dev, return the real OIDC Auth
+    return oidcAuth;
 };
