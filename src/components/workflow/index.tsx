@@ -54,6 +54,12 @@ export const OpportunityWorkflow = ({ opp, onBack }: { opp: Opportunity, onBack:
                 return;
             }
 
+            // Handover is the final phase - workflow is complete
+            if (phase === 'Handover') {
+                showToast.success(t('completion.success') + ' - Workflow completato!');
+                return;
+            }
+
             const nextPhase = getNextPhase(phase);
 
             if (nextPhase) {

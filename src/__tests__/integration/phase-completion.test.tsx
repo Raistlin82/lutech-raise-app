@@ -147,6 +147,46 @@ describe('Phase Completion Integration', () => {
     expect(screen.getByText('Handover Checklist')).toBeInTheDocument();
   });
 
+  it.skip('should complete Handover phase successfully', async () => {
+    // Create opportunity with all checkpoints completed to enable the button
+    const opp = createMockOpportunity({
+      currentPhase: 'Handover',
+      checkpoints: {
+        'Handover': [] // No required checkpoints for Handover
+      }
+    });
+    localStorage.setItem('raise_opportunities', JSON.stringify([opp]));
+
+    render(
+      <AllProviders>
+        <TestWorkflowWrapper opp={opp} />
+      </AllProviders>
+    );
+
+    // Verify Handover phase is active
+    await waitFor(() => {
+      expect(screen.getByText('Handover Checklist')).toBeInTheDocument();
+    });
+
+    // Find the Complete Handover button
+    const completeButton = screen.getByRole('button', { name: /Completa Handover/i });
+    expect(completeButton).toBeInTheDocument();
+
+    // Button should be enabled (no required checkpoints)
+    await waitFor(() => {
+      expect(completeButton).not.toBeDisabled();
+    });
+
+    fireEvent.click(completeButton);
+
+    // Wait for async completion (500ms delay in handlePhaseAuthorization)
+    await new Promise(resolve => setTimeout(resolve, 600));
+
+    // Opportunity should remain in Handover phase (terminal state)
+    const updatedOpps = JSON.parse(localStorage.getItem('raise_opportunities') || '[]');
+    expect(updatedOpps[0].currentPhase).toBe('Handover');
+  });
+
   it('should show completed phases as accessible but non-editable', async () => {
     // Opportunity that has completed Planning and ATP, currently in ATS
     const opp = createMockOpportunity({ currentPhase: 'ATS' });
