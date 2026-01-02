@@ -653,7 +653,7 @@ A: Sì, l'app è WCAG 2.1 AA compliant con ARIA labels e announcements.
 A: Chrome, Firefox, Safari, Edge (ultime 2 versioni). Mobile: iOS Safari, Chrome Android.
 
 **Q: I dati sono salvati?**
-A: Sì, in localStorage del browser. Se cancelli cache browser, perdi i dati.
+A: Sì, i dati sono salvati in modo permanente su Supabase (cloud database). I tuoi dati sono persistiti anche se cambi browser o dispositivo. Ogni utente vede solo le proprie opportunità grazie al sistema di Row Level Security (RLS).
 
 **Q: Posso esportare le opportunità?**
 A: Funzionalità in roadmap (Q2 2025).

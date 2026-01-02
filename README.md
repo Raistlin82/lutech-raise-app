@@ -33,13 +33,14 @@ RAISE digitalizza il processo decisionale commerciale attraverso un workflow str
 ### Core Business Pillars
 - **Governance Dinamica:** Calcolo automatico del livello di autorizzazione (L1-L6) basato su matrici di rischio PSQ-003.
 - **Workflow Sequenziale:** Gestione fasi ATP (Proceed), ATS (Sign) e ATC (Commit) con checkpoint condizionali.
+- **Multi-User Data Segregation:** Row Level Security (RLS) con isolamento dati utente tramite Supabase.
 - **Relational Customer Core:** Sistema centralizzato di gestione clienti con integrazione nativa sulle opportunità.
 - **Global Ready:** Architettura i18n modulare con interfaccia completa in lingua italiana.
 
 ### Performance & UX
 - **Performance:** Caricamento istantaneo con bundle ottimizzato (~130KB gzipped).
 - **UX Premium:** Feedback in tempo reale, skeleton screens e sistema di notifiche Toast.
-- **Security:** Autenticazione Enterprise-ready tramite SAP IAS (OIDC + PKCE).
+- **Security:** Autenticazione Enterprise-ready tramite SAP IAS (OIDC + PKCE) con cloud persistence su Supabase.
 
 ---
 
@@ -51,6 +52,7 @@ L'applicazione segue lo stato dell'arte dello sviluppo frontend moderno:
 | :--- | :--- |
 | **Framework** | React 19 + TypeScript 5.6 |
 | **Build Tool** | Vite 7.3 (Ultra-fast HMR) |
+| **Backend** | Supabase (PostgreSQL + RLS) |
 | **State** | Zustand (Modular Store architecture) |
 | **Routing** | React Router v7 |
 | **Validation** | Zod (Runtime type-safety) |
@@ -122,6 +124,8 @@ Consulta la guida completa: **[TESTING_GUIDE.md](docs/TESTING_GUIDE.md)** per de
 ### Completato ✅
 - [x] Motore di calcolo RAISE v17 (PSQ-003)
 - [x] Integrazione SAP IAS (OIDC Authentication)
+- [x] Backend Supabase con Row Level Security (RLS)
+- [x] Multi-User Data Segregation per utente
 - [x] Sistema di gestione Clienti relazionale
 - [x] Localizzazione completa (i18n Namespace architecture)
 - [x] Fix Handover completion workflow (2026-01-01)
