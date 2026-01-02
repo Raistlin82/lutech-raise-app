@@ -11,6 +11,8 @@ resources:
   - service.yaml
   - apirule.yaml
   - resource-quota.yaml
+  - hpa.yaml
+  - telemetry.yaml
   # TODO: Fix NetworkPolicy to allow Istio internal traffic
   # - network-policy.yaml
 

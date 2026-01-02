@@ -58,7 +58,7 @@ describe('Opportunities API', () => {
     const newOpp: Partial<Opportunity> = {
       title: 'Test Opportunity',
       tcv: 500000,
-      firstMarginPercentage: 25
+      firstMarginPercent: 25
     };
 
     const created = await createOpportunity(newOpp as Opportunity, 'user@example.com');

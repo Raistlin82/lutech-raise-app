@@ -1,5 +1,5 @@
 import { getSupabaseClient } from '@/lib/supabase';
-import type { Customer } from '@/types';
+import type { Customer, Industry } from '@/types';
 import type { Database } from '@/types/supabase';
 
 type CustomerRow = Database['public']['Tables']['customers']['Row'];
@@ -10,10 +10,8 @@ function mapToCustomer(row: CustomerRow): Customer {
   return {
     id: row.id,
     name: row.name,
-    industry: row.industry,
+    industry: row.industry as Industry,
     isPublicSector: row.is_public_sector,
-    createdAt: row.created_at,
-    updatedAt: row.updated_at,
   };
 }
 
@@ -22,6 +20,11 @@ function mapToCustomer(row: CustomerRow): Customer {
  */
 export async function fetchCustomers(): Promise<Customer[]> {
   const supabase = getSupabaseClient();
+
+  if (!supabase) {
+    console.warn('Supabase not configured');
+    return [];
+  }
 
   const { data, error } = await supabase
     .from('customers')
@@ -33,7 +36,7 @@ export async function fetchCustomers(): Promise<Customer[]> {
     throw new Error(`Failed to fetch customers: ${error.message}`);
   }
 
-  return data.map(mapToCustomer);
+  return (data || []).map(mapToCustomer);
 }
 
 /**
@@ -41,6 +44,10 @@ export async function fetchCustomers(): Promise<Customer[]> {
  */
 export async function createCustomer(customer: Customer): Promise<Customer> {
   const supabase = getSupabaseClient();
+
+  if (!supabase) {
+    throw new Error('Supabase not configured');
+  }
 
   const insert: CustomerInsert = {
     name: customer.name,
@@ -50,7 +57,7 @@ export async function createCustomer(customer: Customer): Promise<Customer> {
 
   const { data, error } = await supabase
     .from('customers')
-    .insert(insert)
+    .insert(insert as any)
     .select()
     .single();
 
@@ -71,7 +78,11 @@ export async function updateCustomer(
 ): Promise<Customer> {
   const supabase = getSupabaseClient();
 
-  const update: CustomerUpdate = {
+  if (!supabase) {
+    throw new Error('Supabase not configured');
+  }
+
+  const update: Partial<CustomerUpdate> = {
     name: updates.name,
     industry: updates.industry,
     is_public_sector: updates.isPublicSector,
@@ -79,6 +90,7 @@ export async function updateCustomer(
 
   const { data, error } = await supabase
     .from('customers')
+    // @ts-expect-error - Supabase generated types issue
     .update(update)
     .eq('id', id)
     .select()
@@ -97,6 +109,10 @@ export async function updateCustomer(
  */
 export async function deleteCustomer(id: string): Promise<void> {
   const supabase = getSupabaseClient();
+
+  if (!supabase) {
+    throw new Error('Supabase not configured');
+  }
 
   const { error } = await supabase
     .from('customers')

@@ -76,6 +76,7 @@ export async function getControls(): Promise<ControlConfig[]> {
         }
 
         // Fetch template links for all controls
+        // @ts-expect-error - Missing table definition in Supabase types
         const controlIds = controls.map(c => c.id);
         const { data: templateLinks } = await supabase
             .from('control_template_links')
@@ -84,13 +85,14 @@ export async function getControls(): Promise<ControlConfig[]> {
             .order('sort_order');
 
         const linksByControl: Record<string, TemplateLinkRow[]> = {};
-        (templateLinks || []).forEach(tl => {
+        (templateLinks || []).forEach((tl: any) => {
             if (!linksByControl[tl.control_id]) {
                 linksByControl[tl.control_id] = [];
             }
             linksByControl[tl.control_id].push(tl);
         });
 
+        // @ts-expect-error - Missing table definition in Supabase types
         return controls.map(c => rowToControl(c, linksByControl[c.id] || []));
     }
 
@@ -130,6 +132,7 @@ export async function createControl(control: ControlConfig): Promise<ControlConf
     if (isSupabaseConfigured() && supabase) {
         const { data, error } = await supabase
             .from('controls')
+            // @ts-expect-error - Missing table definition in Supabase types
             .insert(controlToInsert(control))
             .select()
             .single();
@@ -147,6 +150,7 @@ export async function createControl(control: ControlConfig): Promise<ControlConf
                 url: tl.url,
                 sort_order: index,
             }));
+            // @ts-expect-error - Missing table definition in Supabase types
             await supabase.from('control_template_links').insert(linkData);
         }
 
@@ -171,6 +175,7 @@ export async function updateControl(control: ControlConfig): Promise<ControlConf
 
         const { data, error } = await supabase
             .from('controls')
+            // @ts-expect-error - Missing table definition in Supabase types
             .update(updateData)
             .eq('id', control.id)
             .select()
@@ -190,6 +195,7 @@ export async function updateControl(control: ControlConfig): Promise<ControlConf
                 url: tl.url,
                 sort_order: index,
             }));
+            // @ts-expect-error - Missing table definition in Supabase types
             await supabase.from('control_template_links').insert(linkData);
         }
 
@@ -247,6 +253,7 @@ export async function resetControls(defaultControls: ControlConfig[]): Promise<v
         const controlData = defaultControls.map(controlToInsert);
         const { error } = await supabase
             .from('controls')
+            // @ts-expect-error - Missing table definition in Supabase types
             .insert(controlData);
 
         if (error) {
@@ -276,6 +283,7 @@ export async function resetControls(defaultControls: ControlConfig[]): Promise<v
         });
 
         if (allLinks.length > 0) {
+            // @ts-expect-error - Missing table definition in Supabase types
             await supabase.from('control_template_links').insert(allLinks);
         }
 

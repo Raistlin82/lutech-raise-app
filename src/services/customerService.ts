@@ -92,6 +92,7 @@ export async function createCustomer(customer: Omit<Customer, 'id'>): Promise<Cu
     if (isSupabaseConfigured() && supabase) {
         const { data, error } = await supabase
             .from('customers')
+            // @ts-expect-error - Supabase generated types issue
             .insert(customerToInsert({ ...customer, id }))
             .select()
             .single();
@@ -124,6 +125,7 @@ export async function updateCustomer(customer: Customer): Promise<Customer> {
         };
         const { data, error } = await supabase
             .from('customers')
+            // @ts-expect-error - Supabase generated types issue
             .update(updateData)
             .eq('id', customer.id)
             .select()

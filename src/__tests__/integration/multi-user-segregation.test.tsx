@@ -45,9 +45,7 @@ const AllProviders = ({ children }: { children: React.ReactNode }) => (
 const createMockOpportunity = (overrides: Partial<Opportunity> = {}): Opportunity => ({
   id: 'OPP-TEST-001',
   title: 'Test Opportunity',
-  description: '',
   tcv: 1000000,
-  firstMarginPercentage: 20,
   raiseTcv: 1000000,
   industry: 'Technology',
   currentPhase: 'Planning',
@@ -57,8 +55,7 @@ const createMockOpportunity = (overrides: Partial<Opportunity> = {}): Opportunit
   isPublicSector: false,
   raiseLevel: 'L3',
   checkpoints: {},
-  status: 'active',
-  expectedDecisionDate: '2024-12-31',
+  deviations: [],
   createdByEmail: 'user1@example.com',
   createdAt: new Date().toISOString(),
   updatedAt: new Date().toISOString(),
@@ -89,13 +86,8 @@ describe('Multi-User Data Segregation', () => {
       createdByEmail: 'user1@example.com',
     });
 
-    // User2's opportunity exists but should NOT be visible to user1 (RLS filtering)
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const _user2Opportunity = createMockOpportunity({
-      id: '2',
-      title: 'User2 Opportunity',
-      createdByEmail: 'user2@example.com',
-    });
+    // User2's opportunity exists in DB but should NOT be visible to user1 (RLS filtering)
+    // The mock API response below simulates RLS filtering it out
 
     // Mock API to return only user1's opportunities (simulating RLS filtering)
     vi.mocked(opportunitiesApi.fetchOpportunities).mockResolvedValue([user1Opportunity]);
@@ -128,13 +120,8 @@ describe('Multi-User Data Segregation', () => {
     });
 
     // Create opportunities for different users
-    // User1's opportunity exists but should NOT be visible to user2 (RLS filtering)
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const _user1Opportunity = createMockOpportunity({
-      id: '1',
-      title: 'User1 Private Opportunity',
-      createdByEmail: 'user1@example.com',
-    });
+    // User1's opportunity exists in DB but should NOT be visible to user2 (RLS filtering)
+    // The mock API response below simulates RLS filtering it out
 
     const user2Opportunity = createMockOpportunity({
       id: '2',

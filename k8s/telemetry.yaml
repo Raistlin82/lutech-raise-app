@@ -1,0 +1,73 @@
+# RAISE App - Istio Telemetry Configuration
+# Enables comprehensive monitoring for SAP Cloud ALM integration
+apiVersion: telemetry.istio.io/v1alpha1
+kind: Telemetry
+metadata:
+  name: raise-app-telemetry
+  namespace: raise-app
+  labels:
+    app: raise-app
+  annotations:
+    description: "Telemetry configuration for RAISE app monitoring via Cloud ALM"
+spec:
+  # Selector to apply telemetry only to raise-app pods
+  selector:
+    matchLabels:
+      app: raise-app
+
+  # Metrics configuration
+  metrics:
+    - providers:
+        - name: prometheus
+      dimensions:
+        # Custom dimensions for Cloud ALM
+        app_name: "raise-app"
+        app_version: "v1"
+        namespace: "raise-app"
+      overrides:
+        # Request metrics
+        - match:
+            mode: CLIENT_AND_SERVER
+            metric: REQUEST_COUNT
+          tagOverrides:
+            destination_service:
+              value: "raise-app.raise-app.svc.cluster.local"
+        # Request duration metrics
+        - match:
+            mode: CLIENT_AND_SERVER
+            metric: REQUEST_DURATION
+          tagOverrides:
+            destination_service:
+              value: "raise-app.raise-app.svc.cluster.local"
+        # Connection metrics
+        - match:
+            metric: CONNECTION_RECEIVED
+          tagOverrides:
+            destination_service:
+              value: "raise-app.raise-app.svc.cluster.local"
+
+  # Access logging configuration
+  accessLogging:
+    - providers:
+        - name: envoy
+      filter:
+        expression: "response.code >= 400"
+    - providers:
+        - name: otel
+
+  # Tracing configuration for distributed tracing
+  tracing:
+    - providers:
+        - name: zipkin
+      randomSamplingPercentage: 10.0
+      customTags:
+        app_name:
+          literal:
+            value: "raise-app"
+        app_version:
+          literal:
+            value: "v1"
+        namespace:
+          literal:
+            value: "raise-app"
+      disableSpanReporting: false
