@@ -1,7 +1,7 @@
-import { useAuth } from 'react-oidc-context';
+import { useAuth } from './useAuth';
 
 /**
- * Extract user email from SAP IAS JWT token
+ * Extract user email from SAP IAS JWT token (or mock user in test mode)
  * Used as user identifier for data segregation
  */
 export function useUserEmail(): string | null {

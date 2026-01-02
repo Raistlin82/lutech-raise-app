@@ -1,7 +1,7 @@
 import { lazy, Suspense, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
-import { useAuth } from 'react-oidc-context';
+import { useAuth } from './hooks/useAuth';
 import { Layout } from './components/layout';
 import { useOpportunities } from './stores/OpportunitiesStore';
 import { ErrorBoundary } from './components/common/ErrorBoundary';

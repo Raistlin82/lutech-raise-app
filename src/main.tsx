@@ -6,6 +6,7 @@ import App from './App.tsx'
 import { SettingsProvider } from './stores/SettingsStore'
 import { CustomerProvider } from './stores/CustomerStore'
 import { OpportunitiesProvider } from './stores/OpportunitiesStore'
+import { MockAuthProvider } from './lib/mockAuth'
 
 // Load runtime configuration from /config.json
 async function loadRuntimeConfig(): Promise<Partial<RuntimeConfig>> {
@@ -45,15 +46,18 @@ async function initApp() {
   const isTestMode = import.meta.env.VITE_TEST_MODE === 'true';
 
   if (isTestMode) {
-    // TEST MODE: Render App directly to use the mock auth hook
+    // TEST MODE: Use mock authentication provider for E2E tests
+    console.log('🧪 Running in TEST MODE with mock authentication');
     createRoot(rootElement).render(
-      <SettingsProvider>
-        <CustomerProvider>
-          <OpportunitiesProvider>
-            <App />
-          </OpportunitiesProvider>
-        </CustomerProvider>
-      </SettingsProvider>
+      <MockAuthProvider>
+        <SettingsProvider>
+          <CustomerProvider>
+            <OpportunitiesProvider>
+              <App />
+            </OpportunitiesProvider>
+          </CustomerProvider>
+        </SettingsProvider>
+      </MockAuthProvider>
     );
   } else {
     // PRODUCTION/DEV MODE: Load runtime config, then validate and use AuthProvider
