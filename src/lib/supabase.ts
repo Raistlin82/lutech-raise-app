@@ -43,7 +43,7 @@ const initSupabase = (): SupabaseClient<Database> | null => {
 };
 
 // Getter function for lazy initialization - only initializes when first called
-function getSupabaseClient() {
+export function getSupabaseClient() {
     if (supabaseClient === undefined) {
         supabaseClient = initSupabase();
     }
