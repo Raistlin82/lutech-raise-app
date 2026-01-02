@@ -4,6 +4,7 @@
  * This provider bypasses IAS authentication in test mode and provides
  * a mock authenticated user for E2E testing.
  */
+/* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, ReactNode } from 'react';
 
 // Mock user for testing
