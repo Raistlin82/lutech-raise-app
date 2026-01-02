@@ -33,7 +33,7 @@ COPY . .
 RUN sed -i 's|/lutech-raise-app/|/|g' index.html
 
 # Build the application with explicit base path for Kyma
-RUN npm run build -- --base=/
+RUN npm run build:prod -- --base=/
 
 # Stage 2: Production
 FROM nginx:alpine
