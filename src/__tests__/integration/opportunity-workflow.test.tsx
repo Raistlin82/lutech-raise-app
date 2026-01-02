@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { OpportunitiesProvider } from '../../stores/OpportunitiesStore';
@@ -7,6 +7,21 @@ import { Dashboard } from '../../components/dashboard';
 import type { Opportunity } from '../../types';
 import { I18nextProvider } from 'react-i18next';
 import i18n from '../../i18n/config';
+
+// Mock the API layers
+vi.mock('@/api/customers', () => ({
+  fetchCustomers: vi.fn(() => Promise.resolve([])),
+  createCustomer: vi.fn(),
+  updateCustomer: vi.fn(),
+  deleteCustomer: vi.fn(),
+}));
+
+vi.mock('@/api/opportunities', () => ({
+  fetchOpportunities: vi.fn(() => Promise.resolve([])),
+  createOpportunity: vi.fn(),
+  updateOpportunity: vi.fn(),
+  deleteOpportunity: vi.fn(),
+}));
 
 // Wrapper with all providers
 const AllProviders = ({ children }: { children: React.ReactNode }) => (

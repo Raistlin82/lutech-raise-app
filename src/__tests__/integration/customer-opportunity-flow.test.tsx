@@ -1,10 +1,25 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { renderHook, act, waitFor } from '@testing-library/react';
 import { CustomerProvider, useCustomers } from '../../stores/CustomerStore';
 import { OpportunitiesProvider, useOpportunities } from '../../stores/OpportunitiesStore';
 import { SettingsProvider } from '../../stores/SettingsStore';
 import type { Customer, Opportunity } from '../../types';
 import React from 'react';
+
+// Mock the API layers
+vi.mock('@/api/customers', () => ({
+  fetchCustomers: vi.fn(() => Promise.resolve([])),
+  createCustomer: vi.fn((customer: Customer) => Promise.resolve(customer)),
+  updateCustomer: vi.fn((id: string, customer: Customer) => Promise.resolve(customer)),
+  deleteCustomer: vi.fn(() => Promise.resolve()),
+}));
+
+vi.mock('@/api/opportunities', () => ({
+  fetchOpportunities: vi.fn(() => Promise.resolve([])),
+  createOpportunity: vi.fn((opp: Opportunity) => Promise.resolve(opp)),
+  updateOpportunity: vi.fn((id: string, opp: Opportunity) => Promise.resolve(opp)),
+  deleteOpportunity: vi.fn(() => Promise.resolve()),
+}));
 
 // Wrapper component that provides all necessary contexts
 const AllProviders: React.FC<{ children: React.ReactNode }> = ({ children }) => (

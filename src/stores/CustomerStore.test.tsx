@@ -1,11 +1,28 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { renderHook, act, waitFor } from '@testing-library/react';
 import { CustomerProvider, useCustomers } from './CustomerStore';
 import type { Customer } from '../types';
 
+// Mock the API layer
+vi.mock('@/api/customers', () => ({
+  fetchCustomers: vi.fn(),
+  createCustomer: vi.fn(),
+  updateCustomer: vi.fn(),
+  deleteCustomer: vi.fn(),
+}));
+
+import {
+  fetchCustomers,
+  createCustomer as apiCreateCustomer,
+  updateCustomer as apiUpdateCustomer,
+  deleteCustomer as apiDeleteCustomer,
+} from '@/api/customers';
+
 describe('CustomerStore', () => {
   beforeEach(() => {
-    localStorage.clear();
+    vi.clearAllMocks();
+    // Mock fetchCustomers to return empty array by default
+    (fetchCustomers as any).mockResolvedValue([]);
   });
 
   it('should start with empty customers after loading', async () => {
@@ -37,15 +54,29 @@ describe('CustomerStore', () => {
       isPublicSector: false,
     };
 
+    const createdCustomer: Customer = {
+      id: 'customer-123',
+      name: 'Acme Corp',
+      industry: 'Technology',
+      isPublicSector: false,
+    };
+
+    (apiCreateCustomer as any).mockResolvedValue(createdCustomer);
+
     let returnedId: string = '';
     await act(async () => {
       returnedId = await result.current.addCustomer(newCustomer);
     });
 
+    expect(apiCreateCustomer).toHaveBeenCalledWith(expect.objectContaining({
+      name: 'Acme Corp',
+      industry: 'Technology',
+      isPublicSector: false,
+    }));
     expect(result.current.customers).toHaveLength(1);
     expect(result.current.customers[0].name).toBe('Acme Corp');
-    expect(result.current.customers[0].id).toBeTruthy();
-    expect(returnedId).toBe(result.current.customers[0].id);
+    expect(result.current.customers[0].id).toBe('customer-123');
+    expect(returnedId).toBe('customer-123');
   });
 
   it('should update a customer', async () => {
@@ -64,6 +95,15 @@ describe('CustomerStore', () => {
       isPublicSector: false,
     };
 
+    const createdCustomer: Customer = {
+      id: 'customer-123',
+      name: 'Acme Corp',
+      industry: 'Technology',
+      isPublicSector: false,
+    };
+
+    (apiCreateCustomer as any).mockResolvedValue(createdCustomer);
+
     let customerId: string = '';
     await act(async () => {
       customerId = await result.current.addCustomer(newCustomer);
@@ -76,10 +116,13 @@ describe('CustomerStore', () => {
       isPublicSector: true,
     };
 
+    (apiUpdateCustomer as any).mockResolvedValue(updatedCustomer);
+
     await act(async () => {
       await result.current.updateCustomer(updatedCustomer);
     });
 
+    expect(apiUpdateCustomer).toHaveBeenCalledWith('customer-123', updatedCustomer);
     expect(result.current.customers).toHaveLength(1);
     expect(result.current.customers[0].name).toBe('Acme Corporation');
     expect(result.current.customers[0].industry).toBe('Finance');
@@ -102,6 +145,15 @@ describe('CustomerStore', () => {
       isPublicSector: false,
     };
 
+    const createdCustomer: Customer = {
+      id: 'customer-123',
+      name: 'Acme Corp',
+      industry: 'Technology',
+      isPublicSector: false,
+    };
+
+    (apiCreateCustomer as any).mockResolvedValue(createdCustomer);
+
     let customerId: string = '';
     await act(async () => {
       customerId = await result.current.addCustomer(newCustomer);
@@ -109,10 +161,13 @@ describe('CustomerStore', () => {
 
     expect(result.current.customers).toHaveLength(1);
 
+    (apiDeleteCustomer as any).mockResolvedValue(undefined);
+
     await act(async () => {
       await result.current.deleteCustomer(customerId);
     });
 
+    expect(apiDeleteCustomer).toHaveBeenCalledWith('customer-123');
     expect(result.current.customers).toHaveLength(0);
   });
 
@@ -132,6 +187,15 @@ describe('CustomerStore', () => {
       isPublicSector: false,
     };
 
+    const createdCustomer: Customer = {
+      id: 'customer-123',
+      name: 'Acme Corp',
+      industry: 'Technology',
+      isPublicSector: false,
+    };
+
+    (apiCreateCustomer as any).mockResolvedValue(createdCustomer);
+
     let customerId: string = '';
     await act(async () => {
       customerId = await result.current.addCustomer(newCustomer);
@@ -140,9 +204,10 @@ describe('CustomerStore', () => {
     const customer = result.current.getCustomer(customerId);
     expect(customer).toBeTruthy();
     expect(customer?.name).toBe('Acme Corp');
+    expect(customer?.id).toBe('customer-123');
   });
 
-  it('should persist customers to localStorage', async () => {
+  it('should call API on refreshCustomers', async () => {
     const { result } = renderHook(() => useCustomers(), {
       wrapper: CustomerProvider
     });
@@ -152,21 +217,23 @@ describe('CustomerStore', () => {
       expect(result.current.loading).toBe(false);
     });
 
-    const newCustomer: Omit<Customer, 'id'> = {
-      name: 'Acme Corp',
-      industry: 'Technology',
-      isPublicSector: false,
-    };
+    // Clear previous calls
+    vi.clearAllMocks();
+
+    const refreshedCustomers: Customer[] = [
+      { id: 'customer-1', name: 'Customer 1', industry: 'Technology', isPublicSector: false },
+      { id: 'customer-2', name: 'Customer 2', industry: 'Finance', isPublicSector: true },
+    ];
+
+    (fetchCustomers as any).mockResolvedValue(refreshedCustomers);
 
     await act(async () => {
-      await result.current.addCustomer(newCustomer);
+      await result.current.refreshCustomers();
     });
 
-    const saved = localStorage.getItem('raise_customers');
-    expect(saved).toBeTruthy();
-
-    const parsed = JSON.parse(saved!);
-    expect(parsed).toHaveLength(1);
-    expect(parsed[0].name).toBe('Acme Corp');
+    expect(fetchCustomers).toHaveBeenCalled();
+    expect(result.current.customers).toHaveLength(2);
+    expect(result.current.customers[0].name).toBe('Customer 1');
+    expect(result.current.customers[1].name).toBe('Customer 2');
   });
 });

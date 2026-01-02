@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { OpportunitiesProvider } from '../../stores/OpportunitiesStore';
@@ -6,6 +6,21 @@ import { SettingsProvider } from '../../stores/SettingsStore';
 import { Dashboard } from '../../components/dashboard';
 import { calculateRaiseLevel, isFastTrackEligible } from '../../lib/raiseLogic';
 import type { Opportunity } from '../../types';
+
+// Mock the API layers
+vi.mock('@/api/customers', () => ({
+  fetchCustomers: vi.fn(() => Promise.resolve([])),
+  createCustomer: vi.fn(),
+  updateCustomer: vi.fn(),
+  deleteCustomer: vi.fn(),
+}));
+
+vi.mock('@/api/opportunities', () => ({
+  fetchOpportunities: vi.fn(() => Promise.resolve([])),
+  createOpportunity: vi.fn(),
+  updateOpportunity: vi.fn(),
+  deleteOpportunity: vi.fn(),
+}));
 
 // Wrapper with all providers
 const AllProviders = ({ children }: { children: React.ReactNode }) => (

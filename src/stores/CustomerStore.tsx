@@ -1,8 +1,12 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import type { Customer } from '../types';
-import { validateCustomerArray } from '../lib/validation';
 import { showToast } from '../lib/toast';
-import * as customerService from '../services/customerService';
+import {
+  fetchCustomers,
+  createCustomer as apiCreateCustomer,
+  updateCustomer as apiUpdateCustomer,
+  deleteCustomer as apiDeleteCustomer,
+} from '@/api/customers';
 
 interface CustomerContextType {
   customers: Customer[];
@@ -22,24 +26,16 @@ export const CustomerProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   const [customers, setCustomers] = useState<Customer[]>(INITIAL_CUSTOMERS);
   const [loading, setLoading] = useState(true);
 
-  // Load customers from service on mount
+  // Load customers from Supabase API on mount
   const loadCustomers = useCallback(async () => {
     try {
       setLoading(true);
-      const data = await customerService.getCustomers();
-
-      // Validate loaded data
-      const validation = validateCustomerArray(data);
-      if (!validation.success) {
-        console.error('Invalid customer data from service:', validation.error);
-        setCustomers(INITIAL_CUSTOMERS);
-        return;
-      }
-
-      setCustomers(validation.data);
+      const data = await fetchCustomers();
+      setCustomers(data);
     } catch (error) {
       console.error('Failed to load customers:', error);
       showToast.error('Errore nel caricamento clienti');
+      setCustomers(INITIAL_CUSTOMERS);
     } finally {
       setLoading(false);
     }
@@ -55,7 +51,12 @@ export const CustomerProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
   const addCustomer = async (customerData: Omit<Customer, 'id'>): Promise<string> => {
     try {
-      const newCustomer = await customerService.createCustomer(customerData);
+      // Create a temporary customer object with an id for the API call
+      const tempCustomer: Customer = {
+        id: crypto.randomUUID(),
+        ...customerData
+      };
+      const newCustomer = await apiCreateCustomer(tempCustomer);
       setCustomers(prev => [...prev, newCustomer]);
       showToast.success(`Cliente "${newCustomer.name}" creato!`);
       return newCustomer.id;
@@ -68,11 +69,11 @@ export const CustomerProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
   const updateCustomer = async (updatedCustomer: Customer): Promise<void> => {
     try {
-      await customerService.updateCustomer(updatedCustomer);
+      const updated = await apiUpdateCustomer(updatedCustomer.id, updatedCustomer);
       setCustomers(prev =>
-        prev.map(c => c.id === updatedCustomer.id ? updatedCustomer : c)
+        prev.map(c => c.id === updated.id ? updated : c)
       );
-      showToast.success(`Cliente "${updatedCustomer.name}" aggiornato!`);
+      showToast.success(`Cliente "${updated.name}" aggiornato!`);
     } catch (error) {
       console.error('Failed to update customer:', error);
       showToast.error('Errore nell\'aggiornamento del cliente');
@@ -83,7 +84,7 @@ export const CustomerProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   const deleteCustomer = async (id: string): Promise<void> => {
     const customer = customers.find(c => c.id === id);
     try {
-      await customerService.deleteCustomer(id);
+      await apiDeleteCustomer(id);
       setCustomers(prev => prev.filter(c => c.id !== id));
       showToast.success(`Cliente "${customer?.name}" eliminato.`);
     } catch (error) {
