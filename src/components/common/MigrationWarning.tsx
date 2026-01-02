@@ -1,16 +1,13 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 export function MigrationWarning() {
-  const [hasLocalData, setHasLocalData] = useState(false);
-
-  useEffect(() => {
-    // Check if user has old localStorage data
+  // Initialize state by checking localStorage once
+  const [hasLocalData, setHasLocalData] = useState(() => {
     const hasData =
       localStorage.getItem('raise_opportunities') ||
       localStorage.getItem('raise_customers');
-
-    setHasLocalData(!!hasData);
-  }, []);
+    return !!hasData;
+  });
 
   if (!hasLocalData) return null;
 

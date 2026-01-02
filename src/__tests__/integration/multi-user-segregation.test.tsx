@@ -89,7 +89,9 @@ describe('Multi-User Data Segregation', () => {
       createdByEmail: 'user1@example.com',
     });
 
-    const user2Opportunity = createMockOpportunity({
+    // User2's opportunity exists but should NOT be visible to user1 (RLS filtering)
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const _user2Opportunity = createMockOpportunity({
       id: '2',
       title: 'User2 Opportunity',
       createdByEmail: 'user2@example.com',
@@ -126,7 +128,9 @@ describe('Multi-User Data Segregation', () => {
     });
 
     // Create opportunities for different users
-    const user1Opportunity = createMockOpportunity({
+    // User1's opportunity exists but should NOT be visible to user2 (RLS filtering)
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const _user1Opportunity = createMockOpportunity({
       id: '1',
       title: 'User1 Private Opportunity',
       createdByEmail: 'user1@example.com',
