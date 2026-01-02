@@ -1,9 +1,10 @@
 import { describe, it, expect, vi } from 'vitest';
 import { renderHook } from '@testing-library/react';
 import { useUserEmail } from '@/hooks/useUserEmail';
-import { useAuth } from 'react-oidc-context';
+import { useAuth } from '@/hooks/useAuth';
 
-vi.mock('react-oidc-context');
+// Mock the useAuth hook instead of react-oidc-context
+vi.mock('@/hooks/useAuth');
 
 describe('useUserEmail', () => {
   it('should return user email from auth context', () => {
