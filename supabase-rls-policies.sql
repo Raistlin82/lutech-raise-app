@@ -84,32 +84,7 @@ USING (true);
 
 
 -- ===================================================================
--- 3. SETTINGS TABLE - Global configuration (read-only for users)
--- ===================================================================
--- Settings are global configuration, read by all, managed by admins
-
--- Enable RLS
-ALTER TABLE settings ENABLE ROW LEVEL SECURITY;
-
--- Policy: All authenticated users can view settings
-CREATE POLICY "Authenticated users can view settings"
-ON settings
-FOR SELECT
-TO authenticated
-USING (true);
-
--- Policy: Only admins can modify settings (if admin role exists)
--- Uncomment and adjust if you have admin role management
--- CREATE POLICY "Admins can modify settings"
--- ON settings
--- FOR ALL
--- TO authenticated
--- USING (auth.jwt()->>'role' = 'admin')
--- WITH CHECK (auth.jwt()->>'role' = 'admin');
-
-
--- ===================================================================
--- 4. CONTROLS TABLE - Global control templates
+-- 3. CONTROLS TABLE - Global control templates
 -- ===================================================================
 -- Controls are shared configuration for checkpoints
 
@@ -140,7 +115,7 @@ END $$;
 
 
 -- ===================================================================
--- 5. CONTROL_TEMPLATE_LINKS TABLE - Links for controls
+-- 4. CONTROL_TEMPLATE_LINKS TABLE - Links for controls
 -- ===================================================================
 -- Template links associated with controls
 
@@ -169,7 +144,7 @@ END $$;
 
 
 -- ===================================================================
--- 6. KCP_DEVIATIONS TABLE - User-specific deviations
+-- 5. KCP_DEVIATIONS TABLE - User-specific deviations
 -- ===================================================================
 -- Deviations belong to opportunities, inherit user ownership
 
@@ -236,7 +211,7 @@ END $$;
 
 
 -- ===================================================================
--- 7. OPPORTUNITY_CHECKPOINTS TABLE - User-specific checkpoints
+-- 6. OPPORTUNITY_CHECKPOINTS TABLE - User-specific checkpoints
 -- ===================================================================
 -- Checkpoints belong to opportunities, inherit user ownership
 
@@ -316,7 +291,6 @@ WHERE schemaname = 'public'
   AND tablename IN (
     'opportunities',
     'customers',
-    'settings',
     'controls',
     'control_template_links',
     'kcp_deviations',
