@@ -1,4 +1,5 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
+import type { Database } from '@/types/supabase';
 
 // Get runtime config from window global (set by main.tsx after loading /config.json)
 const getRuntimeConfig = (): Partial<RuntimeConfig> => {
@@ -17,11 +18,9 @@ const getSupabaseAnonKey = (): string => {
 };
 
 // Lazy initialization of Supabase client
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-let supabaseClient: SupabaseClient<any> | null | undefined = undefined;
+let supabaseClient: SupabaseClient<Database> | null | undefined = undefined;
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const initSupabase = (): SupabaseClient<any> | null => {
+const initSupabase = (): SupabaseClient<Database> | null => {
     const supabaseUrl = getSupabaseUrl();
     const supabaseAnonKey = getSupabaseAnonKey();
 
@@ -35,9 +34,10 @@ const initSupabase = (): SupabaseClient<any> | null => {
         return null;
     }
 
-    return createClient(supabaseUrl, supabaseAnonKey, {
+    return createClient<Database>(supabaseUrl, supabaseAnonKey, {
         auth: {
-            persistSession: false, // No auth for now
+            autoRefreshToken: true,
+            persistSession: false, // We use SAP IAS, not Supabase auth
         },
     });
 };
@@ -52,7 +52,7 @@ function getSupabaseClient() {
 
 // Export as getter property for backward compatibility with `import { supabase }`
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const supabase: SupabaseClient<any> | null = new Proxy({} as any, {
+export const supabase: SupabaseClient<Database> | null = new Proxy({} as any, {
     get: (_target, prop) => {
         const client = getSupabaseClient();
         if (client === null) return null;
@@ -74,11 +74,45 @@ export const isSupabaseConfigured = (): boolean => {
 /**
  * Get Supabase client (throws if not configured)
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const getSupabase = (): SupabaseClient<any> => {
+export const getSupabase = (): SupabaseClient<Database> => {
     const client = getSupabaseClient();
     if (!client) {
         throw new Error('Supabase is not configured. Please set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY');
     }
     return client;
 };
+
+/**
+ * Set authentication token from SAP IAS JWT
+ * Call this after user logs in via SAP IAS
+ *
+ * @param accessToken - JWT access token from SAP IAS
+ */
+export async function setSupabaseAuth(accessToken: string): Promise<void> {
+    const client = getSupabaseClient();
+    if (!client) {
+        console.warn('Supabase not configured - skipping auth sync');
+        return;
+    }
+
+    // Set the JWT token for Supabase to use in RLS policies
+    // Supabase will extract the email from JWT claims
+    await client.auth.setSession({
+        access_token: accessToken,
+        refresh_token: '', // Not used with external auth
+    });
+}
+
+/**
+ * Clear authentication
+ * Call this when user logs out
+ */
+export async function clearSupabaseAuth(): Promise<void> {
+    const client = getSupabaseClient();
+    if (!client) {
+        console.warn('Supabase not configured - skipping auth clear');
+        return;
+    }
+
+    await client.auth.signOut();
+}

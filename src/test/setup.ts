@@ -8,6 +8,12 @@ vi.mock('../lib/supabase', () => ({
   getSupabase: () => {
     throw new Error('Supabase is not configured in tests');
   },
+  setSupabaseAuth: async () => {
+    // No-op in tests
+  },
+  clearSupabaseAuth: async () => {
+    // No-op in tests
+  },
 }));
 
 // Mock localStorage for tests - use a class-based approach for proper reset
