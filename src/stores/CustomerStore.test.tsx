@@ -22,6 +22,7 @@ describe('CustomerStore', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     // Mock fetchCustomers to return empty array by default
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (fetchCustomers as any).mockResolvedValue([]);
   });
 
@@ -60,6 +61,7 @@ describe('CustomerStore', () => {
       isPublicSector: false,
     };
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (apiCreateCustomer as any).mockResolvedValue(createdCustomer);
 
     let returnedId: string = '';
@@ -96,6 +98,7 @@ describe('CustomerStore', () => {
       isPublicSector: false,
     };
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (apiCreateCustomer as any).mockResolvedValue(createdCustomer);
 
     let customerId: string = '';
@@ -110,6 +113,7 @@ describe('CustomerStore', () => {
       isPublicSector: true,
     };
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (apiUpdateCustomer as any).mockResolvedValue(updatedCustomer);
 
     await act(async () => {
@@ -141,6 +145,7 @@ describe('CustomerStore', () => {
       isPublicSector: false,
     };
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (apiCreateCustomer as any).mockResolvedValue(createdCustomer);
 
     let customerId: string = '';
@@ -150,6 +155,7 @@ describe('CustomerStore', () => {
 
     expect(result.current.customers).toHaveLength(1);
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (apiDeleteCustomer as any).mockResolvedValue(undefined);
 
     await act(async () => {
@@ -178,6 +184,7 @@ describe('CustomerStore', () => {
       isPublicSector: false,
     };
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (apiCreateCustomer as any).mockResolvedValue(createdCustomer);
 
     let customerId: string = '';
@@ -204,6 +211,7 @@ describe('CustomerStore', () => {
       { id: 'customer-2', name: 'Customer 2', industry: 'Finance', isPublicSector: true },
     ];
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (fetchCustomers as any).mockResolvedValue(refreshedCustomers);
 
     await act(async () => {

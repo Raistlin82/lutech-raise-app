@@ -85,6 +85,7 @@ export async function getControls(): Promise<ControlConfig[]> {
             .order('sort_order');
 
         const linksByControl: Record<string, TemplateLinkRow[]> = {};
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (templateLinks || []).forEach((tl: any) => {
             if (!linksByControl[tl.control_id]) {
                 linksByControl[tl.control_id] = [];

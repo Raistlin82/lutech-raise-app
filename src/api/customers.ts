@@ -57,6 +57,7 @@ export async function createCustomer(customer: Customer): Promise<Customer> {
 
   const { data, error } = await supabase
     .from('customers')
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     .insert(insert as any)
     .select()
     .single();

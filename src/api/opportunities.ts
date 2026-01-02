@@ -53,6 +53,7 @@ function mapToInsert(opp: Opportunity, userEmail: string): OpportunityInsert {
     raise_level: opp.raiseLevel,
     is_fast_track: opp.isFastTrack,
     current_phase: opp.currentPhase,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     checkpoints: opp.checkpoints as any, // JSON type
     created_by_email: userEmail,
     expected_decision_date: defaultDecisionDate.toISOString(),
@@ -101,6 +102,7 @@ export async function createOpportunity(
 
   const { data, error } = await supabase
     .from('opportunities')
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     .insert(insert as any)
     .select()
     .single();
@@ -139,6 +141,7 @@ export async function updateOpportunity(
     raise_level: updates.raiseLevel,
     is_fast_track: updates.isFastTrack,
     current_phase: updates.currentPhase,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     checkpoints: updates.checkpoints as any,
   };
 

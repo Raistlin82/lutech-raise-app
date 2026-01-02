@@ -14,6 +14,7 @@ describe('useUserEmail', () => {
         }
       },
       isAuthenticated: true
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any);
 
     const { result } = renderHook(() => useUserEmail());
@@ -24,6 +25,7 @@ describe('useUserEmail', () => {
     vi.mocked(useAuth).mockReturnValue({
       user: null,
       isAuthenticated: false
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } as any);
 
     const { result } = renderHook(() => useUserEmail());

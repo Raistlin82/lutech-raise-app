@@ -150,6 +150,7 @@ export async function getOpportunities(): Promise<Opportunity[]> {
         ]);
 
         const deviationsByOpp: Record<string, KcpDeviationRow[]> = {};
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (deviationsResult.data || []).forEach((d: any) => {
             if (!deviationsByOpp[d.opportunity_id]) {
                 deviationsByOpp[d.opportunity_id] = [];
@@ -158,6 +159,7 @@ export async function getOpportunities(): Promise<Opportunity[]> {
         });
 
         const checkpointsByOpp: Record<string, CheckpointRow[]> = {};
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (checkpointsResult.data || []).forEach((cp: any) => {
             if (!checkpointsByOpp[cp.opportunity_id]) {
                 checkpointsByOpp[cp.opportunity_id] = [];
@@ -165,6 +167,7 @@ export async function getOpportunities(): Promise<Opportunity[]> {
             checkpointsByOpp[cp.opportunity_id].push(cp);
         });
 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         return (opps as any[]).map((opp: any) =>
             rowToOpportunity(
                 opp,
