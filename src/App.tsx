@@ -1,11 +1,13 @@
-import { lazy, Suspense } from 'react';
+import { lazy, Suspense, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
+import { useAuth } from 'react-oidc-context';
 import { Layout } from './components/layout';
 import { useOpportunities } from './stores/OpportunitiesStore';
 import { ErrorBoundary } from './components/common/ErrorBoundary';
 import { LoadingSpinner } from './components/common/LoadingSpinner';
 import { RequireAuth } from './components/auth/RequireAuth';
+import { setSupabaseAuth, clearSupabaseAuth } from './lib/supabase';
 
 // Lazy load route components for code splitting
 const Dashboard = lazy(() => import('./components/dashboard').then(m => ({ default: m.Dashboard })));
@@ -68,6 +70,23 @@ function AppRoutes() {
 }
 
 function App() {
+  const auth = useAuth();
+
+  // Sync SAP IAS auth with Supabase
+  useEffect(() => {
+    const syncAuth = async () => {
+      if (auth.isAuthenticated && auth.user?.access_token) {
+        // User logged in via SAP IAS - set token in Supabase
+        await setSupabaseAuth(auth.user.access_token);
+      } else {
+        // User logged out - clear Supabase auth
+        await clearSupabaseAuth();
+      }
+    };
+
+    syncAuth();
+  }, [auth.isAuthenticated, auth.user?.access_token]);
+
   return (
     <ErrorBoundary>
       <Toaster />
