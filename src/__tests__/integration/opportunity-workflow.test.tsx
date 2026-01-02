@@ -2,11 +2,22 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { OpportunitiesProvider } from '../../stores/OpportunitiesStore';
+import { CustomerProvider } from '../../stores/CustomerStore';
 import { SettingsProvider } from '../../stores/SettingsStore';
 import { Dashboard } from '../../components/dashboard';
 import type { Opportunity } from '../../types';
 import { I18nextProvider } from 'react-i18next';
 import i18n from '../../i18n/config';
+
+// Mock the auth hook
+vi.mock('../../hooks/useAuth', () => ({
+  useAuth: vi.fn(() => ({
+    isAuthenticated: true,
+    isLoading: false,
+    error: null,
+    user: { profile: { email: 'test@example.com' } },
+  })),
+}));
 
 // Mock the API layers
 vi.mock('@/api/customers', () => ({
@@ -27,11 +38,13 @@ vi.mock('@/api/opportunities', () => ({
 const AllProviders = ({ children }: { children: React.ReactNode }) => (
   <BrowserRouter>
     <I18nextProvider i18n={i18n}>
-      <OpportunitiesProvider>
-        <SettingsProvider>
-          {children}
-        </SettingsProvider>
-      </OpportunitiesProvider>
+      <CustomerProvider>
+        <OpportunitiesProvider>
+          <SettingsProvider>
+            {children}
+          </SettingsProvider>
+        </OpportunitiesProvider>
+      </CustomerProvider>
     </I18nextProvider>
   </BrowserRouter>
 );

@@ -9,6 +9,8 @@ import i18n from '../../i18n/config';
 const mockNavigate = vi.fn();
 const mockDeleteOpportunity = vi.fn();
 const mockSelectOpportunity = vi.fn();
+const mockRefreshOpportunities = vi.fn();
+const mockRefreshCustomers = vi.fn();
 
 vi.mock('react-router-dom', () => ({
   useNavigate: () => mockNavigate,
@@ -18,8 +20,18 @@ vi.mock('../../stores/OpportunitiesStore', () => ({
   useOpportunities: vi.fn(),
 }));
 
+vi.mock('../../stores/CustomerStore', () => ({
+  useCustomers: vi.fn(),
+}));
+
+vi.mock('../../hooks/useAuth', () => ({
+  useAuth: vi.fn(),
+}));
+
 // Import after mocking
 import { useOpportunities } from '../../stores/OpportunitiesStore';
+import { useCustomers } from '../../stores/CustomerStore';
+import { useAuth } from '../../hooks/useAuth';
 
 // Mock opportunities for testing
 const createMockOpportunity = (overrides: Partial<Opportunity> = {}): Opportunity => ({
@@ -56,6 +68,21 @@ describe('Dashboard', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+
+    // Default mock for useAuth
+    (useAuth as ReturnType<typeof vi.fn>).mockReturnValue({
+      isAuthenticated: true,
+      isLoading: false,
+      error: null,
+      user: { profile: { email: 'test@example.com' } },
+    });
+
+    // Default mock for useCustomers
+    (useCustomers as ReturnType<typeof vi.fn>).mockReturnValue({
+      customers: [],
+      loading: false,
+      refreshCustomers: mockRefreshCustomers,
+    });
   });
 
   describe('Rendering', () => {
@@ -65,6 +92,7 @@ describe('Dashboard', () => {
         deleteOpportunity: mockDeleteOpportunity,
         selectOpportunity: mockSelectOpportunity,
         selectedOpp: null,
+        refreshOpportunities: mockRefreshOpportunities,
       });
 
       renderDashboard();
@@ -79,6 +107,7 @@ describe('Dashboard', () => {
         deleteOpportunity: mockDeleteOpportunity,
         selectOpportunity: mockSelectOpportunity,
         selectedOpp: null,
+        refreshOpportunities: mockRefreshOpportunities,
       });
 
       renderDashboard();
@@ -92,6 +121,7 @@ describe('Dashboard', () => {
         deleteOpportunity: mockDeleteOpportunity,
         selectOpportunity: mockSelectOpportunity,
         selectedOpp: null,
+        refreshOpportunities: mockRefreshOpportunities,
       });
 
       renderDashboard();
@@ -100,6 +130,49 @@ describe('Dashboard', () => {
         expect(screen.getByText('Opportunità Attive')).toBeInTheDocument();
         expect(screen.getByText('Rischi Critici')).toBeInTheDocument();
       }, { timeout: 500 });
+    });
+  });
+
+  describe('Data Loading', () => {
+    it('should load opportunities and customers when authenticated', async () => {
+      (useOpportunities as ReturnType<typeof vi.fn>).mockReturnValue({
+        opportunities: [],
+        deleteOpportunity: mockDeleteOpportunity,
+        selectOpportunity: mockSelectOpportunity,
+        selectedOpp: null,
+        refreshOpportunities: mockRefreshOpportunities,
+      });
+
+      renderDashboard();
+
+      await waitFor(() => {
+        expect(mockRefreshOpportunities).toHaveBeenCalled();
+        expect(mockRefreshCustomers).toHaveBeenCalled();
+      });
+    });
+
+    it('should not load data when not authenticated', async () => {
+      (useAuth as ReturnType<typeof vi.fn>).mockReturnValue({
+        isAuthenticated: false,
+        isLoading: false,
+        error: null,
+        user: null,
+      });
+
+      (useOpportunities as ReturnType<typeof vi.fn>).mockReturnValue({
+        opportunities: [],
+        deleteOpportunity: mockDeleteOpportunity,
+        selectOpportunity: mockSelectOpportunity,
+        selectedOpp: null,
+        refreshOpportunities: mockRefreshOpportunities,
+      });
+
+      renderDashboard();
+
+      await waitFor(() => {
+        expect(mockRefreshOpportunities).not.toHaveBeenCalled();
+        expect(mockRefreshCustomers).not.toHaveBeenCalled();
+      });
     });
   });
 
@@ -112,6 +185,7 @@ describe('Dashboard', () => {
         deleteOpportunity: mockDeleteOpportunity,
         selectOpportunity: mockSelectOpportunity,
         selectedOpp: null,
+        refreshOpportunities: mockRefreshOpportunities,
       });
 
       renderDashboard();
@@ -131,6 +205,7 @@ describe('Dashboard', () => {
         deleteOpportunity: mockDeleteOpportunity,
         selectOpportunity: mockSelectOpportunity,
         selectedOpp: null,
+        refreshOpportunities: mockRefreshOpportunities,
       });
 
       renderDashboard();
@@ -150,6 +225,7 @@ describe('Dashboard', () => {
         deleteOpportunity: mockDeleteOpportunity,
         selectOpportunity: mockSelectOpportunity,
         selectedOpp: null,
+        refreshOpportunities: mockRefreshOpportunities,
       });
 
       renderDashboard();
@@ -170,6 +246,7 @@ describe('Dashboard', () => {
         deleteOpportunity: mockDeleteOpportunity,
         selectOpportunity: mockSelectOpportunity,
         selectedOpp: null,
+        refreshOpportunities: mockRefreshOpportunities,
       });
 
       renderDashboard();
@@ -190,6 +267,7 @@ describe('Dashboard', () => {
         deleteOpportunity: mockDeleteOpportunity,
         selectOpportunity: mockSelectOpportunity,
         selectedOpp: null,
+        refreshOpportunities: mockRefreshOpportunities,
       });
 
       renderDashboard();
@@ -205,6 +283,7 @@ describe('Dashboard', () => {
         deleteOpportunity: mockDeleteOpportunity,
         selectOpportunity: mockSelectOpportunity,
         selectedOpp: null,
+        refreshOpportunities: mockRefreshOpportunities,
       });
 
       renderDashboard();
@@ -225,6 +304,7 @@ describe('Dashboard', () => {
         deleteOpportunity: mockDeleteOpportunity,
         selectOpportunity: mockSelectOpportunity,
         selectedOpp: null,
+        refreshOpportunities: mockRefreshOpportunities,
       });
 
       renderDashboard();
@@ -241,6 +321,7 @@ describe('Dashboard', () => {
         deleteOpportunity: mockDeleteOpportunity,
         selectOpportunity: mockSelectOpportunity,
         selectedOpp: null,
+        refreshOpportunities: mockRefreshOpportunities,
       });
 
       renderDashboard();
@@ -262,6 +343,7 @@ describe('Dashboard', () => {
         deleteOpportunity: mockDeleteOpportunity,
         selectOpportunity: mockSelectOpportunity,
         selectedOpp: null,
+        refreshOpportunities: mockRefreshOpportunities,
       });
 
       renderDashboard();
@@ -278,6 +360,7 @@ describe('Dashboard', () => {
         deleteOpportunity: mockDeleteOpportunity,
         selectOpportunity: mockSelectOpportunity,
         selectedOpp: null,
+        refreshOpportunities: mockRefreshOpportunities,
       });
 
       renderDashboard();
@@ -293,6 +376,7 @@ describe('Dashboard', () => {
         deleteOpportunity: mockDeleteOpportunity,
         selectOpportunity: mockSelectOpportunity,
         selectedOpp: null,
+        refreshOpportunities: mockRefreshOpportunities,
       });
 
       renderDashboard();
@@ -309,6 +393,7 @@ describe('Dashboard', () => {
         deleteOpportunity: mockDeleteOpportunity,
         selectOpportunity: mockSelectOpportunity,
         selectedOpp: null,
+        refreshOpportunities: mockRefreshOpportunities,
       });
 
       renderDashboard();
@@ -325,6 +410,7 @@ describe('Dashboard', () => {
         deleteOpportunity: mockDeleteOpportunity,
         selectOpportunity: mockSelectOpportunity,
         selectedOpp: null,
+        refreshOpportunities: mockRefreshOpportunities,
       });
 
       renderDashboard();
@@ -341,6 +427,7 @@ describe('Dashboard', () => {
         deleteOpportunity: mockDeleteOpportunity,
         selectOpportunity: mockSelectOpportunity,
         selectedOpp: null,
+        refreshOpportunities: mockRefreshOpportunities,
       });
 
       renderDashboard();
@@ -355,6 +442,7 @@ describe('Dashboard', () => {
         deleteOpportunity: mockDeleteOpportunity,
         selectOpportunity: mockSelectOpportunity,
         selectedOpp: null,
+        refreshOpportunities: mockRefreshOpportunities,
       });
 
       renderDashboard();
@@ -371,6 +459,7 @@ describe('Dashboard', () => {
         deleteOpportunity: mockDeleteOpportunity,
         selectOpportunity: mockSelectOpportunity,
         selectedOpp: null,
+        refreshOpportunities: mockRefreshOpportunities,
       });
 
       renderDashboard();
@@ -389,6 +478,7 @@ describe('Dashboard', () => {
         deleteOpportunity: mockDeleteOpportunity,
         selectOpportunity: mockSelectOpportunity,
         selectedOpp: null,
+        refreshOpportunities: mockRefreshOpportunities,
       });
 
       renderDashboard();
@@ -407,6 +497,7 @@ describe('Dashboard', () => {
         deleteOpportunity: mockDeleteOpportunity,
         selectOpportunity: mockSelectOpportunity,
         selectedOpp: null,
+        refreshOpportunities: mockRefreshOpportunities,
       });
 
       renderDashboard();
@@ -425,6 +516,7 @@ describe('Dashboard', () => {
         deleteOpportunity: mockDeleteOpportunity,
         selectOpportunity: mockSelectOpportunity,
         selectedOpp: null,
+        refreshOpportunities: mockRefreshOpportunities,
       });
 
       renderDashboard();
@@ -445,6 +537,7 @@ describe('Dashboard', () => {
         deleteOpportunity: mockDeleteOpportunity,
         selectOpportunity: mockSelectOpportunity,
         selectedOpp: null,
+        refreshOpportunities: mockRefreshOpportunities,
       });
 
       renderDashboard();
@@ -463,6 +556,7 @@ describe('Dashboard', () => {
         deleteOpportunity: mockDeleteOpportunity,
         selectOpportunity: mockSelectOpportunity,
         selectedOpp: null,
+        refreshOpportunities: mockRefreshOpportunities,
       });
 
       renderDashboard();
@@ -486,6 +580,7 @@ describe('Dashboard', () => {
         deleteOpportunity: mockDeleteOpportunity,
         selectOpportunity: mockSelectOpportunity,
         selectedOpp: null,
+        refreshOpportunities: mockRefreshOpportunities,
       });
 
       renderDashboard();
@@ -507,6 +602,7 @@ describe('Dashboard', () => {
         deleteOpportunity: mockDeleteOpportunity,
         selectOpportunity: mockSelectOpportunity,
         selectedOpp: mockOpp,
+        refreshOpportunities: mockRefreshOpportunities,
       });
 
       renderDashboard();
@@ -535,6 +631,7 @@ describe('Dashboard', () => {
         deleteOpportunity: mockDeleteOpportunity,
         selectOpportunity: mockSelectOpportunity,
         selectedOpp: null,
+        refreshOpportunities: mockRefreshOpportunities,
       });
 
       renderDashboard();
@@ -557,6 +654,7 @@ describe('Dashboard', () => {
         deleteOpportunity: mockDeleteOpportunity,
         selectOpportunity: mockSelectOpportunity,
         selectedOpp: null,
+        refreshOpportunities: mockRefreshOpportunities,
       });
 
       renderDashboard();

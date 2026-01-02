@@ -4,6 +4,8 @@ import { calculateRaiseLevel } from '../../lib/raiseLogic';
 import { AlertTriangle, ArrowRight, DollarSign, Activity, Trash2, Edit3 } from 'lucide-react';
 import { clsx } from 'clsx';
 import { useOpportunities } from '../../stores/OpportunitiesStore';
+import { useCustomers } from '../../stores/CustomerStore';
+import { useAuth } from '../../hooks/useAuth';
 import { ConfirmModal } from '../common/ConfirmModal';
 import { LoadingSpinner } from '../common/LoadingSpinner';
 import { SkeletonCard } from '../common/SkeletonCard';
@@ -16,7 +18,9 @@ export const Dashboard = ({ onSelectOpp }: { onSelectOpp: (opp: Opportunity) => 
     const { t } = useTranslation('dashboard');
     const { t: tCommon } = useTranslation('common');
     const navigate = useNavigate();
-    const { opportunities, deleteOpportunity, selectOpportunity, selectedOpp } = useOpportunities();
+    const auth = useAuth();
+    const { opportunities, deleteOpportunity, selectOpportunity, selectedOpp, refreshOpportunities } = useOpportunities();
+    const { refreshCustomers } = useCustomers();
     const [isLoading, setIsLoading] = useState(true);
     const [deletingId, setDeletingId] = useState<string | null>(null);
     const [deleteConfirm, setDeleteConfirm] = useState<{ isOpen: boolean; opp: Opportunity | null }>({
@@ -24,10 +28,15 @@ export const Dashboard = ({ onSelectOpp }: { onSelectOpp: (opp: Opportunity) => 
         opp: null
     });
 
+    // Load user-specific opportunities and shared customers when authenticated
     useEffect(() => {
+        if (auth.isAuthenticated) {
+            refreshOpportunities();
+            refreshCustomers();
+        }
         // Immediate load (delay removed for test compatibility)
         setIsLoading(false);
-    }, []);
+    }, [auth.isAuthenticated, refreshOpportunities, refreshCustomers]);
 
     const totalTCV = opportunities.reduce((sum, opp) => sum + opp.tcv, 0);
     const activeCount = opportunities.length;

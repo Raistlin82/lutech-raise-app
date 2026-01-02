@@ -2,10 +2,21 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { OpportunitiesProvider } from '../../stores/OpportunitiesStore';
+import { CustomerProvider } from '../../stores/CustomerStore';
 import { SettingsProvider } from '../../stores/SettingsStore';
 import { Dashboard } from '../../components/dashboard';
 import { calculateRaiseLevel, isFastTrackEligible } from '../../lib/raiseLogic';
 import type { Opportunity } from '../../types';
+
+// Mock the auth hook
+vi.mock('../../hooks/useAuth', () => ({
+  useAuth: vi.fn(() => ({
+    isAuthenticated: true,
+    isLoading: false,
+    error: null,
+    user: { profile: { email: 'test@example.com' } },
+  })),
+}));
 
 // Mock the API layers
 vi.mock('@/api/customers', () => ({
@@ -25,11 +36,13 @@ vi.mock('@/api/opportunities', () => ({
 // Wrapper with all providers
 const AllProviders = ({ children }: { children: React.ReactNode }) => (
   <BrowserRouter>
-    <OpportunitiesProvider>
-      <SettingsProvider>
-        {children}
-      </SettingsProvider>
-    </OpportunitiesProvider>
+    <CustomerProvider>
+      <OpportunitiesProvider>
+        <SettingsProvider>
+          {children}
+        </SettingsProvider>
+      </OpportunitiesProvider>
+    </CustomerProvider>
   </BrowserRouter>
 );
 
