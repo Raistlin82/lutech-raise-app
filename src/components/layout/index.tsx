@@ -4,6 +4,7 @@ import { NavLink } from 'react-router-dom';
 import { clsx } from 'clsx';
 import { useTranslation } from 'react-i18next';
 import { SkipLink } from '../common/SkipLink';
+import { MigrationWarning } from '../common/MigrationWarning';
 import { LoginButton } from '../auth/LoginButton';
 import lutechLogo from '/assets/lutech-logo.png';
 import lutechIcon from '/assets/lutech-icon.png';
@@ -227,6 +228,7 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
                 tabIndex={-1}
             >
                 <div className="p-4 md:p-8 max-w-7xl mx-auto">
+                    <MigrationWarning />
                     {children}
                 </div>
             </main>
