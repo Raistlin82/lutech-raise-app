@@ -1,9 +1,14 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import type { Opportunity } from '../types';
 import { calculateRaiseLevel } from '../lib/raiseLogic';
-import { validateStorageData, validateOpportunity } from '../lib/validation';
+import { validateOpportunity } from '../lib/validation';
 import { showToast } from '../lib/toast';
-import * as opportunityService from '../services/opportunityService';
+import {
+    fetchOpportunities,
+    createOpportunity,
+    updateOpportunity as apiUpdateOpportunity,
+    deleteOpportunity as apiDeleteOpportunity,
+} from '@/api/opportunities';
 
 interface OpportunitiesContextType {
     opportunities: Opportunity[];
@@ -11,7 +16,7 @@ interface OpportunitiesContextType {
     selectedOpp: Opportunity | null;
     selectOpportunity: (opp: Opportunity | null) => void;
     updateOpportunity: (opp: Opportunity) => Promise<void>;
-    addOpportunity: (opp: Opportunity) => Promise<void>;
+    addOpportunity: (opp: Opportunity, userEmail: string) => Promise<void>;
     deleteOpportunity: (id: string) => Promise<void>;
     refreshOpportunities: () => Promise<void>;
 }
@@ -26,21 +31,14 @@ export const OpportunitiesProvider: React.FC<{ children: React.ReactNode }> = ({
     const [loading, setLoading] = useState(true);
     const [selectedOpp, setSelectedOpp] = useState<Opportunity | null>(null);
 
-    // Load opportunities from service on mount
+    // Load opportunities from Supabase API on mount
     const loadOpportunities = useCallback(async () => {
         try {
             setLoading(true);
-            const data = await opportunityService.getOpportunities();
+            const data = await fetchOpportunities();
 
-            // Validate and recalculate raiseLevel
-            const validation = validateStorageData(data);
-            if (!validation.success) {
-                console.error('Invalid opportunity data from service:', validation.error);
-                setOpportunities(INITIAL_OPPORTUNITIES);
-                return;
-            }
-
-            const opps = validation.data.map((opp: Opportunity) => ({
+            // Recalculate raiseLevel for each opportunity
+            const opps = data.map((opp: Opportunity) => ({
                 ...opp,
                 raiseLevel: calculateRaiseLevel(opp)
             }));
@@ -49,6 +47,7 @@ export const OpportunitiesProvider: React.FC<{ children: React.ReactNode }> = ({
         } catch (error) {
             console.error('Failed to load opportunities:', error);
             showToast.error('Errore nel caricamento opportunità');
+            setOpportunities(INITIAL_OPPORTUNITIES);
         } finally {
             setLoading(false);
         }
@@ -75,12 +74,12 @@ export const OpportunitiesProvider: React.FC<{ children: React.ReactNode }> = ({
         }
 
         try {
-            await opportunityService.updateOpportunity(updatedOpp);
-            setOpportunities(prev => prev.map(o => o.id === updatedOpp.id ? updatedOpp : o));
-            if (selectedOpp && selectedOpp.id === updatedOpp.id) {
-                setSelectedOpp(updatedOpp);
+            const updated = await apiUpdateOpportunity(updatedOpp.id, updatedOpp);
+            setOpportunities(prev => prev.map(o => o.id === updated.id ? updated : o));
+            if (selectedOpp && selectedOpp.id === updated.id) {
+                setSelectedOpp(updated);
             }
-            showToast.success(`Opportunità "${updatedOpp.title}" aggiornata!`);
+            showToast.success(`Opportunità "${updated.title}" aggiornata!`);
         } catch (error) {
             console.error('Failed to update opportunity:', error);
             showToast.error('Errore nell\'aggiornamento dell\'opportunità');
@@ -88,7 +87,7 @@ export const OpportunitiesProvider: React.FC<{ children: React.ReactNode }> = ({
         }
     };
 
-    const addOpportunity = async (opp: Opportunity): Promise<void> => {
+    const addOpportunity = async (opp: Opportunity, userEmail: string): Promise<void> => {
         const validation = validateOpportunity(opp);
         if (!validation.success) {
             console.error('Invalid opportunity:', validation.error);
@@ -97,9 +96,9 @@ export const OpportunitiesProvider: React.FC<{ children: React.ReactNode }> = ({
         }
 
         try {
-            await opportunityService.createOpportunity(opp);
-            setOpportunities(prev => [...prev, opp]);
-            showToast.success(`Opportunità "${opp.title}" creata con successo!`);
+            const created = await createOpportunity(opp, userEmail);
+            setOpportunities(prev => [...prev, created]);
+            showToast.success(`Opportunità "${created.title}" creata con successo!`);
         } catch (error) {
             console.error('Failed to add opportunity:', error);
             showToast.error('Errore nella creazione dell\'opportunità');
@@ -110,7 +109,7 @@ export const OpportunitiesProvider: React.FC<{ children: React.ReactNode }> = ({
     const deleteOpportunity = async (id: string): Promise<void> => {
         const opp = opportunities.find(o => o.id === id);
         try {
-            await opportunityService.deleteOpportunity(id);
+            await apiDeleteOpportunity(id);
             setOpportunities(prev => prev.filter(o => o.id !== id));
             if (selectedOpp && selectedOpp.id === id) {
                 setSelectedOpp(null);

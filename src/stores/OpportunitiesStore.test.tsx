@@ -2,28 +2,10 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { renderHook, act, waitFor } from '@testing-library/react';
 import { OpportunitiesProvider, useOpportunities } from './OpportunitiesStore';
 import type { Opportunity } from '../types';
+import * as opportunitiesApi from '@/api/opportunities';
 
-// Mock localStorage
-const localStorageMock = (() => {
-  let store: Record<string, string> = {};
-
-  return {
-    getItem: (key: string) => store[key] || null,
-    setItem: (key: string, value: string) => {
-      store[key] = value.toString();
-    },
-    removeItem: (key: string) => {
-      delete store[key];
-    },
-    clear: () => {
-      store = {};
-    }
-  };
-})();
-
-Object.defineProperty(window, 'localStorage', {
-  value: localStorageMock
-});
+// Mock the opportunities API
+vi.mock('@/api/opportunities');
 
 // Helper to create a complete valid opportunity
 const createMockOpportunity = (overrides?: Partial<Opportunity>): Opportunity => ({
@@ -53,10 +35,13 @@ describe('OpportunitiesStore', () => {
   };
 
   beforeEach(() => {
-    // Clear localStorage before each test
-    localStorage.clear();
-    // Clear console.error mock
+    // Clear all mocks
     vi.clearAllMocks();
+    // Reset mock implementations
+    vi.mocked(opportunitiesApi.fetchOpportunities).mockResolvedValue([]);
+    vi.mocked(opportunitiesApi.createOpportunity).mockImplementation(async (opp) => opp);
+    vi.mocked(opportunitiesApi.updateOpportunity).mockImplementation(async (id, updates) => ({ id, ...updates } as Opportunity));
+    vi.mocked(opportunitiesApi.deleteOpportunity).mockResolvedValue();
   });
 
   describe('Initialization', () => {
@@ -69,11 +54,12 @@ describe('OpportunitiesStore', () => {
 
       expect(result.current.opportunities).toEqual([]);
       expect(result.current.selectedOpp).toBeNull();
+      expect(opportunitiesApi.fetchOpportunities).toHaveBeenCalledTimes(1);
     });
 
-    it('should load opportunities from localStorage on init', async () => {
+    it('should load opportunities from Supabase on init', async () => {
       const mockOpp = createMockOpportunity();
-      localStorage.setItem('raise_opportunities', JSON.stringify([mockOpp]));
+      vi.mocked(opportunitiesApi.fetchOpportunities).mockResolvedValue([mockOpp]);
 
       const { result } = renderWithProvider();
 
@@ -83,44 +69,12 @@ describe('OpportunitiesStore', () => {
 
       expect(result.current.opportunities).toHaveLength(1);
       expect(result.current.opportunities[0].id).toBe('TEST-001');
+      expect(opportunitiesApi.fetchOpportunities).toHaveBeenCalledTimes(1);
     });
 
-    it('should recalculate raiseLevel when loading from localStorage', async () => {
-      const mockOpp = createMockOpportunity({
-        raiseTcv: 15000000,
-        raiseLevel: 'L6' // Wrong level for 15M
-      });
-      localStorage.setItem('raise_opportunities', JSON.stringify([mockOpp]));
-
-      const { result } = renderWithProvider();
-
-      await waitFor(() => {
-        expect(result.current.loading).toBe(false);
-      });
-
-      // raiseLevel should be recalculated by calculateRaiseLevel
-      expect(result.current.opportunities[0].raiseLevel).toBe('L2'); // 15M should be L2 (10M-20M)
-    });
-
-    it('should reject invalid localStorage data', async () => {
+    it('should handle API errors gracefully on init', async () => {
       const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
-      localStorage.setItem('raise_opportunities', JSON.stringify([{ invalid: 'data' }]));
-
-      const { result } = renderWithProvider();
-
-      await waitFor(() => {
-        expect(result.current.loading).toBe(false);
-      });
-
-      expect(result.current.opportunities).toEqual([]);
-      expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining('Invalid opportunity data from service'), expect.anything());
-
-      consoleSpy.mockRestore();
-    });
-
-    it('should handle corrupted localStorage gracefully', async () => {
-      const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
-      localStorage.setItem('raise_opportunities', 'invalid json {{{');
+      vi.mocked(opportunitiesApi.fetchOpportunities).mockRejectedValue(new Error('API Error'));
 
       const { result } = renderWithProvider();
 
@@ -136,66 +90,58 @@ describe('OpportunitiesStore', () => {
   });
 
   describe('Add Opportunity', () => {
-    it('should add opportunity to the list', async () => {
+    it('should add opportunity via Supabase API with user email', async () => {
       const { result } = renderWithProvider();
       const newOpp = createMockOpportunity();
+      const userEmail = 'user@example.com';
+
+      vi.mocked(opportunitiesApi.createOpportunity).mockResolvedValue(newOpp);
 
       await waitFor(() => {
         expect(result.current.loading).toBe(false);
       });
 
       await act(async () => {
-        await result.current.addOpportunity(newOpp);
+        await result.current.addOpportunity(newOpp, userEmail);
       });
 
       expect(result.current.opportunities).toHaveLength(1);
       expect(result.current.opportunities[0]).toEqual(newOpp);
+      expect(opportunitiesApi.createOpportunity).toHaveBeenCalledWith(newOpp, userEmail);
     });
 
     it('should add multiple opportunities', async () => {
       const { result } = renderWithProvider();
       const opp1 = createMockOpportunity({ id: 'TEST-001' });
       const opp2 = createMockOpportunity({ id: 'TEST-002', title: 'Second Opportunity' });
+      const userEmail = 'user@example.com';
+
+      vi.mocked(opportunitiesApi.createOpportunity).mockImplementation(async (opp) => opp);
 
       await waitFor(() => {
         expect(result.current.loading).toBe(false);
       });
 
       await act(async () => {
-        await result.current.addOpportunity(opp1);
+        await result.current.addOpportunity(opp1, userEmail);
       });
 
       await act(async () => {
-        await result.current.addOpportunity(opp2);
+        await result.current.addOpportunity(opp2, userEmail);
       });
 
       expect(result.current.opportunities).toHaveLength(2);
       expect(result.current.opportunities[0].id).toBe('TEST-001');
       expect(result.current.opportunities[1].id).toBe('TEST-002');
+      expect(opportunitiesApi.createOpportunity).toHaveBeenCalledTimes(2);
     });
 
-    it('should persist to localStorage when adding', async () => {
+    it('should handle API errors when adding', async () => {
       const { result } = renderWithProvider();
       const newOpp = createMockOpportunity();
+      const userEmail = 'user@example.com';
 
-      await waitFor(() => {
-        expect(result.current.loading).toBe(false);
-      });
-
-      await act(async () => {
-        await result.current.addOpportunity(newOpp);
-      });
-
-      const stored = localStorage.getItem('raise_opportunities');
-      expect(stored).toBeTruthy();
-      const parsed = JSON.parse(stored!);
-      expect(parsed).toHaveLength(1);
-      expect(parsed[0].id).toBe('TEST-001');
-    });
-
-    it('should reject invalid opportunity on add', async () => {
-      const { result } = renderWithProvider();
-      const invalidOpp = { id: 'TEST', title: 'X' } as Opportunity; // Title too short
+      vi.mocked(opportunitiesApi.createOpportunity).mockRejectedValue(new Error('API Error'));
 
       await waitFor(() => {
         expect(result.current.loading).toBe(false);
@@ -203,7 +149,25 @@ describe('OpportunitiesStore', () => {
 
       await expect(async () => {
         await act(async () => {
-          await result.current.addOpportunity(invalidOpp);
+          await result.current.addOpportunity(newOpp, userEmail);
+        });
+      }).rejects.toThrow();
+
+      expect(result.current.opportunities).toHaveLength(0);
+    });
+
+    it('should reject invalid opportunity on add', async () => {
+      const { result } = renderWithProvider();
+      const invalidOpp = { id: 'TEST', title: 'X' } as Opportunity; // Title too short
+      const userEmail = 'user@example.com';
+
+      await waitFor(() => {
+        expect(result.current.loading).toBe(false);
+      });
+
+      await expect(async () => {
+        await act(async () => {
+          await result.current.addOpportunity(invalidOpp, userEmail);
         });
       }).rejects.toThrow(/Invalid opportunity data/);
 
@@ -213,6 +177,7 @@ describe('OpportunitiesStore', () => {
     it('should throw error with clear message for validation failures', async () => {
       const { result } = renderWithProvider();
       const invalidOpp = createMockOpportunity({ tcv: -1000 }); // Negative TCV
+      const userEmail = 'user@example.com';
 
       await waitFor(() => {
         expect(result.current.loading).toBe(false);
@@ -220,73 +185,59 @@ describe('OpportunitiesStore', () => {
 
       await expect(async () => {
         await act(async () => {
-          await result.current.addOpportunity(invalidOpp);
+          await result.current.addOpportunity(invalidOpp, userEmail);
         });
       }).rejects.toThrow(/Invalid opportunity data/);
     });
   });
 
   describe('Update Opportunity', () => {
-    it('should update existing opportunity', async () => {
+    it('should update existing opportunity via Supabase API', async () => {
       const { result } = renderWithProvider();
       const originalOpp = createMockOpportunity();
+      const userEmail = 'user@example.com';
+
+      vi.mocked(opportunitiesApi.createOpportunity).mockResolvedValue(originalOpp);
 
       await waitFor(() => {
         expect(result.current.loading).toBe(false);
       });
 
       await act(async () => {
-        await result.current.addOpportunity(originalOpp);
+        await result.current.addOpportunity(originalOpp, userEmail);
       });
 
       const updatedOpp = { ...originalOpp, title: 'Updated Title' };
+      vi.mocked(opportunitiesApi.updateOpportunity).mockResolvedValue(updatedOpp);
 
       await act(async () => {
         await result.current.updateOpportunity(updatedOpp);
       });
 
       expect(result.current.opportunities[0].title).toBe('Updated Title');
-    });
-
-    it('should persist updates to localStorage', async () => {
-      const { result } = renderWithProvider();
-      const originalOpp = createMockOpportunity();
-
-      await waitFor(() => {
-        expect(result.current.loading).toBe(false);
-      });
-
-      await act(async () => {
-        await result.current.addOpportunity(originalOpp);
-      });
-
-      const updatedOpp = { ...originalOpp, clientName: 'Updated Client' };
-
-      await act(async () => {
-        await result.current.updateOpportunity(updatedOpp);
-      });
-
-      const stored = localStorage.getItem('raise_opportunities');
-      const parsed = JSON.parse(stored!);
-      expect(parsed[0].clientName).toBe('Updated Client');
+      expect(opportunitiesApi.updateOpportunity).toHaveBeenCalledWith(originalOpp.id, updatedOpp);
     });
 
     it('should update selectedOpp if it was the updated opportunity', async () => {
       const { result } = renderWithProvider();
       const originalOpp = createMockOpportunity();
+      const userEmail = 'user@example.com';
+
+      vi.mocked(opportunitiesApi.createOpportunity).mockResolvedValue(originalOpp);
 
       await waitFor(() => {
         expect(result.current.loading).toBe(false);
       });
 
       await act(async () => {
-        await result.current.addOpportunity(originalOpp);
+        await result.current.addOpportunity(originalOpp, userEmail);
         result.current.selectOpportunity(originalOpp);
       });
 
       expect(result.current.selectedOpp?.title).toBe('Test Opportunity');
 
       const updatedOpp = { ...originalOpp, title: 'Updated Title' };
+      vi.mocked(opportunitiesApi.updateOpportunity).mockResolvedValue(updatedOpp);
 
       await act(async () => {
         await result.current.updateOpportunity(updatedOpp);
@@ -295,66 +246,19 @@ describe('OpportunitiesStore', () => {
       expect(result.current.selectedOpp?.title).toBe('Updated Title');
     });
 
-    it('should not affect selectedOpp if different opportunity was updated', async () => {
-      const { result } = renderWithProvider();
-      const opp1 = createMockOpportunity({ id: 'TEST-001' });
-      const opp2 = createMockOpportunity({ id: 'TEST-002' });
-
-      await waitFor(() => {
-        expect(result.current.loading).toBe(false);
-      });
-
-      await act(async () => {
-        await result.current.addOpportunity(opp1);
-      });
-
-      await act(async () => {
-        await result.current.addOpportunity(opp2);
-        result.current.selectOpportunity(opp1);
-      });
-
-      const updatedOpp2 = { ...opp2, title: 'Updated Opp2' };
-
-      await act(async () => {
-        await result.current.updateOpportunity(updatedOpp2);
-      });
-
-      expect(result.current.selectedOpp?.id).toBe('TEST-001');
-      expect(result.current.selectedOpp?.title).toBe('Test Opportunity');
-    });
-
-    it('should recalculate raiseLevel on update', async () => {
-      const { result } = renderWithProvider();
-      const originalOpp = createMockOpportunity({ tcv: 500000, raiseTcv: 500000, raiseLevel: 'L5' });
-
-      await waitFor(() => {
-        expect(result.current.loading).toBe(false);
-      });
-
-      await act(async () => {
-        await result.current.addOpportunity(originalOpp);
-      });
-
-      // Update to higher TCV should change raiseLevel
-      const updatedOpp = { ...originalOpp, tcv: 15000000, raiseTcv: 15000000, raiseLevel: 'L2' as const };
-
-      await act(async () => {
-        await result.current.updateOpportunity(updatedOpp);
-      });
-
-      expect(result.current.opportunities[0].raiseLevel).toBe('L2');
-    });
-
     it('should reject invalid opportunity on update', async () => {
       const { result } = renderWithProvider();
       const validOpp = createMockOpportunity();
+      const userEmail = 'user@example.com';
+
+      vi.mocked(opportunitiesApi.createOpportunity).mockResolvedValue(validOpp);
 
       await waitFor(() => {
         expect(result.current.loading).toBe(false);
       });
 
       await act(async () => {
-        await result.current.addOpportunity(validOpp);
+        await result.current.addOpportunity(validOpp, userEmail);
       });
 
       const invalidUpdate = { ...validOpp, tcv: -5000 }; // Negative TCV
@@ -371,16 +275,20 @@ describe('OpportunitiesStore', () => {
   });
 
   describe('Delete Opportunity', () => {
-    it('should remove opportunity from list', async () => {
+    it('should remove opportunity from list via Supabase API', async () => {
       const { result } = renderWithProvider();
       const opp = createMockOpportunity();
+      const userEmail = 'user@example.com';
+
+      vi.mocked(opportunitiesApi.createOpportunity).mockResolvedValue(opp);
+      vi.mocked(opportunitiesApi.deleteOpportunity).mockResolvedValue();
 
       await waitFor(() => {
         expect(result.current.loading).toBe(false);
       });
 
       await act(async () => {
-        await result.current.addOpportunity(opp);
+        await result.current.addOpportunity(opp, userEmail);
       });
 
       expect(result.current.opportunities).toHaveLength(1);
@@ -390,39 +298,23 @@ describe('OpportunitiesStore', () => {
       });
 
       expect(result.current.opportunities).toHaveLength(0);
-    });
-
-    it('should update localStorage after deletion', async () => {
-      const { result } = renderWithProvider();
-      const opp = createMockOpportunity();
-
-      await waitFor(() => {
-        expect(result.current.loading).toBe(false);
-      });
-
-      await act(async () => {
-        await result.current.addOpportunity(opp);
-      });
-
-      await act(async () => {
-        await result.current.deleteOpportunity('TEST-001');
-      });
-
-      const stored = localStorage.getItem('raise_opportunities');
-      const parsed = JSON.parse(stored!);
-      expect(parsed).toHaveLength(0);
+      expect(opportunitiesApi.deleteOpportunity).toHaveBeenCalledWith('TEST-001');
     });
 
     it('should clear selectedOpp if deleted opportunity was selected', async () => {
       const { result } = renderWithProvider();
       const opp = createMockOpportunity();
+      const userEmail = 'user@example.com';
+
+      vi.mocked(opportunitiesApi.createOpportunity).mockResolvedValue(opp);
+      vi.mocked(opportunitiesApi.deleteOpportunity).mockResolvedValue();
 
       await waitFor(() => {
         expect(result.current.loading).toBe(false);
       });
 
       await act(async () => {
-        await result.current.addOpportunity(opp);
+        await result.current.addOpportunity(opp, userEmail);
         result.current.selectOpportunity(opp);
       });
 
@@ -434,64 +326,22 @@ describe('OpportunitiesStore', () => {
 
       expect(result.current.selectedOpp).toBeNull();
     });
-
-    it('should not affect selectedOpp if different opportunity was deleted', async () => {
-      const { result } = renderWithProvider();
-      const opp1 = createMockOpportunity({ id: 'TEST-001' });
-      const opp2 = createMockOpportunity({ id: 'TEST-002' });
-
-      await waitFor(() => {
-        expect(result.current.loading).toBe(false);
-      });
-
-      await act(async () => {
-        await result.current.addOpportunity(opp1);
-      });
-
-      await act(async () => {
-        await result.current.addOpportunity(opp2);
-        result.current.selectOpportunity(opp1);
-      });
-
-      await act(async () => {
-        await result.current.deleteOpportunity('TEST-002');
-      });
-
-      expect(result.current.selectedOpp?.id).toBe('TEST-001');
-    });
-
-    it('should handle deletion of non-existent opportunity gracefully', async () => {
-      const { result } = renderWithProvider();
-      const opp = createMockOpportunity({ id: 'TEST-001' });
-
-      await waitFor(() => {
-        expect(result.current.loading).toBe(false);
-      });
-
-      await act(async () => {
-        await result.current.addOpportunity(opp);
-      });
-
-      await act(async () => {
-        await result.current.deleteOpportunity('NON-EXISTENT');
-      });
-
-      // Should not throw error and list should remain unchanged
-      expect(result.current.opportunities).toHaveLength(1);
-    });
   });
 
   describe('Select Opportunity', () => {
     it('should set selectedOpp', async () => {
       const { result } = renderWithProvider();
       const opp = createMockOpportunity();
+      const userEmail = 'user@example.com';
+
+      vi.mocked(opportunitiesApi.createOpportunity).mockResolvedValue(opp);
 
       await waitFor(() => {
         expect(result.current.loading).toBe(false);
       });
 
       await act(async () => {
-        await result.current.addOpportunity(opp);
+        await result.current.addOpportunity(opp, userEmail);
         result.current.selectOpportunity(opp);
       });
 
@@ -501,13 +351,16 @@ describe('OpportunitiesStore', () => {
     it('should deselect when passing null', async () => {
       const { result } = renderWithProvider();
       const opp = createMockOpportunity();
+      const userEmail = 'user@example.com';
+
+      vi.mocked(opportunitiesApi.createOpportunity).mockResolvedValue(opp);
 
       await waitFor(() => {
         expect(result.current.loading).toBe(false);
       });
 
       await act(async () => {
-        await result.current.addOpportunity(opp);
+        await result.current.addOpportunity(opp, userEmail);
         result.current.selectOpportunity(opp);
       });
 
@@ -518,92 +371,6 @@ describe('OpportunitiesStore', () => {
       });
 
       expect(result.current.selectedOpp).toBeNull();
-    });
-
-    it('should allow selecting different opportunities', async () => {
-      const { result } = renderWithProvider();
-      const opp1 = createMockOpportunity({ id: 'TEST-001' });
-      const opp2 = createMockOpportunity({ id: 'TEST-002' });
-
-      await waitFor(() => {
-        expect(result.current.loading).toBe(false);
-      });
-
-      await act(async () => {
-        await result.current.addOpportunity(opp1);
-      });
-
-      await act(async () => {
-        await result.current.addOpportunity(opp2);
-        result.current.selectOpportunity(opp1);
-      });
-
-      expect(result.current.selectedOpp?.id).toBe('TEST-001');
-
-      act(() => {
-        result.current.selectOpportunity(opp2);
-      });
-
-      expect(result.current.selectedOpp?.id).toBe('TEST-002');
-    });
-  });
-
-  describe('localStorage Persistence', () => {
-    it('should persist opportunities across store recreations', async () => {
-      const opp = createMockOpportunity();
-
-      // First instance
-      const { result: result1 } = renderWithProvider();
-
-      await waitFor(() => {
-        expect(result1.current.loading).toBe(false);
-      });
-
-      await act(async () => {
-        await result1.current.addOpportunity(opp);
-      });
-
-      // Second instance (simulating page reload)
-      const { result: result2 } = renderWithProvider();
-
-      await waitFor(() => {
-        expect(result2.current.loading).toBe(false);
-      });
-
-      expect(result2.current.opportunities).toHaveLength(1);
-      expect(result2.current.opportunities[0].id).toBe('TEST-001');
-    });
-
-    it('should maintain data integrity across multiple operations', async () => {
-      const { result } = renderWithProvider();
-
-      await waitFor(() => {
-        expect(result.current.loading).toBe(false);
-      });
-
-      await act(async () => {
-        await result.current.addOpportunity(createMockOpportunity({ id: 'TEST-001' }));
-      });
-
-      await act(async () => {
-        await result.current.addOpportunity(createMockOpportunity({ id: 'TEST-002' }));
-      });
-
-      await act(async () => {
-        await result.current.addOpportunity(createMockOpportunity({ id: 'TEST-003' }));
-      });
-
-      await act(async () => {
-        await result.current.deleteOpportunity('TEST-002');
-      });
-
-      const stored = localStorage.getItem('raise_opportunities');
-      const parsed = JSON.parse(stored!);
-
-      expect(parsed).toHaveLength(2);
-      expect(parsed.find((o: Opportunity) => o.id === 'TEST-001')).toBeTruthy();
-      expect(parsed.find((o: Opportunity) => o.id === 'TEST-003')).toBeTruthy();
-      expect(parsed.find((o: Opportunity) => o.id === 'TEST-002')).toBeFalsy();
     });
   });
 

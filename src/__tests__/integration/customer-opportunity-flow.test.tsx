@@ -78,7 +78,7 @@ describe('Customer-Opportunity Integration Flow', () => {
     };
 
     await act(async () => {
-      await oppResult.current.addOpportunity(newOpportunity);
+      await oppResult.current.addOpportunity(newOpportunity, 'test@example.com');
     });
 
     expect(oppResult.current.opportunities).toHaveLength(1);
@@ -150,7 +150,7 @@ describe('Customer-Opportunity Integration Flow', () => {
     };
 
     await act(async () => {
-      await oppResult.current.addOpportunity(oldOpportunity);
+      await oppResult.current.addOpportunity(oldOpportunity, 'test@example.com');
     });
 
     expect(oppResult.current.opportunities).toHaveLength(1);
@@ -217,7 +217,7 @@ describe('Customer-Opportunity Integration Flow', () => {
     };
 
     await act(async () => {
-      await oppResult.current.addOpportunity(opportunity);
+      await oppResult.current.addOpportunity(opportunity, 'test@example.com');
     });
 
     expect(oppResult.current.opportunities[0].customerId).toBe(customer1Id);
@@ -311,7 +311,7 @@ describe('Customer-Opportunity Integration Flow', () => {
     };
 
     await act(async () => {
-      await oppResult.current.addOpportunity(opportunity);
+      await oppResult.current.addOpportunity(opportunity, 'test@example.com');
     });
 
     // Verify customer exists
