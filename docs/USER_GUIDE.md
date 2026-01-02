@@ -660,6 +660,30 @@ A: Funzionalità in roadmap (Q2 2025).
 
 ---
 
+## Multi-User Data Segregation
+
+### How It Works
+
+**Your Opportunities:**
+- You can only see and manage opportunities you created
+- Each opportunity is automatically associated with your email
+- Your data is completely isolated from other users
+
+**Shared Resources:**
+- **Customers:** All users share the same customer database
+- **Settings:** Checkpoint configuration is shared across all users
+
+### Privacy & Security
+
+Your opportunities are protected by:
+- Row Level Security (RLS) at the database level
+- SAP IAS authentication
+- Automatic user identification via JWT token
+
+You cannot access other users' opportunities, even if you know their ID.
+
+---
+
 ## Supporto
 
 ### Problemi Comuni

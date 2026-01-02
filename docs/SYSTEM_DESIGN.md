@@ -362,6 +362,34 @@ if (phase === 'Handover') {
 
 ---
 
+## 10. Multi-User Data Architecture
+
+### Row Level Security (RLS)
+
+Supabase RLS policies enforce data segregation at the database level:
+
+**Opportunities Table:**
+- Policy: `created_by_email = current_user_email()`
+- Users can only SELECT/INSERT/UPDATE/DELETE their own records
+- Email extracted from SAP IAS JWT token
+
+**Customers Table:**
+- No RLS policies (shared data)
+- All authenticated users have full CRUD access
+
+**Settings Table:**
+- No RLS policies (shared configuration)
+- All users can read, admin can write
+
+### User Identification
+
+User email from SAP IAS JWT token is used as the unique identifier:
+- Extracted via `react-oidc-context`
+- Synced with Supabase auth on login
+- Included in all RLS policy evaluations
+
+---
+
 **Fine Documento**
 "Precision, Compliance, Excellence."
 
