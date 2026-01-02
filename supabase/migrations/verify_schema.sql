@@ -8,16 +8,19 @@ WHERE table_name = 'opportunities'
   AND table_schema = 'public'
 ORDER BY ordinal_position;
 
--- 2. Check if RLS is enabled on opportunities
+-- 2. Check if RLS is enabled on all tables
 SELECT tablename, rowsecurity
 FROM pg_tables
 WHERE schemaname = 'public'
-  AND tablename IN ('opportunities', 'customers', 'settings');
+  AND tablename IN ('opportunities', 'customers', 'controls', 'control_template_links')
+ORDER BY tablename;
 
--- 3. Check existing RLS policies on opportunities
-SELECT schemaname, tablename, policyname, permissive, roles, cmd, qual
+-- 3. Check existing RLS policies on all tables
+SELECT schemaname, tablename, policyname, permissive, roles, cmd
 FROM pg_policies
-WHERE tablename = 'opportunities';
+WHERE schemaname = 'public'
+  AND tablename IN ('opportunities', 'customers', 'controls', 'control_template_links')
+ORDER BY tablename, policyname;
 
 -- 4. Count existing data
 SELECT
@@ -31,6 +34,11 @@ SELECT
 FROM customers
 UNION ALL
 SELECT
-  'settings' as table_name,
+  'controls' as table_name,
   COUNT(*) as row_count
-FROM settings;
+FROM controls
+UNION ALL
+SELECT
+  'control_template_links' as table_name,
+  COUNT(*) as row_count
+FROM control_template_links;
