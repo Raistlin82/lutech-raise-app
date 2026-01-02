@@ -2,6 +2,7 @@ import { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useOpportunities } from '../../stores/OpportunitiesStore';
 import { useCustomers } from '../../stores/CustomerStore';
+import { useUserEmail } from '@/hooks/useUserEmail';
 import type { Opportunity } from '../../types';
 import { calculateRaiseLevel } from '../../lib/raiseLogic';
 import { ArrowLeft, Save, Building2, DollarSign, Briefcase, Lock, Plus } from 'lucide-react';
@@ -15,6 +16,7 @@ import { useTranslation } from 'react-i18next';
 export const NewOpportunityPage = () => {
     const { t } = useTranslation('opportunities');
     const navigate = useNavigate();
+    const userEmail = useUserEmail();
     const { addOpportunity, selectOpportunity } = useOpportunities();
     const { customers } = useCustomers();
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -91,6 +93,12 @@ export const NewOpportunityPage = () => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
+        // Check user authentication first
+        if (!userEmail) {
+            showToast.error('User not authenticated. Please log in to create opportunities.');
+            return;
+        }
+
         // Validate all fields
         const titleError = validateTitle(formData.title);
         const customerIdError = validateCustomerId(formData.customerId);
@@ -150,12 +158,13 @@ export const NewOpportunityPage = () => {
                 marginPercent: marginValue,
                 cashFlowNeutral: true,
                 isNewCustomer: formData.isNewCustomer,
+                createdByEmail: userEmail,
             };
 
             // Calculate the correct RAISE level based on TCV and other factors
             newOpp.raiseLevel = calculateRaiseLevel(newOpp);
 
-            addOpportunity(newOpp);
+            await addOpportunity(newOpp, userEmail);
             selectOpportunity(newOpp);
             showToast.success('Opportunità creata con successo!');
             navigate(`/opportunity/${newOpp.id}`);

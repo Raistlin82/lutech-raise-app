@@ -11,6 +11,7 @@ const mockNavigate = vi.fn();
 const mockAddOpportunity = vi.fn();
 const mockSelectOpportunity = vi.fn();
 const mockAddCustomer = vi.fn();
+const mockUserEmail = 'test.user@example.com';
 
 vi.mock('react-router-dom', () => ({
   useNavigate: () => mockNavigate,
@@ -23,6 +24,10 @@ vi.mock('../../stores/OpportunitiesStore', () => ({
 vi.mock('../../stores/CustomerStore', () => ({
   useCustomers: vi.fn(),
   CustomerProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+}));
+
+vi.mock('@/hooks/useUserEmail', () => ({
+  useUserEmail: () => mockUserEmail,
 }));
 
 // Import after mocking
@@ -177,6 +182,33 @@ describe('NewOpportunityPage', () => {
       }, { timeout: 1000 });
     });
 
+    it('should pass userEmail to addOpportunity', async () => {
+      render(<NewOpportunityPage />, { wrapper: AllProviders });
+
+      // Fill in required fields
+      const titleInput = screen.getByPlaceholderText(/Cloud Migration Project/i);
+      const customerSelect = screen.getByRole('combobox');
+      const tcvInput = screen.getByPlaceholderText('1000000');
+
+      fireEvent.change(titleInput, { target: { value: 'Test Project' } });
+      fireEvent.change(customerSelect, { target: { value: 'CUST-001' } });
+      fireEvent.change(tcvInput, { target: { value: '500000' } });
+
+      // Submit form
+      const submitButton = screen.getByText('Crea Opportunità');
+      fireEvent.click(submitButton);
+
+      // Wait for async submission (500ms delay)
+      await waitFor(() => {
+        expect(mockAddOpportunity).toHaveBeenCalledWith(
+          expect.objectContaining({
+            createdByEmail: mockUserEmail,
+          }),
+          mockUserEmail
+        );
+      }, { timeout: 1000 });
+    });
+
     it('should navigate to opportunity detail after creation', async () => {
       render(<NewOpportunityPage />, { wrapper: AllProviders });
 
@@ -220,7 +252,8 @@ describe('NewOpportunityPage', () => {
           expect.objectContaining({
             tcv: 750000,
             raiseTcv: 750000,
-          })
+          }),
+          mockUserEmail
         );
       }, { timeout: 1000 });
     });
@@ -247,7 +280,8 @@ describe('NewOpportunityPage', () => {
           expect.objectContaining({
             tcv: 750000,
             raiseTcv: 900000,
-          })
+          }),
+          mockUserEmail
         );
       }, { timeout: 1000 });
     });
@@ -271,7 +305,8 @@ describe('NewOpportunityPage', () => {
         expect(mockAddOpportunity).toHaveBeenCalledWith(
           expect.objectContaining({
             isFastTrack: true,
-          })
+          }),
+          mockUserEmail
         );
       }, { timeout: 1000 });
     });
@@ -299,7 +334,8 @@ describe('NewOpportunityPage', () => {
         expect(mockAddOpportunity).toHaveBeenCalledWith(
           expect.objectContaining({
             isFastTrack: false,
-          })
+          }),
+          mockUserEmail
         );
       }, { timeout: 1000 });
     });
@@ -332,8 +368,41 @@ describe('NewOpportunityPage', () => {
           expect.objectContaining({
             isPublicSector: false, // Auto-filled from customer (Acme Corp is not public sector)
             isNewCustomer: true,
-          })
+          }),
+          mockUserEmail
         );
+      }, { timeout: 1000 });
+    });
+  });
+
+  describe('User Authentication', () => {
+    it('should prevent submission when user is not authenticated', async () => {
+      // Mock useUserEmail to return null (not authenticated)
+      vi.doMock('@/hooks/useUserEmail', () => ({
+        useUserEmail: () => null,
+      }));
+
+      // Re-import component with mocked hook
+      const { NewOpportunityPage: UnauthenticatedPage } = await import('./new');
+
+      render(<UnauthenticatedPage />, { wrapper: AllProviders });
+
+      // Fill in required fields
+      const titleInput = screen.getByPlaceholderText(/Cloud Migration Project/i);
+      const customerSelect = screen.getByRole('combobox');
+      const tcvInput = screen.getByPlaceholderText('1000000');
+
+      fireEvent.change(titleInput, { target: { value: 'Test Project' } });
+      fireEvent.change(customerSelect, { target: { value: 'CUST-001' } });
+      fireEvent.change(tcvInput, { target: { value: '500000' } });
+
+      // Submit form
+      const submitButton = screen.getByText('Crea Opportunità');
+      fireEvent.click(submitButton);
+
+      // Should NOT call addOpportunity
+      await waitFor(() => {
+        expect(mockAddOpportunity).not.toHaveBeenCalled();
       }, { timeout: 1000 });
     });
   });

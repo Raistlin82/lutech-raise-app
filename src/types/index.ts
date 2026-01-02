@@ -96,6 +96,11 @@ export interface Opportunity {
     atsDate?: Date | string; // Data ATS da Salesforce
     atcDate?: Date | string; // Data ATC da Salesforce
     rcpDate?: Date | string; // Data RCP
+
+    // Multi-user segregation
+    createdByEmail?: string; // User email (from SAP IAS JWT)
+    createdAt?: string; // ISO 8601 timestamp
+    updatedAt?: string; // ISO 8601 timestamp
 }
 
 export const RAISE_LEVELS: Record<RaiseLevel, { min: number; max: number; label: string }> = {
