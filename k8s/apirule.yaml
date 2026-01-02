@@ -9,9 +9,8 @@ metadata:
     app: raise-app
 spec:
   # Host for the application
-  # ${KYMA_CLUSTER_DOMAIN} will be replaced by CI/CD
   hosts:
-    - raise-app.${KYMA_CLUSTER_DOMAIN}
+    - raise-app.b66a502.kyma.ondemand.com
 
   # The Kyma gateway to use
   gateway: kyma-system/kyma-gateway

@@ -19,29 +19,18 @@ spec:
   metrics:
     - providers:
         - name: prometheus
-      dimensions:
-        # Custom dimensions for Cloud ALM
-        app_name: "raise-app"
-        app_version: "v1"
-        namespace: "raise-app"
       overrides:
         # Request metrics
         - match:
-            mode: CLIENT_AND_SERVER
             metric: REQUEST_COUNT
+            mode: CLIENT_AND_SERVER
           tagOverrides:
             destination_service:
               value: "raise-app.raise-app.svc.cluster.local"
         # Request duration metrics
         - match:
-            mode: CLIENT_AND_SERVER
             metric: REQUEST_DURATION
-          tagOverrides:
-            destination_service:
-              value: "raise-app.raise-app.svc.cluster.local"
-        # Connection metrics
-        - match:
-            metric: CONNECTION_RECEIVED
+            mode: CLIENT_AND_SERVER
           tagOverrides:
             destination_service:
               value: "raise-app.raise-app.svc.cluster.local"
