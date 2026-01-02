@@ -176,12 +176,12 @@ test.describe('Navigation Tests', () => {
     await page.waitForTimeout(500);
 
     // Navigate back to Planning using sidebar
-    await page.click('button:has-text("Planning")').first();
+    await page.locator('button:has-text("Planning")').first().click();
     await expect(page.locator('text=Planning Checklist')).toBeVisible();
     await expect(page.locator('text=Completato')).toBeVisible(); // Shows completed badge
 
     // Navigate to ATP using sidebar
-    await page.click('button:has-text("ATP")').first();
+    await page.locator('button:has-text("ATP")').first().click();
     await expect(page.locator('text=ATP Checklist')).toBeVisible();
   });
 });
@@ -278,7 +278,7 @@ test.describe('Error Handling & Edge Cases', () => {
     await expect(page.locator('text=Persistence Test')).toBeVisible();
 
     // Verify can still navigate back to completed Planning
-    await page.click('button:has-text("Planning")').first();
+    await page.locator('button:has-text("Planning")').first().click();
     await expect(page.locator('text=Completato')).toBeVisible();
   });
 });
