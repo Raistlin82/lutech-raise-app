@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import React, { createContext, useContext, useState, useCallback } from 'react';
 import type { Opportunity } from '../types';
 import { calculateRaiseLevel } from '../lib/raiseLogic';
 import { validateOpportunity } from '../lib/validation';
@@ -52,10 +52,6 @@ export const OpportunitiesProvider: React.FC<{ children: React.ReactNode }> = ({
             setLoading(false);
         }
     }, []);
-
-    useEffect(() => {
-        loadOpportunities();
-    }, [loadOpportunities]);
 
     const refreshOpportunities = useCallback(async () => {
         await loadOpportunities();

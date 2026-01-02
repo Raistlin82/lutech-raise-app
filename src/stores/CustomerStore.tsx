@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import React, { createContext, useContext, useState, useCallback } from 'react';
 import type { Customer } from '../types';
 import { showToast } from '../lib/toast';
 import {
@@ -40,10 +40,6 @@ export const CustomerProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       setLoading(false);
     }
   }, []);
-
-  useEffect(() => {
-    loadCustomers();
-  }, [loadCustomers]);
 
   const refreshCustomers = useCallback(async () => {
     await loadCustomers();
