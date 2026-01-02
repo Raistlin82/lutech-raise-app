@@ -81,6 +81,9 @@ jobs:
       - name: Build and push Docker image
         id: build
         uses: docker/build-push-action@v5
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
         with:
           context: .
           push: true
@@ -88,8 +91,12 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          # Note: Environment variables are now injected at runtime from Kubernetes secrets
-          # Build-time values are set to RUNTIME_INJECTED placeholders in Dockerfile
+          build-args: |
+            VITE_IAS_AUTHORITY=${{ secrets.VITE_IAS_AUTHORITY }}
+            VITE_IAS_CLIENT_ID=${{ secrets.VITE_IAS_CLIENT_ID }}
+            VITE_SUPABASE_URL=${{ secrets.VITE_SUPABASE_URL }}
+            VITE_SUPABASE_ANON_KEY=${{ secrets.VITE_SUPABASE_ANON_KEY }}
+          # Note: VITE_ environment variables are baked into the bundle at build time
 
   deploy-kyma:
     runs-on: ubuntu-latest

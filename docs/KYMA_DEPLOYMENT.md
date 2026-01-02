@@ -109,6 +109,19 @@ I seguenti secrets devono essere configurati in GitHub (Settings → Secrets):
 
 ---
 
+## Supabase Configuration
+
+The RAISE app uses Supabase for backend data storage and user authentication. The following environment variables must be configured as GitHub Secrets:
+
+| Secret | Description | Example |
+|---|---|---|
+| `VITE_SUPABASE_URL` | Supabase project URL | `https://xxx.supabase.co` |
+| `VITE_SUPABASE_ANON_KEY` | Supabase anonymous key | `eyJhbG...` |
+
+**Important:** These are build-time environment variables (baked into bundle). They are injected during the Docker build process and become part of the compiled JavaScript bundle. Changes to these values require rebuilding and redeploying the application.
+
+---
+
 ## Configurazione SAP IAS
 
 ### 1. Creazione Applicazione
