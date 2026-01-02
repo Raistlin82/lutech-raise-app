@@ -26,12 +26,8 @@ vi.mock('@/api/customers', () => ({
   deleteCustomer: vi.fn(),
 }));
 
-vi.mock('@/api/opportunities', () => ({
-  fetchOpportunities: vi.fn(() => Promise.resolve([])),
-  createOpportunity: vi.fn(),
-  updateOpportunity: vi.fn(),
-  deleteOpportunity: vi.fn(),
-}));
+import * as opportunitiesApi from '@/api/opportunities';
+vi.mock('@/api/opportunities');
 
 // Wrapper with all providers
 const AllProviders = ({ children }: { children: React.ReactNode }) => (
@@ -71,6 +67,9 @@ const createMockOpportunity = (overrides: Partial<Opportunity> = {}): Opportunit
 describe('RAISE Level Calculation Integration', () => {
   beforeEach(() => {
     localStorage.clear();
+    vi.clearAllMocks();
+    // Default mock: return empty array
+    vi.mocked(opportunitiesApi.fetchOpportunities).mockResolvedValue([]);
   });
 
   describe('TCV-based Level Calculation', () => {
@@ -83,7 +82,7 @@ describe('RAISE Level Calculation Integration', () => {
       const level = calculateRaiseLevel(opp);
       expect(level).toBe('L6');
 
-      localStorage.setItem('raise_opportunities', JSON.stringify([opp]));
+      vi.mocked(opportunitiesApi.fetchOpportunities).mockResolvedValue([opp]);
 
       render(
         <AllProviders>
@@ -93,7 +92,7 @@ describe('RAISE Level Calculation Integration', () => {
 
       await waitFor(() => {
         expect(screen.getByText('L6')).toBeInTheDocument();
-      });
+      }, { timeout: 1000 });
     });
 
     it('should calculate L5 for TCV 250k-500k', async () => {
@@ -105,7 +104,7 @@ describe('RAISE Level Calculation Integration', () => {
       const level = calculateRaiseLevel(opp);
       expect(level).toBe('L5');
 
-      localStorage.setItem('raise_opportunities', JSON.stringify([opp]));
+      vi.mocked(opportunitiesApi.fetchOpportunities).mockResolvedValue([opp]);
 
       render(
         <AllProviders>
@@ -115,7 +114,7 @@ describe('RAISE Level Calculation Integration', () => {
 
       await waitFor(() => {
         expect(screen.getByText('L5')).toBeInTheDocument();
-      });
+      }, { timeout: 1000 });
     });
 
     it('should calculate L4 for TCV 500k-1M', async () => {
@@ -376,7 +375,7 @@ describe('RAISE Level Calculation Integration', () => {
         raiseLevel: 'L6',
       });
 
-      localStorage.setItem('raise_opportunities', JSON.stringify([opp]));
+      vi.mocked(opportunitiesApi.fetchOpportunities).mockResolvedValue([opp]);
 
       const { unmount } = render(
         <AllProviders>
@@ -386,7 +385,7 @@ describe('RAISE Level Calculation Integration', () => {
 
       await waitFor(() => {
         expect(screen.getByText('L6')).toBeInTheDocument();
-      });
+      }, { timeout: 1000 });
 
       unmount();
 
@@ -398,7 +397,7 @@ describe('RAISE Level Calculation Integration', () => {
         raiseLevel: calculateRaiseLevel({ ...opp, tcv: 400000, raiseTcv: 400000 }),
       };
 
-      localStorage.setItem('raise_opportunities', JSON.stringify([updatedOpp]));
+      vi.mocked(opportunitiesApi.fetchOpportunities).mockResolvedValue([updatedOpp]);
 
       render(
         <AllProviders>
@@ -409,7 +408,7 @@ describe('RAISE Level Calculation Integration', () => {
       // Should show recalculated level
       await waitFor(() => {
         expect(screen.getByText('L5')).toBeInTheDocument();
-      });
+      }, { timeout: 1000 });
     });
 
     it('should recalculate level when TCV increases significantly', () => {

@@ -27,12 +27,8 @@ vi.mock('@/api/customers', () => ({
   deleteCustomer: vi.fn(),
 }));
 
-vi.mock('@/api/opportunities', () => ({
-  fetchOpportunities: vi.fn(() => Promise.resolve([])),
-  createOpportunity: vi.fn(),
-  updateOpportunity: vi.fn(),
-  deleteOpportunity: vi.fn(),
-}));
+import * as opportunitiesApi from '@/api/opportunities';
+vi.mock('@/api/opportunities');
 
 // Wrapper with all providers
 const AllProviders = ({ children }: { children: React.ReactNode }) => (
@@ -74,6 +70,9 @@ const createMockOpportunity = (overrides: Partial<Opportunity> = {}): Opportunit
 describe('Opportunity Workflow Integration', () => {
   beforeEach(() => {
     localStorage.clear();
+    vi.clearAllMocks();
+    // Default mock: return empty array
+    vi.mocked(opportunitiesApi.fetchOpportunities).mockResolvedValue([]);
   });
 
   it('should create opportunity and show in dashboard', async () => {
@@ -84,7 +83,7 @@ describe('Opportunity Workflow Integration', () => {
       </AllProviders>
     );
 
-    // Wait for loading state to finish (300ms delay)
+    // Wait for loading state to finish
     await waitFor(() => {
       expect(screen.getByText('Panoramica Pipeline')).toBeInTheDocument();
     }, { timeout: 500 });
@@ -95,11 +94,11 @@ describe('Opportunity Workflow Integration', () => {
 
     unmount();
 
-    // Simulate creating an opportunity by directly updating localStorage
+    // Simulate creating an opportunity by mocking API to return it
     const newOpp = createMockOpportunity();
-    localStorage.setItem('raise_opportunities', JSON.stringify([newOpp]));
+    vi.mocked(opportunitiesApi.fetchOpportunities).mockResolvedValue([newOpp]);
 
-    // Re-render dashboard - should load from localStorage
+    // Re-render dashboard - should load from API
     render(
       <AllProviders>
         <Dashboard onSelectOpp={() => {}} />
@@ -109,7 +108,7 @@ describe('Opportunity Workflow Integration', () => {
     // Verify opportunity appears in dashboard
     await waitFor(() => {
       expect(screen.getByText('Integration Test Opportunity')).toBeInTheDocument();
-    });
+    }, { timeout: 1000 });
 
     expect(screen.getByText('Test Client')).toBeInTheDocument();
 
@@ -120,7 +119,7 @@ describe('Opportunity Workflow Integration', () => {
   it('should update opportunity and reflect in dashboard', async () => {
     // Setup initial opportunity
     const initialOpp = createMockOpportunity();
-    localStorage.setItem('raise_opportunities', JSON.stringify([initialOpp]));
+    vi.mocked(opportunitiesApi.fetchOpportunities).mockResolvedValue([initialOpp]);
 
     const { unmount } = render(
       <AllProviders>
@@ -131,13 +130,13 @@ describe('Opportunity Workflow Integration', () => {
     // Verify initial state
     await waitFor(() => {
       expect(screen.getByText('Integration Test Opportunity')).toBeInTheDocument();
-    });
+    }, { timeout: 1000 });
 
     unmount();
 
     // Update the opportunity title
     const updatedOpp = { ...initialOpp, title: 'Updated Test Opportunity' };
-    localStorage.setItem('raise_opportunities', JSON.stringify([updatedOpp]));
+    vi.mocked(opportunitiesApi.fetchOpportunities).mockResolvedValue([updatedOpp]);
 
     // Re-render
     render(
@@ -149,14 +148,14 @@ describe('Opportunity Workflow Integration', () => {
     // Verify updated title appears
     await waitFor(() => {
       expect(screen.getByText('Updated Test Opportunity')).toBeInTheDocument();
-    });
+    }, { timeout: 1000 });
     expect(screen.queryByText('Integration Test Opportunity')).not.toBeInTheDocument();
   });
 
   it('should delete opportunity and remove from dashboard', async () => {
     // Setup opportunity
     const opp = createMockOpportunity();
-    localStorage.setItem('raise_opportunities', JSON.stringify([opp]));
+    vi.mocked(opportunitiesApi.fetchOpportunities).mockResolvedValue([opp]);
 
     const { unmount } = render(
       <AllProviders>
@@ -167,12 +166,12 @@ describe('Opportunity Workflow Integration', () => {
     // Verify opportunity exists
     await waitFor(() => {
       expect(screen.getByText('Integration Test Opportunity')).toBeInTheDocument();
-    });
+    }, { timeout: 1000 });
 
     unmount();
 
-    // Delete from localStorage
-    localStorage.setItem('raise_opportunities', JSON.stringify([]));
+    // Delete from API
+    vi.mocked(opportunitiesApi.fetchOpportunities).mockResolvedValue([]);
 
     // Re-render
     render(
@@ -184,7 +183,7 @@ describe('Opportunity Workflow Integration', () => {
     // Verify opportunity is gone
     await waitFor(() => {
       expect(screen.queryByText('Integration Test Opportunity')).not.toBeInTheDocument();
-    });
+    }, { timeout: 1000 });
   });
 
   it('should show correct dashboard stats with multiple opportunities', async () => {
@@ -214,7 +213,7 @@ describe('Opportunity Workflow Integration', () => {
       }),
     ];
 
-    localStorage.setItem('raise_opportunities', JSON.stringify(opps));
+    vi.mocked(opportunitiesApi.fetchOpportunities).mockResolvedValue(opps);
 
     render(
       <AllProviders>
@@ -226,7 +225,7 @@ describe('Opportunity Workflow Integration', () => {
     await waitFor(() => {
       // Total TCV: 1M + 2M + 0.5M = 3.5M
       expect(screen.getByText(/€3\.50M/)).toBeInTheDocument();
-    });
+    }, { timeout: 1000 });
 
     // Verify all opportunities are displayed
     expect(screen.getByText('Opp 1')).toBeInTheDocument();
@@ -242,7 +241,7 @@ describe('Opportunity Workflow Integration', () => {
       raiseTcv: 5000000,
     });
 
-    localStorage.setItem('raise_opportunities', JSON.stringify([opp]));
+    vi.mocked(opportunitiesApi.fetchOpportunities).mockResolvedValue([opp]);
 
     // First mount
     const { unmount } = render(
@@ -253,11 +252,11 @@ describe('Opportunity Workflow Integration', () => {
 
     await waitFor(() => {
       expect(screen.getByText('Persistent Opportunity')).toBeInTheDocument();
-    });
+    }, { timeout: 1000 });
 
     unmount();
 
-    // Second mount - should load from localStorage
+    // Second mount - should load from API
     render(
       <AllProviders>
         <Dashboard onSelectOpp={() => {}} />
@@ -266,7 +265,7 @@ describe('Opportunity Workflow Integration', () => {
 
     await waitFor(() => {
       expect(screen.getByText('Persistent Opportunity')).toBeInTheDocument();
-    });
+    }, { timeout: 1000 });
 
     // Verify TCV is correct (appears in card and distribution)
     const tcvElements = screen.getAllByText('€5000k');

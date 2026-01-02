@@ -48,14 +48,6 @@ describe('Customer-Opportunity Integration Flow', () => {
       wrapper: AllProviders
     });
 
-    // Wait for initial loads
-    await waitFor(() => {
-      expect(customerResult.current.loading).toBe(false);
-    });
-    await waitFor(() => {
-      expect(oppResult.current.loading).toBe(false);
-    });
-
     // Step 1: Create a customer
     const newCustomer: Omit<Customer, 'id'> = {
       name: 'Acme Corporation',
@@ -112,10 +104,6 @@ describe('Customer-Opportunity Integration Flow', () => {
       wrapper: AllProviders
     });
 
-    await waitFor(() => {
-      expect(customerResult.current.loading).toBe(false);
-    });
-
     // Create a public sector customer
     const publicCustomer: Omit<Customer, 'id'> = {
       name: 'Government Agency',
@@ -136,10 +124,6 @@ describe('Customer-Opportunity Integration Flow', () => {
   it('should handle backward compatibility with old opportunities', async () => {
     const { result: oppResult } = renderHook(() => useOpportunities(), {
       wrapper: AllProviders
-    });
-
-    await waitFor(() => {
-      expect(oppResult.current.loading).toBe(false);
     });
 
     // Create an old-style opportunity (with clientName, no customerId)
@@ -181,13 +165,6 @@ describe('Customer-Opportunity Integration Flow', () => {
 
     const { result: oppResult } = renderHook(() => useOpportunities(), {
       wrapper: AllProviders
-    });
-
-    await waitFor(() => {
-      expect(customerResult.current.loading).toBe(false);
-    });
-    await waitFor(() => {
-      expect(oppResult.current.loading).toBe(false);
     });
 
     // Create two customers
@@ -270,6 +247,11 @@ describe('Customer-Opportunity Integration Flow', () => {
       wrapper: AllProviders
     });
 
+    // Explicitly trigger load
+    await act(async () => {
+      await result.current.refreshCustomers();
+    });
+
     await waitFor(() => {
       expect(result.current.loading).toBe(false);
     });
@@ -285,13 +267,6 @@ describe('Customer-Opportunity Integration Flow', () => {
 
     const { result: oppResult } = renderHook(() => useOpportunities(), {
       wrapper: AllProviders
-    });
-
-    await waitFor(() => {
-      expect(customerResult.current.loading).toBe(false);
-    });
-    await waitFor(() => {
-      expect(oppResult.current.loading).toBe(false);
     });
 
     // Create customer

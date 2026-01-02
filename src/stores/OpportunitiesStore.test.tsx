@@ -48,6 +48,11 @@ describe('OpportunitiesStore', () => {
     it('should initialize with empty opportunities after loading', async () => {
       const { result } = renderWithProvider();
 
+      // Explicitly trigger load
+      await act(async () => {
+        await result.current.refreshOpportunities();
+      });
+
       await waitFor(() => {
         expect(result.current.loading).toBe(false);
       });
@@ -63,6 +68,11 @@ describe('OpportunitiesStore', () => {
 
       const { result } = renderWithProvider();
 
+      // Explicitly trigger load
+      await act(async () => {
+        await result.current.refreshOpportunities();
+      });
+
       await waitFor(() => {
         expect(result.current.loading).toBe(false);
       });
@@ -77,6 +87,11 @@ describe('OpportunitiesStore', () => {
       vi.mocked(opportunitiesApi.fetchOpportunities).mockRejectedValue(new Error('API Error'));
 
       const { result } = renderWithProvider();
+
+      // Explicitly trigger load
+      await act(async () => {
+        await result.current.refreshOpportunities();
+      });
 
       await waitFor(() => {
         expect(result.current.loading).toBe(false);
@@ -97,10 +112,6 @@ describe('OpportunitiesStore', () => {
 
       vi.mocked(opportunitiesApi.createOpportunity).mockResolvedValue(newOpp);
 
-      await waitFor(() => {
-        expect(result.current.loading).toBe(false);
-      });
-
       await act(async () => {
         await result.current.addOpportunity(newOpp, userEmail);
       });
@@ -117,10 +128,6 @@ describe('OpportunitiesStore', () => {
       const userEmail = 'user@example.com';
 
       vi.mocked(opportunitiesApi.createOpportunity).mockImplementation(async (opp) => opp);
-
-      await waitFor(() => {
-        expect(result.current.loading).toBe(false);
-      });
 
       await act(async () => {
         await result.current.addOpportunity(opp1, userEmail);
@@ -143,10 +150,6 @@ describe('OpportunitiesStore', () => {
 
       vi.mocked(opportunitiesApi.createOpportunity).mockRejectedValue(new Error('API Error'));
 
-      await waitFor(() => {
-        expect(result.current.loading).toBe(false);
-      });
-
       await expect(async () => {
         await act(async () => {
           await result.current.addOpportunity(newOpp, userEmail);
@@ -161,10 +164,6 @@ describe('OpportunitiesStore', () => {
       const invalidOpp = { id: 'TEST', title: 'X' } as Opportunity; // Title too short
       const userEmail = 'user@example.com';
 
-      await waitFor(() => {
-        expect(result.current.loading).toBe(false);
-      });
-
       await expect(async () => {
         await act(async () => {
           await result.current.addOpportunity(invalidOpp, userEmail);
@@ -178,10 +177,6 @@ describe('OpportunitiesStore', () => {
       const { result } = renderWithProvider();
       const invalidOpp = createMockOpportunity({ tcv: -1000 }); // Negative TCV
       const userEmail = 'user@example.com';
-
-      await waitFor(() => {
-        expect(result.current.loading).toBe(false);
-      });
 
       await expect(async () => {
         await act(async () => {
@@ -198,10 +193,6 @@ describe('OpportunitiesStore', () => {
       const userEmail = 'user@example.com';
 
       vi.mocked(opportunitiesApi.createOpportunity).mockResolvedValue(originalOpp);
-
-      await waitFor(() => {
-        expect(result.current.loading).toBe(false);
-      });
 
       await act(async () => {
         await result.current.addOpportunity(originalOpp, userEmail);
@@ -224,10 +215,6 @@ describe('OpportunitiesStore', () => {
       const userEmail = 'user@example.com';
 
       vi.mocked(opportunitiesApi.createOpportunity).mockResolvedValue(originalOpp);
-
-      await waitFor(() => {
-        expect(result.current.loading).toBe(false);
-      });
 
       await act(async () => {
         await result.current.addOpportunity(originalOpp, userEmail);
@@ -252,10 +239,6 @@ describe('OpportunitiesStore', () => {
       const userEmail = 'user@example.com';
 
       vi.mocked(opportunitiesApi.createOpportunity).mockResolvedValue(validOpp);
-
-      await waitFor(() => {
-        expect(result.current.loading).toBe(false);
-      });
 
       await act(async () => {
         await result.current.addOpportunity(validOpp, userEmail);
@@ -283,10 +266,6 @@ describe('OpportunitiesStore', () => {
       vi.mocked(opportunitiesApi.createOpportunity).mockResolvedValue(opp);
       vi.mocked(opportunitiesApi.deleteOpportunity).mockResolvedValue();
 
-      await waitFor(() => {
-        expect(result.current.loading).toBe(false);
-      });
-
       await act(async () => {
         await result.current.addOpportunity(opp, userEmail);
       });
@@ -308,10 +287,6 @@ describe('OpportunitiesStore', () => {
 
       vi.mocked(opportunitiesApi.createOpportunity).mockResolvedValue(opp);
       vi.mocked(opportunitiesApi.deleteOpportunity).mockResolvedValue();
-
-      await waitFor(() => {
-        expect(result.current.loading).toBe(false);
-      });
 
       await act(async () => {
         await result.current.addOpportunity(opp, userEmail);
@@ -336,10 +311,6 @@ describe('OpportunitiesStore', () => {
 
       vi.mocked(opportunitiesApi.createOpportunity).mockResolvedValue(opp);
 
-      await waitFor(() => {
-        expect(result.current.loading).toBe(false);
-      });
-
       await act(async () => {
         await result.current.addOpportunity(opp, userEmail);
         result.current.selectOpportunity(opp);
@@ -354,10 +325,6 @@ describe('OpportunitiesStore', () => {
       const userEmail = 'user@example.com';
 
       vi.mocked(opportunitiesApi.createOpportunity).mockResolvedValue(opp);
-
-      await waitFor(() => {
-        expect(result.current.loading).toBe(false);
-      });
 
       await act(async () => {
         await result.current.addOpportunity(opp, userEmail);

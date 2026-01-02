@@ -30,7 +30,11 @@ describe('CustomerStore', () => {
       wrapper: CustomerProvider
     });
 
-    // Wait for loading to complete
+    // Explicitly trigger load
+    await act(async () => {
+      await result.current.refreshCustomers();
+    });
+
     await waitFor(() => {
       expect(result.current.loading).toBe(false);
     });
@@ -41,11 +45,6 @@ describe('CustomerStore', () => {
   it('should add a customer and return the new ID', async () => {
     const { result } = renderHook(() => useCustomers(), {
       wrapper: CustomerProvider
-    });
-
-    // Wait for initial load
-    await waitFor(() => {
-      expect(result.current.loading).toBe(false);
     });
 
     const newCustomer: Omit<Customer, 'id'> = {
@@ -82,11 +81,6 @@ describe('CustomerStore', () => {
   it('should update a customer', async () => {
     const { result } = renderHook(() => useCustomers(), {
       wrapper: CustomerProvider
-    });
-
-    // Wait for initial load
-    await waitFor(() => {
-      expect(result.current.loading).toBe(false);
     });
 
     const newCustomer: Omit<Customer, 'id'> = {
@@ -134,11 +128,6 @@ describe('CustomerStore', () => {
       wrapper: CustomerProvider
     });
 
-    // Wait for initial load
-    await waitFor(() => {
-      expect(result.current.loading).toBe(false);
-    });
-
     const newCustomer: Omit<Customer, 'id'> = {
       name: 'Acme Corp',
       industry: 'Technology',
@@ -176,11 +165,6 @@ describe('CustomerStore', () => {
       wrapper: CustomerProvider
     });
 
-    // Wait for initial load
-    await waitFor(() => {
-      expect(result.current.loading).toBe(false);
-    });
-
     const newCustomer: Omit<Customer, 'id'> = {
       name: 'Acme Corp',
       industry: 'Technology',
@@ -210,11 +194,6 @@ describe('CustomerStore', () => {
   it('should call API on refreshCustomers', async () => {
     const { result } = renderHook(() => useCustomers(), {
       wrapper: CustomerProvider
-    });
-
-    // Wait for initial load
-    await waitFor(() => {
-      expect(result.current.loading).toBe(false);
     });
 
     // Clear previous calls
