@@ -42,7 +42,15 @@ async function initApp() {
   const rootElement = document.getElementById('root');
   if (!rootElement) throw new Error("Root element not found");
 
-  const isTestMode = import.meta.env.VITE_TEST_MODE === 'true';
+  // Detect test mode: Check if IAS is mock/missing OR explicit VITE_TEST_MODE
+  const iasAuthority = import.meta.env.VITE_IAS_AUTHORITY || '';
+  const iasClientId = import.meta.env.VITE_IAS_CLIENT_ID || '';
+  const isTestMode =
+    import.meta.env.VITE_TEST_MODE === 'true' ||
+    iasAuthority.includes('mock') ||
+    iasClientId.includes('mock') ||
+    !iasAuthority ||
+    !iasClientId;
 
   if (isTestMode) {
     // TEST MODE: Use dummy OIDC config for E2E tests (useAuth will return mock data)
