@@ -16,14 +16,14 @@ export default defineConfig({
   // Fail the build on CI if you accidentally left test.only in the source code
   forbidOnly: !!process.env.CI,
 
-  // Retry on CI only
-  retries: process.env.CI ? 2 : 0,
+  // Retry on CI only - reduced to 1 for faster execution
+  retries: process.env.CI ? 1 : 0,
 
   // Opt out of parallel tests on CI
   workers: process.env.CI ? 2 : undefined,
 
-  // Global timeout for each test - prevent hanging
-  timeout: 60 * 1000, // 60 seconds per test
+  // Global timeout for each test - reduced to 30s for faster feedback
+  timeout: 30 * 1000, // 30 seconds per test
 
   // Reporter to use - JUnit XML for CI/CD + HTML for local
   reporter: process.env.CI

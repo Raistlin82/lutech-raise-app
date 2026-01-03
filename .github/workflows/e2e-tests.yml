@@ -23,7 +23,8 @@ jobs:
         run: npm ci
 
       - name: Install Playwright Browsers
-        run: npx playwright install --with-deps chromium firefox webkit
+        # Only install chromium in CI (playwright.config.ts only uses chromium on CI)
+        run: npx playwright install --with-deps chromium
 
       - name: Run Unit Tests
         run: npx vitest run
