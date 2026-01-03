@@ -29,6 +29,7 @@ interface MockAuthContextValue {
   isAuthenticated: boolean;
   isLoading: boolean;
   error: Error | null;
+  activeNavigator: string | undefined;
   signinRedirect: () => Promise<void>;
   signoutRedirect: () => Promise<void>;
   removeUser: () => Promise<void>;
@@ -39,6 +40,7 @@ const MockAuthContext = createContext<MockAuthContextValue>({
   isAuthenticated: true,
   isLoading: false,
   error: null,
+  activeNavigator: undefined,
   signinRedirect: async () => {},
   signoutRedirect: async () => {},
   removeUser: async () => {},
@@ -50,6 +52,7 @@ export function MockAuthProvider({ children }: { children: ReactNode }) {
     isAuthenticated: true,
     isLoading: false,
     error: null,
+    activeNavigator: undefined,
     signinRedirect: async () => {
       console.log('[MockAuth] signinRedirect called - already authenticated');
     },

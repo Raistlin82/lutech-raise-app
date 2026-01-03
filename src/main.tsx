@@ -6,7 +6,6 @@ import App from './App.tsx'
 import { SettingsProvider } from './stores/SettingsStore'
 import { CustomerProvider } from './stores/CustomerStore'
 import { OpportunitiesProvider } from './stores/OpportunitiesStore'
-import { MockAuthProvider } from './lib/mockAuth'
 
 // Load runtime configuration from /config.json
 async function loadRuntimeConfig(): Promise<Partial<RuntimeConfig>> {
@@ -46,10 +45,19 @@ async function initApp() {
   const isTestMode = import.meta.env.VITE_TEST_MODE === 'true';
 
   if (isTestMode) {
-    // TEST MODE: Use mock authentication provider for E2E tests
+    // TEST MODE: Use dummy OIDC config for E2E tests (useAuth will return mock data)
     console.log('🧪 Running in TEST MODE with mock authentication');
+
+    // Dummy OIDC configuration (won't be used, but required for AuthProvider)
+    const dummyOidcConfig = {
+      authority: 'https://mock.test',
+      client_id: 'mock-client',
+      redirect_uri: window.location.origin,
+      automaticSilentRenew: false,
+    };
+
     createRoot(rootElement).render(
-      <MockAuthProvider>
+      <AuthProvider {...dummyOidcConfig}>
         <SettingsProvider>
           <CustomerProvider>
             <OpportunitiesProvider>
@@ -57,7 +65,7 @@ async function initApp() {
             </OpportunitiesProvider>
           </CustomerProvider>
         </SettingsProvider>
-      </MockAuthProvider>
+      </AuthProvider>
     );
   } else {
     // PRODUCTION/DEV MODE: Load runtime config, then validate and use AuthProvider

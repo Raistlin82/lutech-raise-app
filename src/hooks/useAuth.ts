@@ -42,7 +42,7 @@ export const useAuth = () => {
             user: {
                 profile: {
                     sub: "test-user-id",
-                    email: "test@example.com",
+                    email: "test.user@raise.test",
                     given_name: "Test",
                     family_name: "User",
                     name: "Test User"
