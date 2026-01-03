@@ -5,7 +5,8 @@
  * a mock authenticated user for E2E testing.
  */
 /* eslint-disable react-refresh/only-export-components */
-import { createContext, useContext, ReactNode } from 'react';
+import { createContext, useContext } from 'react';
+import type { ReactNode } from 'react';
 
 // Mock user for testing
 const MOCK_USER = {
