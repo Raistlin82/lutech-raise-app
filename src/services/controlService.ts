@@ -59,7 +59,17 @@ function controlToInsert(control: ControlConfig): ControlInsert {
  * Get all controls
  */
 export async function getControls(): Promise<ControlConfig[]> {
-    if (isSupabaseConfigured() && supabase) {
+    // Detect test mode - skip Supabase and use localStorage directly
+    const iasAuthority = import.meta.env.VITE_IAS_AUTHORITY || '';
+    const iasClientId = import.meta.env.VITE_IAS_CLIENT_ID || '';
+    const isTestMode =
+        import.meta.env.VITE_TEST_MODE === 'true' ||
+        iasAuthority.includes('mock') ||
+        iasClientId.includes('mock') ||
+        !iasAuthority ||
+        !iasClientId;
+
+    if (!isTestMode && isSupabaseConfigured() && supabase) {
         const { data: controls, error } = await supabase
             .from('controls')
             .select('*')
