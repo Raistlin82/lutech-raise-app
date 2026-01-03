@@ -88,5 +88,13 @@ export default defineConfig({
     url: 'http://localhost:5174',
     reuseExistingServer: false,
     timeout: 120 * 1000, // 2 minutes for server to start
+    // Explicitly set environment variables for the dev server
+    env: {
+      VITE_TEST_MODE: 'true',
+      VITE_SUPABASE_URL: '',
+      VITE_SUPABASE_ANON_KEY: '',
+      VITE_IAS_AUTHORITY: 'https://mock-ias.test',
+      VITE_IAS_CLIENT_ID: 'mock-client-id',
+    },
   },
 });
