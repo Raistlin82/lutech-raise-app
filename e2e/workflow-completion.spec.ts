@@ -18,6 +18,11 @@ async function createTestOpportunity(page: Page, data: {
 }) {
   await page.goto('/opportunities/new');
 
+  // Wait for the app to be fully loaded and form to be visible
+  await page.waitForLoadState('networkidle');
+  await page.waitForSelector('form', { state: 'visible', timeout: 10000 });
+  await page.waitForSelector('[name="title"]', { state: 'visible', timeout: 10000 });
+
   await page.fill('[name="title"]', data.title);
   await page.fill('[name="clientName"]', data.clientName);
   await page.fill('[name="tcv"]', data.tcv.toString());
@@ -31,6 +36,7 @@ test.describe('Complete Workflow Lifecycle', () => {
   test.beforeEach(async ({ page }) => {
     // Clear localStorage before each test
     await page.goto('/');
+    await page.waitForLoadState('networkidle');
     await page.evaluate(() => localStorage.clear());
   });
 
@@ -139,6 +145,8 @@ test.describe('Complete Workflow Lifecycle', () => {
 test.describe('Navigation Tests', () => {
   test('should navigate: Dashboard → New Opportunity → Workflow → Back to Dashboard', async ({ page }) => {
     await page.goto('/');
+    await page.waitForLoadState('networkidle');
+    await page.waitForSelector('a[href="/opportunities/new"]', { state: 'visible', timeout: 10000 });
 
     // From Dashboard to New Opportunity
     await page.click('a[href="/opportunities/new"]');
