@@ -33,8 +33,8 @@ export default defineConfig({
   ],
 
   use: {
-    // Base URL - Kyma production deployment
-    baseURL: process.env.PLAYWRIGHT_BASE_URL || 'https://raise-app.b66a502.kyma.ondemand.com',
+    // Base URL - Kyma production deployment with test mode query param
+    baseURL: process.env.PLAYWRIGHT_BASE_URL || 'https://raise-app.b66a502.kyma.ondemand.com?testMode=true',
 
     // Collect trace on failure
     trace: 'on-first-retry',
