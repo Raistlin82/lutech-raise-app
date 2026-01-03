@@ -4,8 +4,16 @@ import { useEffect } from "react";
 
 // Wrapper hook to handle Test Mode mocking
 export const useAuth = () => {
-    // Check if we are in Test Mode (E2E)
-    const isTestMode = import.meta.env.VITE_TEST_MODE === 'true';
+    // Detect test mode: Check if IAS is mock/missing OR explicit VITE_TEST_MODE
+    // MUST match logic in main.tsx!
+    const iasAuthority = import.meta.env.VITE_IAS_AUTHORITY || '';
+    const iasClientId = import.meta.env.VITE_IAS_CLIENT_ID || '';
+    const isTestMode =
+        import.meta.env.VITE_TEST_MODE === 'true' ||
+        iasAuthority.includes('mock') ||
+        iasClientId.includes('mock') ||
+        !iasAuthority ||
+        !iasClientId;
 
     // Always call the hook (Rules of Hooks requirement)
     const oidcAuth = useOidcAuth();
