@@ -31,3 +31,4 @@ coverage/
 # Environment files
 .env.local
 .env.production.local
+e2e/.auth/

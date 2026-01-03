@@ -42,20 +42,20 @@ async function initApp() {
   const rootElement = document.getElementById('root');
   if (!rootElement) throw new Error("Root element not found");
 
-  // Detect test mode with sessionStorage persistence for E2E tests
-  // If ?testMode=true is in URL, save to sessionStorage so it persists across navigations
+  // Detect test mode with localStorage persistence for E2E tests
+  // If ?testMode=true is in URL, save to localStorage so it persists across browser contexts
   const urlParams = new URLSearchParams(window.location.search);
   const testModeParam = urlParams.get('testMode') === 'true';
   if (testModeParam) {
-    sessionStorage.setItem('testMode', 'true');
+    localStorage.setItem('testMode', 'true');
   }
 
-  // Check all sources: sessionStorage (persisted), query param, env vars, IAS config
-  const testModeSession = sessionStorage.getItem('testMode') === 'true';
+  // Check all sources: localStorage (persisted), query param, env vars, IAS config
+  const testModeStored = localStorage.getItem('testMode') === 'true';
   const iasAuthority = import.meta.env.VITE_IAS_AUTHORITY || '';
   const iasClientId = import.meta.env.VITE_IAS_CLIENT_ID || '';
   const isTestMode =
-    testModeSession ||  // SessionStorage (persisted from query param)
+    testModeStored ||   // localStorage (persisted from query param)
     testModeParam ||    // Query parameter (first load)
     import.meta.env.VITE_TEST_MODE === 'true' ||
     iasAuthority.includes('mock') ||

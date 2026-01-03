@@ -5,12 +5,12 @@ import { useEffect } from "react";
 // Wrapper hook to handle Test Mode mocking
 export const useAuth = () => {
     // Detect test mode - MUST match logic in main.tsx!
-    // Uses sessionStorage for persistence across page navigations (set by main.tsx on first load)
-    const testModeSession = sessionStorage.getItem('testMode') === 'true';
+    // Uses localStorage for persistence across browser contexts (set by main.tsx on first load)
+    const testModeStored = localStorage.getItem('testMode') === 'true';
     const iasAuthority = import.meta.env.VITE_IAS_AUTHORITY || '';
     const iasClientId = import.meta.env.VITE_IAS_CLIENT_ID || '';
     const isTestMode =
-        testModeSession ||  // SessionStorage (persisted from ?testMode=true)
+        testModeStored ||  // localStorage (persisted from ?testMode=true)
         import.meta.env.VITE_TEST_MODE === 'true' ||
         iasAuthority.includes('mock') ||
         iasClientId.includes('mock') ||

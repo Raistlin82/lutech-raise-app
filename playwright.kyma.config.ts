@@ -4,14 +4,17 @@ import { defineConfig, devices } from '@playwright/test';
  * Playwright configuration for E2E tests on Kyma Production
  *
  * These tests run AGAINST the deployed Kyma environment with:
- * - Real IAS authentication
- * - Real Supabase database
- * - Production configuration
+ * - Mock authentication via ?testMode=true (set by global setup)
+ * - localStorage for data storage (not Supabase)
  *
- * IMPORTANT: Test data will be created in production and needs cleanup!
+ * The global setup navigates to /?testMode=true first, which sets
+ * sessionStorage.testMode = 'true'. This persists for all tests.
  */
 export default defineConfig({
   testDir: './e2e',
+
+  // Global setup to initialize test mode before all tests
+  globalSetup: './e2e/global-setup-kyma.ts',
 
   // Run tests in parallel
   fullyParallel: false, // Sequential for production to avoid conflicts
@@ -33,8 +36,11 @@ export default defineConfig({
   ],
 
   use: {
-    // Base URL - Kyma production deployment with test mode query param
-    baseURL: process.env.PLAYWRIGHT_BASE_URL || 'https://raise-app.b66a502.kyma.ondemand.com?testMode=true',
+    // Base URL - Kyma production deployment (testMode set via global setup)
+    baseURL: process.env.PLAYWRIGHT_BASE_URL || 'https://raise-app.b66a502.kyma.ondemand.com',
+
+    // Use storage state from global setup (contains sessionStorage with testMode)
+    storageState: './e2e/.auth/kyma-storage.json',
 
     // Collect trace on failure
     trace: 'on-first-retry',
