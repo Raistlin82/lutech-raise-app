@@ -42,13 +42,21 @@ async function initApp() {
   const rootElement = document.getElementById('root');
   if (!rootElement) throw new Error("Root element not found");
 
-  // Detect test mode: Check if IAS is mock/missing OR explicit VITE_TEST_MODE OR query param
+  // Detect test mode with sessionStorage persistence for E2E tests
+  // If ?testMode=true is in URL, save to sessionStorage so it persists across navigations
   const urlParams = new URLSearchParams(window.location.search);
   const testModeParam = urlParams.get('testMode') === 'true';
+  if (testModeParam) {
+    sessionStorage.setItem('testMode', 'true');
+  }
+
+  // Check all sources: sessionStorage (persisted), query param, env vars, IAS config
+  const testModeSession = sessionStorage.getItem('testMode') === 'true';
   const iasAuthority = import.meta.env.VITE_IAS_AUTHORITY || '';
   const iasClientId = import.meta.env.VITE_IAS_CLIENT_ID || '';
   const isTestMode =
-    testModeParam ||  // Query parameter override for production E2E tests
+    testModeSession ||  // SessionStorage (persisted from query param)
+    testModeParam ||    // Query parameter (first load)
     import.meta.env.VITE_TEST_MODE === 'true' ||
     iasAuthority.includes('mock') ||
     iasClientId.includes('mock') ||

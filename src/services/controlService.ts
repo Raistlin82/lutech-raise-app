@@ -60,12 +60,12 @@ function controlToInsert(control: ControlConfig): ControlInsert {
  */
 export async function getControls(): Promise<ControlConfig[]> {
     // Detect test mode - skip Supabase and use localStorage directly
-    const urlParams = new URLSearchParams(window.location.search);
-    const testModeParam = urlParams.get('testMode') === 'true';
+    // Uses sessionStorage for persistence (set by main.tsx on first load with ?testMode=true)
+    const testModeSession = sessionStorage.getItem('testMode') === 'true';
     const iasAuthority = import.meta.env.VITE_IAS_AUTHORITY || '';
     const iasClientId = import.meta.env.VITE_IAS_CLIENT_ID || '';
     const isTestMode =
-        testModeParam ||  // Query parameter override for production E2E tests
+        testModeSession ||  // SessionStorage (persisted from ?testMode=true)
         import.meta.env.VITE_TEST_MODE === 'true' ||
         iasAuthority.includes('mock') ||
         iasClientId.includes('mock') ||

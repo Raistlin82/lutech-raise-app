@@ -4,14 +4,13 @@ import { useEffect } from "react";
 
 // Wrapper hook to handle Test Mode mocking
 export const useAuth = () => {
-    // Detect test mode: Check if IAS is mock/missing OR explicit VITE_TEST_MODE OR query param
-    // MUST match logic in main.tsx!
-    const urlParams = new URLSearchParams(window.location.search);
-    const testModeParam = urlParams.get('testMode') === 'true';
+    // Detect test mode - MUST match logic in main.tsx!
+    // Uses sessionStorage for persistence across page navigations (set by main.tsx on first load)
+    const testModeSession = sessionStorage.getItem('testMode') === 'true';
     const iasAuthority = import.meta.env.VITE_IAS_AUTHORITY || '';
     const iasClientId = import.meta.env.VITE_IAS_CLIENT_ID || '';
     const isTestMode =
-        testModeParam ||  // Query parameter override for production E2E tests
+        testModeSession ||  // SessionStorage (persisted from ?testMode=true)
         import.meta.env.VITE_TEST_MODE === 'true' ||
         iasAuthority.includes('mock') ||
         iasClientId.includes('mock') ||

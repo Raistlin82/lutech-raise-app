@@ -1,16 +1,10 @@
 name: E2E Tests on Kyma Production
 
 on:
-  workflow_run:
-    workflows: ["Deploy to SAP BTP Kyma"]
-    types: [completed]
-    branches: [main]
-  workflow_dispatch:  # Allow manual trigger
+  workflow_dispatch:  # Manual trigger ONLY - run after verifying deployment is successful
 
 jobs:
   e2e-production:
-    # Only run if deployment was successful
-    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch' }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
 
