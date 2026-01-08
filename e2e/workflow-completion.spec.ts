@@ -8,44 +8,36 @@
  */
 
 import { test, expect, Page } from '@playwright/test';
-import { navigateTo, reloadWithTestMode } from './helpers';
+import { navigateTo, reloadWithTestMode, setupTestEnvironment, createTestCustomer, createOpportunityViaUI } from './helpers';
 
-// Helper to create a test opportunity
+// Shared test customer - created once per test
+let testCustomer: ReturnType<typeof createTestCustomer>;
+
+// Helper to create a test opportunity using the correct form fields
 async function createTestOpportunity(page: Page, data: {
   title: string;
-  clientName: string;
   tcv: number;
-  industry: string;
 }) {
-  await navigateTo(page, '/opportunities/new');
-
-  // Wait for all form fields to be ready before filling
-  await page.waitForSelector('[name="title"]', { state: 'visible', timeout: 10000 });
-  await page.waitForSelector('[name="clientName"]', { state: 'visible', timeout: 5000 });
-  await page.waitForSelector('[name="tcv"]', { state: 'visible', timeout: 5000 });
-  await page.waitForSelector('[name="industry"]', { state: 'visible', timeout: 5000 });
-
-  await page.fill('[name="title"]', data.title);
-  await page.fill('[name="clientName"]', data.clientName);
-  await page.fill('[name="tcv"]', data.tcv.toString());
-  await page.selectOption('[name="industry"]', data.industry);
-
-  // Use Promise.all to trigger navigation and wait for it
-  await Promise.all([
-    page.waitForURL('/opportunities/**/workflow', { timeout: 15000 }),
-    page.click('button[type="submit"]')
-  ]);
+  await createOpportunityViaUI(page, {
+    title: data.title,
+    customerId: testCustomer.id,
+    tcv: data.tcv.toString(),
+  });
 }
 
 test.describe('Complete Workflow Lifecycle', () => {
+
+  test.beforeEach(async ({ page }) => {
+    // Create test customer and setup environment
+    testCustomer = createTestCustomer({ name: 'Workflow Test Client' });
+    await setupTestEnvironment(page, { customers: [testCustomer] });
+  });
 
   test('should complete full workflow: Planning → ATP → ATS → ATC → Won → Handover', async ({ page }) => {
     // Step 1: Create new opportunity
     await createTestOpportunity(page, {
       title: 'E2E Test Opportunity',
-      clientName: 'Test Client Corp',
-      tcv: 1000000,
-      industry: 'Technology'
+      tcv: 1000000
     });
 
     // Step 2: Verify starts in Planning phase
@@ -91,9 +83,7 @@ test.describe('Complete Workflow Lifecycle', () => {
   test('should complete workflow with Lost outcome', async ({ page }) => {
     await createTestOpportunity(page, {
       title: 'Lost Opportunity Test',
-      clientName: 'Test Client',
       tcv: 500000,
-      industry: 'Finance'
     });
 
     // Navigate through phases to ATC
@@ -123,9 +113,7 @@ test.describe('Complete Workflow Lifecycle', () => {
   test('should prevent skipping phases in workflow', async ({ page }) => {
     await createTestOpportunity(page, {
       title: 'Phase Skip Test',
-      clientName: 'Test Client',
       tcv: 750000,
-      industry: 'Manufacturing'
     });
 
     // Verify currently in Planning
@@ -155,9 +143,7 @@ test.describe('Navigation Tests', () => {
     // Create opportunity and navigate to workflow
     await createTestOpportunity(page, {
       title: 'Navigation Test',
-      clientName: 'Nav Test Client',
       tcv: 300000,
-      industry: 'Retail'
     });
     await expect(page).toHaveURL(/\/opportunities\/.+\/workflow/);
 
@@ -173,9 +159,7 @@ test.describe('Navigation Tests', () => {
   test('should navigate between workflow phases using sidebar', async ({ page }) => {
     await createTestOpportunity(page, {
       title: 'Phase Navigation Test',
-      clientName: 'Test',
       tcv: 400000,
-      industry: 'Energy'
     });
 
     // Complete Planning to unlock ATP
@@ -198,9 +182,7 @@ test.describe('Critical User Journeys', () => {
     // Create
     await createTestOpportunity(page, {
       title: 'Full Journey Test',
-      clientName: 'Journey Client',
       tcv: 2000000,
-      industry: 'Healthcare'
     });
 
     // Edit details
@@ -223,9 +205,7 @@ test.describe('Critical User Journeys', () => {
   test('should handle Fast Track workflow (TCV < 250k)', async ({ page }) => {
     await createTestOpportunity(page, {
       title: 'Fast Track Test',
-      clientName: 'Small Deal Client',
       tcv: 200000, // Below 250k threshold
-      industry: 'Technology'
     });
 
     // Verify Fast Track indicator
@@ -248,9 +228,7 @@ test.describe('Error Handling & Edge Cases', () => {
   test('should show error when completing phase with incomplete mandatory checkpoints', async ({ page }) => {
     await createTestOpportunity(page, {
       title: 'Validation Test',
-      clientName: 'Test',
       tcv: 1000000,
-      industry: 'Technology'
     });
 
     // Try to complete without checking mandatory checkpoints
@@ -268,9 +246,7 @@ test.describe('Error Handling & Edge Cases', () => {
   test('should handle browser refresh without losing workflow state', async ({ page }) => {
     await createTestOpportunity(page, {
       title: 'Persistence Test',
-      clientName: 'Test',
       tcv: 600000,
-      industry: 'Telecommunications'
     });
 
     // Complete first phase
@@ -302,9 +278,7 @@ test.describe('Regression Tests for Bug Fixes', () => {
      */
     await createTestOpportunity(page, {
       title: 'Handover Regression Test',
-      clientName: 'Bug Fix Test',
       tcv: 1000000,
-      industry: 'Technology'
     });
 
     // Navigate to Handover (fast-forward through phases)
