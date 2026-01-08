@@ -8,7 +8,7 @@
  */
 
 import { test, expect, Page } from '@playwright/test';
-import { navigateTo, reloadWithTestMode, setupTestEnvironment, createTestCustomer, createOpportunityViaUI } from './helpers';
+import { reloadWithTestMode, setupTestEnvironment, createTestCustomer, createOpportunityViaUI } from './helpers';
 
 // Shared test customer - created once per test
 let testCustomer: ReturnType<typeof createTestCustomer>;
