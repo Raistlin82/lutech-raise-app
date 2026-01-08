@@ -8,6 +8,7 @@
  */
 
 import { test, expect, Page } from '@playwright/test';
+import { navigateTo, reloadWithTestMode } from './helpers';
 
 // Helper to create a test opportunity
 async function createTestOpportunity(page: Page, data: {
@@ -16,29 +17,27 @@ async function createTestOpportunity(page: Page, data: {
   tcv: number;
   industry: string;
 }) {
-  await page.goto('/opportunities/new');
+  await navigateTo(page, '/opportunities/new');
 
-  // Wait for the app to be fully loaded and form to be visible
-  await page.waitForLoadState('networkidle');
-  await page.waitForSelector('form', { state: 'visible', timeout: 10000 });
+  // Wait for all form fields to be ready before filling
   await page.waitForSelector('[name="title"]', { state: 'visible', timeout: 10000 });
+  await page.waitForSelector('[name="clientName"]', { state: 'visible', timeout: 5000 });
+  await page.waitForSelector('[name="tcv"]', { state: 'visible', timeout: 5000 });
+  await page.waitForSelector('[name="industry"]', { state: 'visible', timeout: 5000 });
 
   await page.fill('[name="title"]', data.title);
   await page.fill('[name="clientName"]', data.clientName);
   await page.fill('[name="tcv"]', data.tcv.toString());
   await page.selectOption('[name="industry"]', data.industry);
 
-  await page.click('button[type="submit"]');
-  await page.waitForURL('/opportunities/**/workflow');
+  // Use Promise.all to trigger navigation and wait for it
+  await Promise.all([
+    page.waitForURL('/opportunities/**/workflow', { timeout: 15000 }),
+    page.click('button[type="submit"]')
+  ]);
 }
 
 test.describe('Complete Workflow Lifecycle', () => {
-  test.beforeEach(async ({ page }) => {
-    // Clear localStorage before each test
-    await page.goto('/');
-    await page.waitForLoadState('networkidle');
-    await page.evaluate(() => localStorage.clear());
-  });
 
   test('should complete full workflow: Planning → ATP → ATS → ATC → Won → Handover', async ({ page }) => {
     // Step 1: Create new opportunity
@@ -145,7 +144,7 @@ test.describe('Complete Workflow Lifecycle', () => {
 test.describe('Navigation Tests', () => {
   test('should navigate: Dashboard → New Opportunity → Workflow → Back to Dashboard', async ({ page }) => {
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
+    await waitForAppReady(page);
     await page.waitForSelector('a[href="/opportunities/new"]', { state: 'visible', timeout: 10000 });
 
     // From Dashboard to New Opportunity
@@ -217,7 +216,7 @@ test.describe('Critical User Journeys', () => {
     await page.waitForTimeout(500);
 
     // Verify workflow state persists across page reloads
-    await page.reload();
+    await reloadWithTestMode(page);
     await expect(page.locator('text=ATP Checklist')).toBeVisible();
   });
 
@@ -279,7 +278,7 @@ test.describe('Error Handling & Edge Cases', () => {
     await expect(page.locator('text=ATP Checklist')).toBeVisible();
 
     // Refresh page
-    await page.reload();
+    await reloadWithTestMode(page);
 
     // Verify state persisted
     await expect(page.locator('text=ATP Checklist')).toBeVisible();

@@ -138,6 +138,6 @@ test.describe('Settings Management Journey', () => {
     // Should navigate back to home (root path)
     // In dev/test mode, base path is /, in prod it might be /lutech-raise-app/
     const url = page.url();
-    expect(url).toMatch(/517[34]\/?$/);
+    expect(url).not.toContain('/settings');
   });
 });

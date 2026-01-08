@@ -164,10 +164,9 @@ export const NewOpportunityPage = () => {
             // Calculate the correct RAISE level based on TCV and other factors
             newOpp.raiseLevel = calculateRaiseLevel(newOpp);
 
-            await addOpportunity(newOpp, userEmail);
-            selectOpportunity(newOpp);
-            showToast.success('Opportunità creata con successo!');
-            navigate(`/opportunity/${newOpp.id}`);
+            const createdOpp = await addOpportunity(newOpp, userEmail);
+            selectOpportunity(createdOpp);
+            navigate(`/opportunity/${createdOpp.id}`);
         } catch (error) {
             showToast.error('Errore durante il salvataggio. Controlla i dati inseriti.');
             console.error(error);

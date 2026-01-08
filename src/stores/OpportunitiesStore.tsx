@@ -16,7 +16,7 @@ interface OpportunitiesContextType {
     selectedOpp: Opportunity | null;
     selectOpportunity: (opp: Opportunity | null) => void;
     updateOpportunity: (opp: Opportunity) => Promise<void>;
-    addOpportunity: (opp: Opportunity, userEmail: string) => Promise<void>;
+    addOpportunity: (opp: Opportunity, userEmail: string) => Promise<Opportunity>;
     deleteOpportunity: (id: string) => Promise<void>;
     refreshOpportunities: () => Promise<void>;
 }
@@ -83,7 +83,7 @@ export const OpportunitiesProvider: React.FC<{ children: React.ReactNode }> = ({
         }
     };
 
-    const addOpportunity = async (opp: Opportunity, userEmail: string): Promise<void> => {
+    const addOpportunity = async (opp: Opportunity, userEmail: string): Promise<Opportunity> => {
         const validation = validateOpportunity(opp);
         if (!validation.success) {
             console.error('Invalid opportunity:', validation.error);
@@ -95,6 +95,7 @@ export const OpportunitiesProvider: React.FC<{ children: React.ReactNode }> = ({
             const created = await createOpportunity(opp, userEmail);
             setOpportunities(prev => [...prev, created]);
             showToast.success(`Opportunità "${created.title}" creata con successo!`);
+            return created;
         } catch (error) {
             console.error('Failed to add opportunity:', error);
             showToast.error('Errore nella creazione dell\'opportunità');

@@ -9,14 +9,6 @@ import { createTestCustomer, setupTestEnvironment, fillOpportunityForm, submitOp
  */
 
 test.describe('Opportunity Creation', () => {
-  const testCustomer = createTestCustomer({
-    name: 'Creation Test Client'
-  });
-
-  test.beforeEach(async ({ page }) => {
-    await setupTestEnvironment(page, { customers: [testCustomer] });
-  });
-
   test('should navigate to new opportunity form from opportunities page', async ({ page }) => {
     // Navigate to opportunities list page (not dashboard)
     await navigateTo(page, '/opportunities');
@@ -31,6 +23,9 @@ test.describe('Opportunity Creation', () => {
   });
 
   test('should create new opportunity with all required fields', async ({ page }) => {
+    const testCustomer = createTestCustomer({ name: 'Required Fields Client' });
+    await setupTestEnvironment(page, { customers: [testCustomer] });
+
     await navigateTo(page, '/opportunities/new');
     await waitForAppReady(page);
 
@@ -63,6 +58,9 @@ test.describe('Opportunity Creation', () => {
   });
 
   test('should create opportunity with optional fields populated', async ({ page }) => {
+    const testCustomer = createTestCustomer({ name: 'Optional Fields Client' });
+    await setupTestEnvironment(page, { customers: [testCustomer] });
+
     await navigateTo(page, '/opportunities/new');
     await waitForAppReady(page);
 
@@ -111,6 +109,9 @@ test.describe('Opportunity Creation', () => {
   });
 
   test('should calculate RAISE level correctly for small TCV', async ({ page }) => {
+    const testCustomer = createTestCustomer({ name: 'Small TCV Client' });
+    await setupTestEnvironment(page, { customers: [testCustomer] });
+
     await navigateTo(page, '/opportunities/new');
     await waitForAppReady(page);
 
@@ -129,6 +130,9 @@ test.describe('Opportunity Creation', () => {
   });
 
   test('should handle KCP deviations flag correctly', async ({ page }) => {
+    const testCustomer = createTestCustomer({ name: 'KCP Client' });
+    await setupTestEnvironment(page, { customers: [testCustomer] });
+
     await navigateTo(page, '/opportunities/new');
     await waitForAppReady(page);
 

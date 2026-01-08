@@ -1,4 +1,4 @@
-import { Page } from '@playwright/test';
+import { Page, expect } from '@playwright/test';
 
 /**
  * E2E Test Helpers
@@ -12,9 +12,17 @@ const BASE_PATH = '';
  * Navigate to a path within the application
  */
 export async function navigateTo(page: Page, path: string): Promise<void> {
-  // Ensure trailing slash for root, proper path for others
-  const fullPath = path === '/' ? `${BASE_PATH}/` : `${BASE_PATH}${path}`;
-  await page.goto(fullPath);
+  const rootPath = `${BASE_PATH}/`;
+  
+  // Always go to the root path first to ensure the app initializes correctly
+  // and the test mode is properly activated.
+  await page.goto(rootPath);
+
+  // If the requested path is not the root, then navigate to it.
+  const fullPath = path === '/' ? rootPath : `${BASE_PATH}${path}`;
+  if (fullPath !== rootPath) {
+    await page.goto(fullPath);
+  }
 }
 
 export interface TestCustomer {
@@ -87,11 +95,13 @@ export async function setupTestOpportunities(page: Page, opportunities: TestOppo
 }
 
 /**
- * Clear all localStorage data
+ * Clear application-specific localStorage data
  */
 export async function clearLocalStorage(page: Page): Promise<void> {
   await page.evaluate(() => {
-    localStorage.clear();
+    // Specifically remove app data, leave auth/testMode data intact
+    localStorage.removeItem('raise_customers');
+    localStorage.removeItem('raise_opportunities');
   });
 }
 
@@ -108,6 +118,34 @@ export async function waitForAppReady(page: Page): Promise<void> {
     const spinners = document.querySelectorAll('[class*="animate-spin"]');
     return spinners.length === 0;
   }, { timeout: 5000 }).catch(() => { });
+}
+
+/**
+ * Reload page while preserving test mode
+ * CRITICAL: page.reload() must preserve testMode in localStorage for mock auth to work
+ */
+export async function reloadWithTestMode(page: Page): Promise<void> {
+  // Ensure testMode is set before reload
+  await page.evaluate(() => {
+    if (localStorage.getItem('testMode') !== 'true') {
+      console.warn('[E2E] testMode not found before reload, setting it now');
+      localStorage.setItem('testMode', 'true');
+    }
+  });
+
+  // Reload and wait for network to be idle
+  await page.reload({ waitUntil: 'networkidle' });
+
+  // Ensure testMode persists after reload (defensive)
+  await page.evaluate(() => {
+    if (localStorage.getItem('testMode') !== 'true') {
+      console.error('[E2E] testMode lost after reload! Re-setting...');
+      localStorage.setItem('testMode', 'true');
+    }
+  });
+
+  // Wait for app to be ready
+  await waitForAppReady(page);
 }
 
 /**
@@ -135,9 +173,8 @@ export async function setupTestEnvironment(
     await setupTestOpportunities(page, options.opportunities);
   }
 
-  // Reload to pick up new data
-  await page.reload();
-  await waitForAppReady(page);
+  // Reload to pick up new data (use reloadWithTestMode to preserve test mode)
+  await reloadWithTestMode(page);
 }
 
 /**
@@ -164,29 +201,15 @@ export async function fillOpportunityForm(
   const customerSelect = page.locator('select').first();
   await customerSelect.waitFor({ state: 'visible', timeout: 10000 });
 
-  // Wait for customer options to load (async loading)
-  await page.waitForTimeout(1000);
+  // ROBUST FIX: Wait for the specific option to be populated from localStorage
+  const targetOption = customerSelect.locator(`option[value="${data.customerId}"]`);
+  await targetOption.waitFor({ state: 'attached', timeout: 10000 });
 
-  // Try to find the customer option, if not found by ID, select by index
-  const options = await customerSelect.locator('option').all();
-  let customerFound = false;
+  // Now that the option is guaranteed to exist, select it
+  await customerSelect.selectOption(data.customerId);
 
-  for (const option of options) {
-    const value = await option.getAttribute('value');
-    if (value === data.customerId) {
-      await customerSelect.selectOption(data.customerId);
-      customerFound = true;
-      break;
-    }
-  }
-
-  // If customer not found by ID, select first non-empty option
-  if (!customerFound && options.length > 1) {
-    const firstValue = await options[1].getAttribute('value');
-    if (firstValue) {
-      await customerSelect.selectOption(firstValue);
-    }
-  }
+  // CRITICAL FIX: Click away to trigger form state update after selection
+  await page.locator('#title').click();
 
   // Fill TCV
   await page.waitForSelector('#tcv', { state: 'visible', timeout: 5000 });
@@ -211,7 +234,8 @@ export async function fillOpportunityForm(
 }
 
 /**
- * Submit the opportunity form
+ * Submit the opportunity form and wait for the API response.
+ * This is more robust than waiting for a URL change.
  */
 export async function submitOpportunityForm(page: Page): Promise<void> {
   await page.click('button:has-text("Crea Opportunità")');
@@ -229,18 +253,14 @@ export async function createOpportunityViaUI(
   }
 ): Promise<void> {
   await navigateTo(page, '/opportunities/new');
-  // Wait for page to load completely
   await page.waitForLoadState('networkidle');
   await waitForAppReady(page);
-
-  // Wait extra time for customers to load from localStorage
-  await page.waitForTimeout(1000);
 
   // Fill and submit form
   await fillOpportunityForm(page, data);
   await submitOpportunityForm(page);
 
-  // Wait for navigation with retry
-  await page.waitForURL(/\/opportunity\/OPP-/, { timeout: 20000 });
+  // After submit, the app should navigate. Wait for the new page to be ready.
+  await page.waitForURL(/\/opportunity\/OPP-/, { timeout: 10000 });
   await waitForAppReady(page);
 }

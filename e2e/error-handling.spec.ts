@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { createTestCustomer, setupTestEnvironment, createOpportunityViaUI, waitForAppReady, navigateTo } from './helpers';
+import { createTestCustomer, setupTestEnvironment, createOpportunityViaUI, waitForAppReady, navigateTo, reloadWithTestMode } from './helpers';
 
 /**
  * E2E Tests: Error Handling Journey
@@ -9,15 +9,10 @@ import { createTestCustomer, setupTestEnvironment, createOpportunityViaUI, waitF
  */
 
 test.describe('Error Handling Journey', () => {
-  const testCustomer = createTestCustomer({
-    name: 'Error Test Client'
-  });
-
-  test.beforeEach(async ({ page }) => {
-    await setupTestEnvironment(page, { customers: [testCustomer] });
-  });
-
   test('should handle navigation to non-existent opportunity gracefully', async ({ page }) => {
+    await navigateTo(page, '/');
+    await waitForAppReady(page);
+
     // Try to navigate to a non-existent opportunity
     await navigateTo(page, '/opportunity/FAKE-OPP-9999');
     await waitForAppReady(page);
@@ -32,12 +27,11 @@ test.describe('Error Handling Journey', () => {
 
     // Corrupt localStorage with invalid JSON
     await page.evaluate(() => {
-      localStorage.setItem('raise-opportunities', '{invalid json}');
+      localStorage.setItem('raise_opportunities', '{invalid json}');
     });
 
-    // Reload page
-    await page.reload();
-    await waitForAppReady(page);
+    // Reload page (use reloadWithTestMode to preserve test mode)
+    await reloadWithTestMode(page);
 
     // Application should still load
     await expect(page.locator('body')).toBeVisible();
@@ -47,6 +41,9 @@ test.describe('Error Handling Journey', () => {
   });
 
   test('should maintain app stability when creating multiple opportunities', async ({ page }) => {
+    const testCustomer = createTestCustomer({ name: 'Multi-Opp Client' });
+    await setupTestEnvironment(page, { customers: [testCustomer] });
+
     // Create first opportunity
     await createOpportunityViaUI(page, {
       title: 'Opportunity 1',
@@ -86,6 +83,7 @@ test.describe('Error Handling Journey', () => {
   });
 
   test('should handle empty state gracefully', async ({ page }) => {
+    await setupTestEnvironment(page, { customers: [], opportunities: [] });
     await navigateTo(page, '/');
     await waitForAppReady(page);
 
@@ -95,6 +93,9 @@ test.describe('Error Handling Journey', () => {
   });
 
   test('should validate form inputs and accept valid values', async ({ page }) => {
+    const testCustomer = createTestCustomer({ name: 'Validation Client' });
+    await setupTestEnvironment(page, { customers: [testCustomer] });
+
     await navigateTo(page, '/opportunities/new');
     await waitForAppReady(page);
 
@@ -122,6 +123,9 @@ test.describe('Error Handling Journey', () => {
   });
 
   test('should handle browser back button correctly', async ({ page }) => {
+    const testCustomer = createTestCustomer({ name: 'Back Button Client' });
+    await setupTestEnvironment(page, { customers: [testCustomer] });
+
     // Create an opportunity
     await createOpportunityViaUI(page, {
       title: 'Back Button Test',
@@ -138,6 +142,9 @@ test.describe('Error Handling Journey', () => {
   });
 
   test('should recover from temporary network issues', async ({ page }) => {
+    const testCustomer = createTestCustomer({ name: 'Network Issue Client' });
+    await setupTestEnvironment(page, { customers: [testCustomer] });
+
     // Create an opportunity (all client-side, no network needed)
     await createOpportunityViaUI(page, {
       title: 'Offline Test',
@@ -150,6 +157,9 @@ test.describe('Error Handling Journey', () => {
   });
 
   test('should maintain data integrity across page reloads', async ({ page }) => {
+    const testCustomer = createTestCustomer({ name: 'Persistence Client' });
+    await setupTestEnvironment(page, { customers: [testCustomer] });
+
     // Create opportunity
     await createOpportunityViaUI(page, {
       title: 'Persistence Test',
@@ -157,9 +167,8 @@ test.describe('Error Handling Journey', () => {
       tcv: '600000',
     });
 
-    // Reload the page
-    await page.reload();
-    await waitForAppReady(page);
+    // Reload the page (use reloadWithTestMode to preserve test mode)
+    await reloadWithTestMode(page);
 
     // Data should persist (use first() as there may be duplicates)
     await expect(page.locator('text=Persistence Test').first()).toBeVisible();

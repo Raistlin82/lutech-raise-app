@@ -2,15 +2,6 @@ import { test, expect } from '@playwright/test';
 import { navigateTo, waitForAppReady, setupTestEnvironment, createOpportunityViaUI, createTestCustomer } from './helpers';
 
 test.describe('Navigation Tests', () => {
-  const testCustomer = createTestCustomer({
-    id: 'nav-test-customer',
-    name: 'Navigation Test Customer',
-  });
-
-  test.beforeEach(async ({ page }) => {
-    await setupTestEnvironment(page, { customers: [testCustomer] });
-  });
-
   test.describe('Sidebar Navigation', () => {
     test('should navigate from Dashboard to Opportunities page', async ({ page }) => {
       await navigateTo(page, '/');
@@ -48,6 +39,12 @@ test.describe('Navigation Tests', () => {
 
   test.describe('Opportunity Workflow Navigation', () => {
     test('should navigate from opportunity workflow to Settings via sidebar', async ({ page }) => {
+      const testCustomer = createTestCustomer({
+        id: 'nav-test-customer',
+        name: 'Navigation Test Customer',
+      });
+      await setupTestEnvironment(page, { customers: [testCustomer] });
+
       // Create an opportunity
       await createOpportunityViaUI(page, {
         title: 'Settings Nav Test Opportunity',

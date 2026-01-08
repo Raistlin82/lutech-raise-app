@@ -32,3 +32,5 @@ coverage/
 .env.local
 .env.production.local
 e2e/.auth/
+playwright-report-kyma/
+test-results-kyma.json
