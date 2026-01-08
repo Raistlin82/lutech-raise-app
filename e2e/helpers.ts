@@ -121,30 +121,37 @@ export async function waitForAppReady(page: Page): Promise<void> {
 }
 
 /**
- * Reload page while preserving test mode
- * CRITICAL: page.reload() must preserve testMode in localStorage for mock auth to work
+ * Reload page while preserving ALL localStorage data
+ * CRITICAL: Playwright storageState resets localStorage on reload, so we must save and restore ALL data
+ * This includes testMode, raise_customers, raise_opportunities, etc.
  */
 export async function reloadWithTestMode(page: Page): Promise<void> {
-  // Ensure testMode is set before reload
-  await page.evaluate(() => {
-    if (localStorage.getItem('testMode') !== 'true') {
-      console.warn('[E2E] testMode not found before reload, setting it now');
-      localStorage.setItem('testMode', 'true');
+  // Save ALL localStorage data before reload (storageState will reset it)
+  const localStorageData = await page.evaluate(() => {
+    const data: Record<string, string> = {};
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key) {
+        data[key] = localStorage.getItem(key) || '';
+      }
     }
+    console.log('[E2E] Saving localStorage before reload:', Object.keys(data));
+    return data;
   });
 
-  // Reload and wait for network to be idle
-  await page.reload({ waitUntil: 'networkidle' });
+  // Reload with 'domcontentloaded' to restore data BEFORE React mounts
+  await page.reload({ waitUntil: 'domcontentloaded' });
 
-  // Ensure testMode persists after reload (defensive)
-  await page.evaluate(() => {
-    if (localStorage.getItem('testMode') !== 'true') {
-      console.error('[E2E] testMode lost after reload! Re-setting...');
-      localStorage.setItem('testMode', 'true');
+  // IMMEDIATELY restore ALL localStorage data (before React useEffects run)
+  await page.evaluate((data) => {
+    console.log('[E2E] Restoring localStorage after reload:', Object.keys(data));
+    for (const [key, value] of Object.entries(data)) {
+      localStorage.setItem(key, value);
     }
-  });
+  }, localStorageData);
 
-  // Wait for app to be ready
+  // Now wait for network to be idle and app to be fully ready
+  await page.waitForLoadState('networkidle');
   await waitForAppReady(page);
 }
 
