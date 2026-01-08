@@ -26,8 +26,23 @@ const OpportunitiesContext = createContext<OpportunitiesContextType | undefined>
 // No initial demo data - users will create their own opportunities
 const INITIAL_OPPORTUNITIES: Opportunity[] = [];
 
+// Helper to read opportunities from localStorage synchronously (for test mode)
+function getInitialOpportunities(): Opportunity[] {
+    if (typeof window !== 'undefined' && localStorage.getItem('testMode') === 'true') {
+        const stored = localStorage.getItem('raise_opportunities');
+        if (stored) {
+            try {
+                return JSON.parse(stored) as Opportunity[];
+            } catch (e) {
+                console.error('[OpportunitiesStore] Failed to parse opportunities from localStorage', e);
+            }
+        }
+    }
+    return INITIAL_OPPORTUNITIES;
+}
+
 export const OpportunitiesProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    const [opportunities, setOpportunities] = useState<Opportunity[]>(INITIAL_OPPORTUNITIES);
+    const [opportunities, setOpportunities] = useState<Opportunity[]>(getInitialOpportunities);
     const [loading, setLoading] = useState(true);
     const [selectedOpp, setSelectedOpp] = useState<Opportunity | null>(null);
 

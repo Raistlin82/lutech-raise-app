@@ -22,8 +22,23 @@ const CustomerContext = createContext<CustomerContextType | undefined>(undefined
 
 const INITIAL_CUSTOMERS: Customer[] = [];
 
+// Helper to read customers from localStorage synchronously (for test mode)
+function getInitialCustomers(): Customer[] {
+  if (typeof window !== 'undefined' && localStorage.getItem('testMode') === 'true') {
+    const stored = localStorage.getItem('raise_customers');
+    if (stored) {
+      try {
+        return JSON.parse(stored) as Customer[];
+      } catch (e) {
+        console.error('[CustomerStore] Failed to parse customers from localStorage', e);
+      }
+    }
+  }
+  return INITIAL_CUSTOMERS;
+}
+
 export const CustomerProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [customers, setCustomers] = useState<Customer[]>(INITIAL_CUSTOMERS);
+  const [customers, setCustomers] = useState<Customer[]>(getInitialCustomers);
   const [loading, setLoading] = useState(true);
 
   // Load customers from Supabase API on mount
