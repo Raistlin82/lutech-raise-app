@@ -60,6 +60,12 @@ const AllProviders: React.FC<{ children: React.ReactNode }> = ({ children }) => 
 describe('NewOpportunityPage', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+
+    // Configure mockAddOpportunity to return the created opportunity with id
+    mockAddOpportunity.mockImplementation(async (opp) => {
+      return { ...opp, id: opp.id || 'OPP-2024-1234' };
+    });
+
     (useOpportunities as ReturnType<typeof vi.fn>).mockReturnValue({
       opportunities: [],
       addOpportunity: mockAddOpportunity,
