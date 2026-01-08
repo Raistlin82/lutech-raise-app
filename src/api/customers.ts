@@ -58,6 +58,15 @@ export async function fetchCustomers(): Promise<Customer[]> {
  * Create new customer (any user can create)
  */
 export async function createCustomer(customer: Customer): Promise<Customer> {
+  // E2E TEST MODE: Save to localStorage instead of Supabase
+  if (typeof window !== 'undefined' && localStorage.getItem('testMode') === 'true') {
+    const stored = localStorage.getItem('raise_customers');
+    const customers = stored ? JSON.parse(stored) as Customer[] : [];
+    customers.push(customer);
+    localStorage.setItem('raise_customers', JSON.stringify(customers));
+    return customer;
+  }
+
   const supabase = getSupabaseClient();
 
   if (!supabase) {
@@ -92,6 +101,19 @@ export async function updateCustomer(
   id: string,
   updates: Partial<Customer>
 ): Promise<Customer> {
+  // E2E TEST MODE: Update in localStorage instead of Supabase
+  if (typeof window !== 'undefined' && localStorage.getItem('testMode') === 'true') {
+    const stored = localStorage.getItem('raise_customers');
+    const customers = stored ? JSON.parse(stored) as Customer[] : [];
+    const index = customers.findIndex(c => c.id === id);
+    if (index !== -1) {
+      customers[index] = { ...customers[index], ...updates };
+      localStorage.setItem('raise_customers', JSON.stringify(customers));
+      return customers[index];
+    }
+    throw new Error(`Customer ${id} not found in localStorage`);
+  }
+
   const supabase = getSupabaseClient();
 
   if (!supabase) {
@@ -124,6 +146,15 @@ export async function updateCustomer(
  * Delete customer (with referential integrity check)
  */
 export async function deleteCustomer(id: string): Promise<void> {
+  // E2E TEST MODE: Delete from localStorage instead of Supabase
+  if (typeof window !== 'undefined' && localStorage.getItem('testMode') === 'true') {
+    const stored = localStorage.getItem('raise_customers');
+    const customers = stored ? JSON.parse(stored) as Customer[] : [];
+    const filtered = customers.filter(c => c.id !== id);
+    localStorage.setItem('raise_customers', JSON.stringify(filtered));
+    return;
+  }
+
   const supabase = getSupabaseClient();
 
   if (!supabase) {

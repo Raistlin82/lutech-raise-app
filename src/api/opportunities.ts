@@ -109,6 +109,15 @@ export async function createOpportunity(
   opportunity: Opportunity,
   userEmail: string
 ): Promise<Opportunity> {
+  // E2E TEST MODE: Save to localStorage instead of Supabase
+  if (typeof window !== 'undefined' && localStorage.getItem('testMode') === 'true') {
+    const stored = localStorage.getItem('raise_opportunities');
+    const opportunities = stored ? JSON.parse(stored) as Opportunity[] : [];
+    opportunities.push(opportunity);
+    localStorage.setItem('raise_opportunities', JSON.stringify(opportunities));
+    return opportunity;
+  }
+
   const supabase = getSupabaseClient();
 
   if (!supabase) {
@@ -140,6 +149,19 @@ export async function updateOpportunity(
   id: string,
   updates: Partial<Opportunity>
 ): Promise<Opportunity> {
+  // E2E TEST MODE: Update in localStorage instead of Supabase
+  if (typeof window !== 'undefined' && localStorage.getItem('testMode') === 'true') {
+    const stored = localStorage.getItem('raise_opportunities');
+    const opportunities = stored ? JSON.parse(stored) as Opportunity[] : [];
+    const index = opportunities.findIndex(o => o.id === id);
+    if (index !== -1) {
+      opportunities[index] = { ...opportunities[index], ...updates };
+      localStorage.setItem('raise_opportunities', JSON.stringify(opportunities));
+      return opportunities[index];
+    }
+    throw new Error(`Opportunity ${id} not found in localStorage`);
+  }
+
   const supabase = getSupabaseClient();
 
   if (!supabase) {
@@ -183,6 +205,15 @@ export async function updateOpportunity(
  * RLS ensures user can only delete their own opportunities
  */
 export async function deleteOpportunity(id: string): Promise<void> {
+  // E2E TEST MODE: Delete from localStorage instead of Supabase
+  if (typeof window !== 'undefined' && localStorage.getItem('testMode') === 'true') {
+    const stored = localStorage.getItem('raise_opportunities');
+    const opportunities = stored ? JSON.parse(stored) as Opportunity[] : [];
+    const filtered = opportunities.filter(o => o.id !== id);
+    localStorage.setItem('raise_opportunities', JSON.stringify(filtered));
+    return;
+  }
+
   const supabase = getSupabaseClient();
 
   if (!supabase) {
