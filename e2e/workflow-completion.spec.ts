@@ -33,19 +33,27 @@ test.beforeEach(async ({ page }) => {
   testCustomer = createTestCustomer({ name: 'Workflow Test Client' });
   await setupTestEnvironment(page, { customers: [testCustomer] });
 
-  // CRITICAL FIX: Make all controls non-mandatory so phase completion buttons are enabled
+  // CRITICAL FIX: After setup, make all controls non-mandatory so phase completion buttons are enabled
+  // This must happen AFTER setupTestEnvironment because that function reloads the page
   await page.evaluate(() => {
     const controlsStr = localStorage.getItem('raise_controls');
     if (controlsStr) {
-      const controls = JSON.parse(controlsStr);
-      // Set isMandatory=false for all controls
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const modifiedControls = controls.map((c: any) => ({ ...c, isMandatory: false }));
-      localStorage.setItem('raise_controls', JSON.stringify(modifiedControls));
+      try {
+        const controls = JSON.parse(controlsStr);
+        // Set isMandatory=false for ALL controls
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const modifiedControls = controls.map((c: any) => ({ ...c, isMandatory: false }));
+        localStorage.setItem('raise_controls', JSON.stringify(modifiedControls));
+        console.log('[TEST] Modified', modifiedControls.length, 'controls to be non-mandatory');
+      } catch (e) {
+        console.error('[TEST] Failed to modify controls:', e);
+      }
+    } else {
+      console.log('[TEST] No controls found in localStorage');
     }
   });
 
-  // Reload to apply control changes
+  // Reload to pick up the modified controls
   await page.reload();
   await waitForAppReady(page);
 });
