@@ -8,29 +8,48 @@
  */
 
 import { test, expect, Page } from '@playwright/test';
-import { reloadWithTestMode, setupTestEnvironment, createTestCustomer, createTestOpportunityWithCompletedCheckpoints, setupTestOpportunities, waitForAppReady } from './helpers';
+import { setupTestEnvironment, createTestCustomer, createOpportunityViaUI, waitForAppReady } from './helpers';
 
-// Shared test customer and opportunity - created once per test
+// Shared test customer - created once per test
 let testCustomer: ReturnType<typeof createTestCustomer>;
-let testOpportunity: ReturnType<typeof createTestOpportunityWithCompletedCheckpoints>;
 
-// Helper to create a test opportunity with completed checkpoints
-// This creates the opportunity directly in localStorage and navigates to its workflow page
+// Helper to create a test opportunity using the UI (slow but reliable)
+// After creation, manually complete all checkpoints via page evaluation
 async function createTestOpportunity(page: Page, data: {
   title: string;
   tcv: number;
 }) {
-  // Create opportunity with all checkpoints completed
-  testOpportunity = createTestOpportunityWithCompletedCheckpoints(testCustomer.id, {
+  // Create via UI
+  await createOpportunityViaUI(page, {
     title: data.title,
-    tcv: data.tcv,
+    customerId: testCustomer.id,
+    tcv: data.tcv.toString(),
   });
 
-  // Setup in localStorage
-  await setupTestOpportunities(page, [testOpportunity]);
+  // Now we're on the workflow page - complete all checkpoints in localStorage
+  await page.evaluate(() => {
+    const opportunities = JSON.parse(localStorage.getItem('raise_opportunities') || '[]');
+    if (opportunities.length > 0) {
+      // Complete ALL checkpoints for the opportunity we just created
+      const lastOpp = opportunities[opportunities.length - 1];
+      lastOpp.checkpoints = lastOpp.checkpoints || {};
+      // Set all possible checkpoint keys to true
+      const allCheckpointKeys = [
+        'planning-checkpoint-1', 'planning-checkpoint-2', 'planning-checkpoint-3',
+        'atp-checkpoint-1', 'atp-checkpoint-2',
+        'ats-checkpoint-1', 'ats-checkpoint-2',
+        'atc-checkpoint-1', 'atc-checkpoint-2',
+        'handover-checkpoint-1', 'handover-checkpoint-2',
+      ];
+      allCheckpointKeys.forEach(key => {
+        lastOpp.checkpoints[key] = true;
+      });
+      localStorage.setItem('raise_opportunities', JSON.stringify(opportunities));
+    }
+  });
 
-  // Navigate directly to workflow page
-  await page.goto(`/opportunity/${testOpportunity.id}/workflow`);
+  // Reload to pick up the updated checkpoints
+  await page.reload();
   await waitForAppReady(page);
 }
 
