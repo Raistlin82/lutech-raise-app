@@ -13,44 +13,18 @@ import { setupTestEnvironment, createTestCustomer, createOpportunityViaUI, waitF
 // Shared test customer - created once per test
 let testCustomer: ReturnType<typeof createTestCustomer>;
 
-// Helper to create a test opportunity using the UI (slow but reliable)
-// After creation, manually complete all checkpoints via page evaluation
+// Helper to create a test opportunity using the UI
 async function createTestOpportunity(page: Page, data: {
   title: string;
   tcv: number;
 }) {
-  // Create via UI
+  // Create via UI - since all controls are now non-mandatory (set in beforeEach),
+  // the phase completion buttons will be enabled automatically
   await createOpportunityViaUI(page, {
     title: data.title,
     customerId: testCustomer.id,
     tcv: data.tcv.toString(),
   });
-
-  // Now we're on the workflow page - complete all checkpoints in localStorage
-  await page.evaluate(() => {
-    const opportunities = JSON.parse(localStorage.getItem('raise_opportunities') || '[]');
-    if (opportunities.length > 0) {
-      // Complete ALL checkpoints for the opportunity we just created
-      const lastOpp = opportunities[opportunities.length - 1];
-      lastOpp.checkpoints = lastOpp.checkpoints || {};
-      // Set all possible checkpoint keys to true
-      const allCheckpointKeys = [
-        'planning-checkpoint-1', 'planning-checkpoint-2', 'planning-checkpoint-3',
-        'atp-checkpoint-1', 'atp-checkpoint-2',
-        'ats-checkpoint-1', 'ats-checkpoint-2',
-        'atc-checkpoint-1', 'atc-checkpoint-2',
-        'handover-checkpoint-1', 'handover-checkpoint-2',
-      ];
-      allCheckpointKeys.forEach(key => {
-        lastOpp.checkpoints[key] = true;
-      });
-      localStorage.setItem('raise_opportunities', JSON.stringify(opportunities));
-    }
-  });
-
-  // Reload to pick up the updated checkpoints
-  await page.reload();
-  await waitForAppReady(page);
 }
 
 // Global beforeEach - applies to ALL tests in this file
@@ -58,6 +32,22 @@ test.beforeEach(async ({ page }) => {
   // Create test customer and setup environment
   testCustomer = createTestCustomer({ name: 'Workflow Test Client' });
   await setupTestEnvironment(page, { customers: [testCustomer] });
+
+  // CRITICAL FIX: Make all controls non-mandatory so phase completion buttons are enabled
+  await page.evaluate(() => {
+    const controlsStr = localStorage.getItem('raise_controls');
+    if (controlsStr) {
+      const controls = JSON.parse(controlsStr);
+      // Set isMandatory=false for all controls
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const modifiedControls = controls.map((c: any) => ({ ...c, isMandatory: false }));
+      localStorage.setItem('raise_controls', JSON.stringify(modifiedControls));
+    }
+  });
+
+  // Reload to apply control changes
+  await page.reload();
+  await waitForAppReady(page);
 });
 
 test.describe('Complete Workflow Lifecycle', () => {
