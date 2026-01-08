@@ -65,6 +65,23 @@ function mapToInsert(opp: Opportunity, userEmail: string): OpportunityInsert {
  * RLS automatically filters by created_by_email
  */
 export async function fetchOpportunities(): Promise<Opportunity[]> {
+  // E2E TEST MODE: Read from localStorage instead of Supabase
+  if (typeof window !== 'undefined' && localStorage.getItem('testMode') === 'true') {
+    const stored = localStorage.getItem('raise_opportunities');
+    if (stored) {
+      try {
+        const opportunities = JSON.parse(stored) as Opportunity[];
+        console.log('[TEST MODE] Loaded opportunities from localStorage:', opportunities.length);
+        return opportunities;
+      } catch (e) {
+        console.error('[TEST MODE] Failed to parse opportunities from localStorage', e);
+      }
+    }
+    console.log('[TEST MODE] No opportunities in localStorage, returning empty array');
+    return [];
+  }
+
+  // PRODUCTION: Read from Supabase
   const supabase = getSupabaseClient();
 
   if (!supabase) {

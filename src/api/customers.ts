@@ -19,6 +19,23 @@ function mapToCustomer(row: CustomerRow): Customer {
  * Fetch all customers (shared across all users)
  */
 export async function fetchCustomers(): Promise<Customer[]> {
+  // E2E TEST MODE: Read from localStorage instead of Supabase
+  if (typeof window !== 'undefined' && localStorage.getItem('testMode') === 'true') {
+    const stored = localStorage.getItem('raise_customers');
+    if (stored) {
+      try {
+        const customers = JSON.parse(stored) as Customer[];
+        console.log('[TEST MODE] Loaded customers from localStorage:', customers.length);
+        return customers;
+      } catch (e) {
+        console.error('[TEST MODE] Failed to parse customers from localStorage', e);
+      }
+    }
+    console.log('[TEST MODE] No customers in localStorage, returning empty array');
+    return [];
+  }
+
+  // PRODUCTION: Read from Supabase
   const supabase = getSupabaseClient();
 
   if (!supabase) {
