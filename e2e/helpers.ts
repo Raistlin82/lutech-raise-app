@@ -77,6 +77,56 @@ export function createTestCustomer(overrides: Partial<TestCustomer> = {}): TestC
 }
 
 /**
+ * Create a test opportunity with all mandatory checkpoints completed
+ * This allows workflow phase completion tests to work properly
+ */
+export function createTestOpportunityWithCompletedCheckpoints(
+  customerId: string,
+  overrides: Partial<TestOpportunity> = {}
+): TestOpportunity {
+  // Complete all mandatory checkpoints so phase completion buttons are enabled
+  const allCheckpointsCompleted: Record<string, boolean> = {
+    // Planning checkpoints
+    'planning-checkpoint-1': true,
+    'planning-checkpoint-2': true,
+    'planning-checkpoint-3': true,
+    // ATP checkpoints
+    'atp-checkpoint-1': true,
+    'atp-checkpoint-2': true,
+    // ATS checkpoints
+    'ats-checkpoint-1': true,
+    'ats-checkpoint-2': true,
+    // ATC checkpoints
+    'atc-checkpoint-1': true,
+    'atc-checkpoint-2': true,
+    // Handover checkpoints
+    'handover-checkpoint-1': true,
+    'handover-checkpoint-2': true,
+  };
+
+  return {
+    id: `OPP-${Date.now()}`,
+    title: 'Test Opportunity',
+    customerId,
+    tcv: 1000000,
+    raiseTcv: 500000,
+    currentPhase: 'Planning',
+    hasKcpDeviations: false,
+    isFastTrack: false,
+    isRti: false,
+    isMandataria: false,
+    isPublicSector: false,
+    raiseLevel: 'L3',
+    deviations: [],
+    checkpoints: allCheckpointsCompleted,
+    marginPercent: 15,
+    cashFlowNeutral: true,
+    isNewCustomer: false,
+    ...overrides,
+  };
+}
+
+/**
  * Set up test customers in localStorage
  */
 export async function setupTestCustomers(page: Page, customers: TestCustomer[]): Promise<void> {

@@ -8,21 +8,30 @@
  */
 
 import { test, expect, Page } from '@playwright/test';
-import { reloadWithTestMode, setupTestEnvironment, createTestCustomer, createOpportunityViaUI, waitForAppReady } from './helpers';
+import { reloadWithTestMode, setupTestEnvironment, createTestCustomer, createTestOpportunityWithCompletedCheckpoints, setupTestOpportunities, waitForAppReady } from './helpers';
 
-// Shared test customer - created once per test
+// Shared test customer and opportunity - created once per test
 let testCustomer: ReturnType<typeof createTestCustomer>;
+let testOpportunity: ReturnType<typeof createTestOpportunityWithCompletedCheckpoints>;
 
-// Helper to create a test opportunity using the correct form fields
+// Helper to create a test opportunity with completed checkpoints
+// This creates the opportunity directly in localStorage and navigates to its workflow page
 async function createTestOpportunity(page: Page, data: {
   title: string;
   tcv: number;
 }) {
-  await createOpportunityViaUI(page, {
+  // Create opportunity with all checkpoints completed
+  testOpportunity = createTestOpportunityWithCompletedCheckpoints(testCustomer.id, {
     title: data.title,
-    customerId: testCustomer.id,
-    tcv: data.tcv.toString(),
+    tcv: data.tcv,
   });
+
+  // Setup in localStorage
+  await setupTestOpportunities(page, [testOpportunity]);
+
+  // Navigate directly to workflow page
+  await page.goto(`/opportunity/${testOpportunity.id}/workflow`);
+  await waitForAppReady(page);
 }
 
 // Global beforeEach - applies to ALL tests in this file
