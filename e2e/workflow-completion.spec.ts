@@ -8,7 +8,7 @@
  */
 
 import { test, expect, Page } from '@playwright/test';
-import { reloadWithTestMode, setupTestEnvironment, createTestCustomer, createOpportunityViaUI } from './helpers';
+import { reloadWithTestMode, setupTestEnvironment, createTestCustomer, createOpportunityViaUI, waitForAppReady } from './helpers';
 
 // Shared test customer - created once per test
 let testCustomer: ReturnType<typeof createTestCustomer>;
@@ -25,13 +25,14 @@ async function createTestOpportunity(page: Page, data: {
   });
 }
 
-test.describe('Complete Workflow Lifecycle', () => {
+// Global beforeEach - applies to ALL tests in this file
+test.beforeEach(async ({ page }) => {
+  // Create test customer and setup environment
+  testCustomer = createTestCustomer({ name: 'Workflow Test Client' });
+  await setupTestEnvironment(page, { customers: [testCustomer] });
+});
 
-  test.beforeEach(async ({ page }) => {
-    // Create test customer and setup environment
-    testCustomer = createTestCustomer({ name: 'Workflow Test Client' });
-    await setupTestEnvironment(page, { customers: [testCustomer] });
-  });
+test.describe('Complete Workflow Lifecycle', () => {
 
   test('should complete full workflow: Planning → ATP → ATS → ATC → Won → Handover', async ({ page }) => {
     // Step 1: Create new opportunity
