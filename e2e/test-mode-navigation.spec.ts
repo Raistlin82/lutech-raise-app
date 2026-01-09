@@ -1,9 +1,10 @@
 import { test, expect } from '@playwright/test';
+import { setupTestEnvironment } from './helpers';
 
 test.describe('Propagazione della Modalità Test', () => {
   test('dovrebbe mantenere lo stato di autenticazione durante la navigazione', async ({ page }) => {
-    // Il global setup ci ha già messi in modalità test. Iniziamo dalla root.
-    await page.goto('/');
+    // Set up test environment which sets testMode in localStorage via addInitScript
+    await setupTestEnvironment(page, {});
 
     // Definiamo il locator per il bottone di logout per riutilizzarlo.
     const logoutButton = page.getByRole('button', { name: 'Esci' });

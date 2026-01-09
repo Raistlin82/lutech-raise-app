@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { navigateTo, waitForAppReady, setupTestEnvironment, createOpportunityViaUI, createTestCustomer } from './helpers';
+import { navigateTo, waitForAppReady, setupTestEnvironment, createTestCustomer, createTestOpportunityWithCompletedCheckpoints } from './helpers';
 
 test.describe('Navigation Tests', () => {
   test.describe('Sidebar Navigation', () => {
@@ -39,22 +39,26 @@ test.describe('Navigation Tests', () => {
 
   test.describe('Opportunity Workflow Navigation', () => {
     test('should navigate from opportunity workflow to Settings via sidebar', async ({ page }) => {
-      const testCustomer = createTestCustomer({
-        id: 'nav-test-customer',
-        name: 'Navigation Test Customer',
-      });
-      await setupTestEnvironment(page, { customers: [testCustomer] });
-
-      // Create an opportunity
-      await createOpportunityViaUI(page, {
+      const testCustomer = createTestCustomer({ name: 'Navigation Test Customer' });
+      const testOpp = createTestOpportunityWithCompletedCheckpoints(testCustomer.id, {
         title: 'Settings Nav Test Opportunity',
-        customerId: testCustomer.id,
-        tcv: '500000',
+        tcv: 500000,
       });
 
-      // Now we should be on the opportunity workflow page
-      await page.waitForURL(/\/opportunity\/OPP-/, { timeout: 15000 });
+      // Set up environment with customer and existing opportunity
+      await setupTestEnvironment(page, {
+        customers: [testCustomer],
+        opportunities: [testOpp],
+      });
+
+      // Click on the opportunity to go to workflow
+      const oppCard = page.locator('[role="button"]').filter({ hasText: 'Settings Nav Test Opportunity' });
+      await oppCard.click();
+      await page.waitForURL(/\/opportunity\//);
       await waitForAppReady(page);
+
+      // Verify we're on the workflow page
+      await expect(page.locator('text=Planning Checklist')).toBeVisible();
 
       // Click Settings in sidebar
       await page.click('nav >> text=Impostazioni');

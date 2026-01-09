@@ -36,7 +36,21 @@ export const OpportunityWorkflow = ({ opp, onBack }: { opp: Opportunity, onBack:
     const getNextPhase = (current: Phase): Phase | null => {
         const currentIndex = workflowPhases.indexOf(current);
         if (currentIndex < workflowPhases.length - 1) {
-            return workflowPhases[currentIndex + 1];
+            let nextPhase = workflowPhases[currentIndex + 1];
+
+            // Fast Track: skip ATP and ATS phases (go directly from Planning to ATC)
+            if (isFastTrackEligible(currentOpp)) {
+                while (nextPhase === 'ATP' || nextPhase === 'ATS') {
+                    const nextIndex = workflowPhases.indexOf(nextPhase);
+                    if (nextIndex < workflowPhases.length - 1) {
+                        nextPhase = workflowPhases[nextIndex + 1];
+                    } else {
+                        return null;
+                    }
+                }
+            }
+
+            return nextPhase;
         }
         return null;
     };
