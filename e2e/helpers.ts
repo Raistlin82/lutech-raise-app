@@ -9,20 +9,46 @@ import { Page } from '@playwright/test';
 const BASE_PATH = '';
 
 /**
- * Navigate to a path within the application
+ * Navigate to a path within the application while preserving localStorage
+ * Uses addInitScript to inject localStorage BEFORE any page scripts run
  */
 export async function navigateTo(page: Page, path: string): Promise<void> {
   const rootPath = `${BASE_PATH}/`;
-  
-  // Always go to the root path first to ensure the app initializes correctly
-  // and the test mode is properly activated.
-  await page.goto(rootPath);
-
-  // If the requested path is not the root, then navigate to it.
   const fullPath = path === '/' ? rootPath : `${BASE_PATH}${path}`;
-  if (fullPath !== rootPath) {
-    await page.goto(fullPath);
+
+  // Try to save localStorage data if we're on a valid page
+  let localStorageData: Record<string, string> = {};
+  const currentUrl = page.url();
+  if (currentUrl && !currentUrl.startsWith('about:')) {
+    try {
+      localStorageData = await page.evaluate(() => {
+        const data: Record<string, string> = {};
+        for (let i = 0; i < localStorage.length; i++) {
+          const key = localStorage.key(i);
+          if (key) {
+            data[key] = localStorage.getItem(key) || '';
+          }
+        }
+        return data;
+      });
+    } catch {
+      // Ignore errors if we can't access localStorage (e.g., on about:blank)
+    }
   }
+
+  // Use addInitScript to restore localStorage BEFORE any page scripts run
+  // This ensures React sees the data when it first mounts
+  if (Object.keys(localStorageData).length > 0) {
+    await page.addInitScript((data) => {
+      for (const [key, value] of Object.entries(data)) {
+        localStorage.setItem(key, value);
+      }
+    }, localStorageData);
+  }
+
+  // Navigate - the init script will run before any page JavaScript
+  await page.goto(fullPath);
+  await page.waitForLoadState('networkidle');
 }
 
 export interface TestCustomer {
@@ -172,8 +198,7 @@ export async function waitForAppReady(page: Page): Promise<void> {
 
 /**
  * Reload page while preserving ALL localStorage data
- * CRITICAL: Playwright storageState resets localStorage on reload, so we must save and restore ALL data
- * This includes testMode, raise_customers, raise_opportunities, etc.
+ * CRITICAL: Uses addInitScript to inject localStorage BEFORE any page scripts run
  */
 export async function reloadWithTestMode(page: Page): Promise<void> {
   // Save ALL localStorage data before reload (storageState will reset it)
@@ -189,18 +214,18 @@ export async function reloadWithTestMode(page: Page): Promise<void> {
     return data;
   });
 
-  // Reload with 'domcontentloaded' to restore data BEFORE React mounts
-  await page.reload({ waitUntil: 'domcontentloaded' });
+  // Use addInitScript to restore localStorage BEFORE any page scripts run
+  // This ensures React sees the data when it first mounts
+  if (Object.keys(localStorageData).length > 0) {
+    await page.addInitScript((data) => {
+      for (const [key, value] of Object.entries(data)) {
+        localStorage.setItem(key, value);
+      }
+    }, localStorageData);
+  }
 
-  // IMMEDIATELY restore ALL localStorage data (before React useEffects run)
-  await page.evaluate((data) => {
-    console.log('[E2E] Restoring localStorage after reload:', Object.keys(data));
-    for (const [key, value] of Object.entries(data)) {
-      localStorage.setItem(key, value);
-    }
-  }, localStorageData);
-
-  // Now wait for network to be idle and app to be fully ready
+  // Reload - the init script will run before any page JavaScript
+  await page.reload();
   await page.waitForLoadState('networkidle');
   await waitForAppReady(page);
 }
@@ -215,23 +240,26 @@ export async function setupTestEnvironment(
     opportunities?: TestOpportunity[];
   } = {}
 ): Promise<void> {
-  // First navigate to app (use full base path)
-  await navigateTo(page, '/');
+  // Use addInitScript to ensure testMode and test data are available BEFORE React mounts
+  // This is called once per page context and runs before every page load
+  const testData = {
+    testMode: 'true',
+    raise_customers: JSON.stringify(options.customers || []),
+    raise_opportunities: JSON.stringify(options.opportunities || []),
+  };
+
+  await page.addInitScript((data) => {
+    // Set all test data in localStorage before any scripts run
+    for (const [key, value] of Object.entries(data)) {
+      localStorage.setItem(key, value);
+    }
+    console.log('[E2E Init] Set localStorage:', Object.keys(data));
+  }, testData);
+
+  // Now navigate to the app - the init script will have already set up localStorage
+  await page.goto('/');
+  await page.waitForLoadState('networkidle');
   await waitForAppReady(page);
-
-  // Clear existing data
-  await clearLocalStorage(page);
-
-  // Set up test data if provided
-  if (options.customers) {
-    await setupTestCustomers(page, options.customers);
-  }
-  if (options.opportunities) {
-    await setupTestOpportunities(page, options.opportunities);
-  }
-
-  // Reload to pick up new data (use reloadWithTestMode to preserve test mode)
-  await reloadWithTestMode(page);
 }
 
 /**

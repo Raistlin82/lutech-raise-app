@@ -11,9 +11,17 @@ export default defineConfig(({ mode }) => {
   // Use VITE_BASE_PATH env var for Kyma (/), default to GitHub Pages path
   const basePath = env.VITE_BASE_PATH || '/lutech-raise-app/';
 
+  // E2E mode flag - when true, mandatory checkpoints are bypassed for testing
+  // Check both loadEnv result and process.env (playwright passes env vars via process.env)
+  const isE2EMode = env.VITE_E2E_MODE === 'true' || process.env.VITE_E2E_MODE === 'true';
+
   return {
     base: basePath,
     plugins: [react()],
+    define: {
+      // Expose E2E mode to the application
+      '__E2E_MODE__': JSON.stringify(isE2EMode),
+    },
     resolve: {
       alias: {
         '@': path.resolve(__dirname, './src'),

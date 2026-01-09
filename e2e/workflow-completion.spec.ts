@@ -8,7 +8,7 @@
  */
 
 import { test, expect, Page } from '@playwright/test';
-import { setupTestEnvironment, createTestCustomer, createOpportunityViaUI, waitForAppReady } from './helpers';
+import { setupTestEnvironment, createTestCustomer, createOpportunityViaUI, waitForAppReady, reloadWithTestMode } from './helpers';
 
 // Shared test customer - created once per test
 let testCustomer: ReturnType<typeof createTestCustomer>;
@@ -30,32 +30,10 @@ async function createTestOpportunity(page: Page, data: {
 // Global beforeEach - applies to ALL tests in this file
 test.beforeEach(async ({ page }) => {
   // Create test customer and setup environment
+  // Note: VITE_E2E_MODE=true is set in playwright.config.ts env,
+  // which automatically bypasses mandatory checkpoints in raiseLogic.ts
   testCustomer = createTestCustomer({ name: 'Workflow Test Client' });
   await setupTestEnvironment(page, { customers: [testCustomer] });
-
-  // CRITICAL FIX: After setup, make all controls non-mandatory so phase completion buttons are enabled
-  // This must happen AFTER setupTestEnvironment because that function reloads the page
-  await page.evaluate(() => {
-    const controlsStr = localStorage.getItem('raise_controls');
-    if (controlsStr) {
-      try {
-        const controls = JSON.parse(controlsStr);
-        // Set isMandatory=false for ALL controls
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const modifiedControls = controls.map((c: any) => ({ ...c, isMandatory: false }));
-        localStorage.setItem('raise_controls', JSON.stringify(modifiedControls));
-        console.log('[TEST] Modified', modifiedControls.length, 'controls to be non-mandatory');
-      } catch (e) {
-        console.error('[TEST] Failed to modify controls:', e);
-      }
-    } else {
-      console.log('[TEST] No controls found in localStorage');
-    }
-  });
-
-  // Reload to pick up the modified controls
-  await page.reload();
-  await waitForAppReady(page);
 });
 
 test.describe('Complete Workflow Lifecycle', () => {

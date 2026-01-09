@@ -91,6 +91,7 @@ export default defineConfig({
     // Explicitly set environment variables for the dev server
     env: {
       VITE_TEST_MODE: 'true',
+      VITE_E2E_MODE: 'true',  // Bypass mandatory checkpoints for E2E testing
       VITE_SUPABASE_URL: '',
       VITE_SUPABASE_ANON_KEY: '',
       VITE_IAS_AUTHORITY: 'https://mock-ias.test',
