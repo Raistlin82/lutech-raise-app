@@ -145,13 +145,23 @@ jobs:
             echo "✓ Secret 'raise-app-secrets' created successfully"
           fi
 
+      - name: Setup Kustomize
+        uses: imranismail/setup-kustomize@v2
+
       - name: Create GitHub Container Registry secret
         run: |
+          # Use CR_PAT if available for persistent access, otherwise fallback to GITHUB_TOKEN (may fail)
+          DOCKER_PASSWORD="${{ secrets.CR_PAT }}"
+          if [ -z "$DOCKER_PASSWORD" ]; then
+            echo "::warning::Secrets.CR_PAT not found. Using GITHUB_TOKEN. Image pull may fail if token expires."
+            DOCKER_PASSWORD="${{ secrets.GITHUB_TOKEN }}"
+          fi
+          
           kubectl create secret docker-registry ghcr-secret \
             --namespace=raise-app \
             --docker-server=ghcr.io \
             --docker-username=${{ github.actor }} \
-            --docker-password=${{ secrets.GITHUB_TOKEN }} \
+            --docker-password=$DOCKER_PASSWORD \
             --dry-run=client -o yaml | kubectl apply -f -
 
       - name: Update deployment image tag
