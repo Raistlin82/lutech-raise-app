@@ -3,9 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { useOpportunities } from '../../stores/OpportunitiesStore';
 import { useCustomers } from '../../stores/CustomerStore';
 import { useUserEmail } from '@/hooks/useUserEmail';
-import type { Opportunity } from '../../types';
+import type { Opportunity, Lot } from '../../types';
 import { calculateRaiseLevel } from '../../lib/raiseLogic';
-import { ArrowLeft, Save, Building2, DollarSign, Briefcase, Lock, Plus } from 'lucide-react';
+import { ArrowLeft, Save, Building2, DollarSign, Briefcase, Lock, Plus, Trash2, Layers } from 'lucide-react';
 import { showToast } from '../../lib/toast';
 import { LoadingSpinner } from '../../components/common/LoadingSpinner';
 import { FormField } from '../../components/common/FormField';
@@ -34,6 +34,29 @@ export const NewOpportunityPage = () => {
         isNewCustomer: false,
         marginPercent: '20',
     });
+
+    // Multi-Lot State
+    const [isMultiLot, setIsMultiLot] = useState(false);
+    const [areLotsMutuallyExclusive, setAreLotsMutuallyExclusive] = useState(false);
+    const [lots, setLots] = useState<Array<{ id: string; name: string; tcv: string; raiseTcv: string; marginPercent: string }>>([
+        { id: '1', name: 'Lotto 1', tcv: '', raiseTcv: '', marginPercent: '20' }
+    ]);
+
+    const addLot = () => {
+        setLots(prev => [
+            ...prev,
+            { id: Date.now().toString(), name: `Lotto ${prev.length + 1}`, tcv: '', raiseTcv: '', marginPercent: '20' }
+        ]);
+    };
+
+    const removeLot = (id: string) => {
+        if (lots.length <= 1) return;
+        setLots(prev => prev.filter(l => l.id !== id));
+    };
+
+    const updateLot = (id: string, field: string, value: string) => {
+        setLots(prev => prev.map(l => l.id === id ? { ...l, [field]: value } : l));
+    };
 
     // Get selected customer details
     const selectedCustomer = customers.find(c => c.id === formData.customerId);
@@ -140,12 +163,43 @@ export const NewOpportunityPage = () => {
             // Simulate async operation
             await new Promise(resolve => setTimeout(resolve, 500));
 
+            // Multi-Lot Logic
+            let finalTcv = tcvValue;
+            let finalRaiseTcv = raiseTcvValue;
+            let finalMargin = marginValue;
+            let finalLots: Lot[] = [];
+
+            if (isMultiLot) {
+                // Convert UI lots to Domain lots
+                finalLots = lots.map(l => ({
+                    id: l.id,
+                    name: l.name,
+                    tcv: parseFloat(l.tcv) || 0,
+                    raiseTcv: parseFloat(l.raiseTcv) || parseFloat(l.tcv) || 0,
+                    marginPercent: parseFloat(l.marginPercent) || 0,
+                    description: ''
+                }));
+
+                // Find Main Lot (highest Value)
+                const mainLot = finalLots.reduce((prev, current) =>
+                    (current.raiseTcv > prev.raiseTcv) ? current : prev
+                );
+
+                // Overwrite top-level values with Main Lot values
+                finalTcv = mainLot.tcv;
+                finalRaiseTcv = mainLot.raiseTcv;
+                finalMargin = mainLot.marginPercent;
+            }
+
             const newOpp: Opportunity = {
                 id: `OPP-${new Date().getFullYear()}-${Date.now().toString().slice(-4)}`,
                 title: formData.title,
                 customerId: formData.customerId,
-                tcv: tcvValue,
-                raiseTcv: raiseTcvValue,
+                tcv: finalTcv,
+                raiseTcv: finalRaiseTcv,
+                isMultiLot,
+                areLotsMutuallyExclusive,
+                lots: isMultiLot ? finalLots : undefined, // Only save lots if enabled
                 currentPhase: 'Planning',
                 hasKcpDeviations: formData.hasKcpDeviations,
                 isFastTrack: tcvValue < 250000 && !formData.hasKcpDeviations,
@@ -155,7 +209,8 @@ export const NewOpportunityPage = () => {
                 raiseLevel: 'L6', // Temporary, will be calculated next
                 deviations: [],
                 checkpoints: {},
-                marginPercent: marginValue,
+
+                marginPercent: finalMargin,
                 cashFlowNeutral: true,
                 isNewCustomer: formData.isNewCustomer,
                 createdByEmail: userEmail,
@@ -227,11 +282,10 @@ export const NewOpportunityPage = () => {
                                     value={formData.customerId}
                                     onChange={e => setFormData({ ...formData, customerId: e.target.value })}
                                     onBlur={() => handleBlur('customerId')}
-                                    className={`flex-1 px-4 py-3 border-2 rounded-xl focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 outline-none transition-all ${
-                                        touched.customerId && fieldErrors.customerId
-                                            ? 'border-red-500 focus:border-red-500 focus:ring-red-500/20'
-                                            : 'border-slate-200'
-                                    }`}
+                                    className={`flex-1 px-4 py-3 border-2 rounded-xl focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 outline-none transition-all ${touched.customerId && fieldErrors.customerId
+                                        ? 'border-red-500 focus:border-red-500 focus:ring-red-500/20'
+                                        : 'border-slate-200'
+                                        }`}
                                 >
                                     <option value="">{t('form.placeholderCustomer')}</option>
                                     {customers
@@ -341,6 +395,117 @@ export const NewOpportunityPage = () => {
                     </div>
                 </div>
 
+                {/* Multi-Lot Toggle Section */}
+                <div className="space-y-4 pt-6 border-t border-slate-200">
+                    <div className="flex items-center justify-between">
+                        <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
+                            <Layers size={20} className="text-purple-600" />
+                            Gestione Lotti
+                        </h2>
+                        <label className="flex items-center gap-3 cursor-pointer">
+                            <div className="relative">
+                                <input
+                                    type="checkbox"
+                                    className="sr-only"
+                                    checked={isMultiLot}
+                                    onChange={e => setIsMultiLot(e.target.checked)}
+                                />
+                                <div className={`block w-14 h-8 rounded-full transition-colors ${isMultiLot ? 'bg-purple-600' : 'bg-slate-300'}`}></div>
+                                <div className={`absolute left-1 top-1 bg-white w-6 h-6 rounded-full transition-transform ${isMultiLot ? 'translate-x-6' : ''}`}></div>
+                            </div>
+                            <span className="font-medium text-slate-700">Abilita Multi-Lotto</span>
+                        </label>
+                    </div>
+
+                    {isMultiLot && (
+                        <div className="space-y-4 animate-fade-in">
+                            <div className="bg-purple-50 p-4 rounded-xl border border-purple-100 mb-4">
+                                <label className="flex items-center gap-3 cursor-pointer">
+                                    <input
+                                        type="checkbox"
+                                        checked={areLotsMutuallyExclusive}
+                                        onChange={e => setAreLotsMutuallyExclusive(e.target.checked)}
+                                        className="w-5 h-5 text-purple-600 rounded focus:ring-purple-500"
+                                    />
+                                    <div>
+                                        <div className="font-semibold text-purple-900">Lotti Mutualmente Esclusivi</div>
+                                        <div className="text-sm text-purple-700">L'aggiudicazione di un lotto esclude gli altri</div>
+                                    </div>
+                                </label>
+                            </div>
+
+                            <div className="space-y-3">
+                                {lots.map((lot, index) => (
+                                    <div key={lot.id} className="p-4 border-2 border-slate-200 rounded-xl bg-white hover:border-purple-200 transition-colors">
+                                        <div className="flex justify-between items-center mb-3">
+                                            <h3 className="font-bold text-slate-700">Lotto {index + 1}</h3>
+                                            {lots.length > 1 && (
+                                                <button
+                                                    type="button"
+                                                    onClick={() => removeLot(lot.id)}
+                                                    className="text-red-500 hover:text-red-700 p-2 hover:bg-red-50 rounded-lg"
+                                                >
+                                                    <Trash2 size={18} />
+                                                </button>
+                                            )}
+                                        </div>
+                                        <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+                                            <div className="md:col-span-1">
+                                                <label className="block text-xs font-semibold text-slate-500 mb-1">Nome Lotto</label>
+                                                <input
+                                                    type="text"
+                                                    value={lot.name}
+                                                    onChange={e => updateLot(lot.id, 'name', e.target.value)}
+                                                    className="w-full px-3 py-2 border rounded-lg text-sm"
+                                                    placeholder="Es. Lotto 1"
+                                                />
+                                            </div>
+                                            <div>
+                                                <label className="block text-xs font-semibold text-slate-500 mb-1">TCV</label>
+                                                <input
+                                                    type="number"
+                                                    value={lot.tcv}
+                                                    onChange={e => updateLot(lot.id, 'tcv', e.target.value)}
+                                                    className="w-full px-3 py-2 border rounded-lg text-sm"
+                                                    placeholder="Valore"
+                                                />
+                                            </div>
+                                            <div>
+                                                <label className="block text-xs font-semibold text-slate-500 mb-1">RAISE TCV</label>
+                                                <input
+                                                    type="number"
+                                                    value={lot.raiseTcv}
+                                                    onChange={e => updateLot(lot.id, 'raiseTcv', e.target.value)}
+                                                    className="w-full px-3 py-2 border rounded-lg text-sm"
+                                                    placeholder="Inc. Opzioni"
+                                                />
+                                            </div>
+                                            <div>
+                                                <label className="block text-xs font-semibold text-slate-500 mb-1">Margine %</label>
+                                                <input
+                                                    type="number"
+                                                    value={lot.marginPercent}
+                                                    onChange={e => updateLot(lot.id, 'marginPercent', e.target.value)}
+                                                    className="w-full px-3 py-2 border rounded-lg text-sm"
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+
+                            <button
+                                type="button"
+                                onClick={addLot}
+                                className="w-full py-3 border-2 border-dashed border-slate-300 rounded-xl text-slate-500 hover:border-purple-400 hover:text-purple-600 hover:bg-purple-50 transition-all flex items-center justify-center gap-2 font-semibold"
+                            >
+                                <Plus size={20} />
+                                Aggiungi Lotto
+                            </button>
+                        </div>
+                    )}
+                </div>
+
                 {/* Flags Section */}
                 <div className="space-y-4 pt-6 border-t border-slate-200">
                     <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
@@ -420,11 +585,10 @@ export const NewOpportunityPage = () => {
                     <button
                         type="submit"
                         disabled={isSubmitting}
-                        className={`px-6 py-3 rounded-xl font-bold transition-all flex items-center gap-2 ${
-                            isSubmitting
-                                ? 'bg-slate-400 cursor-not-allowed text-white'
-                                : 'bg-gradient-to-r from-cyan-600 to-blue-600 text-white hover:scale-105'
-                        }`}
+                        className={`px-6 py-3 rounded-xl font-bold transition-all flex items-center gap-2 ${isSubmitting
+                            ? 'bg-slate-400 cursor-not-allowed text-white'
+                            : 'bg-gradient-to-r from-cyan-600 to-blue-600 text-white hover:scale-105'
+                            }`}
                     >
                         {isSubmitting ? (
                             <>

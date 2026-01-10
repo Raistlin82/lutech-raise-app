@@ -1,131 +1,145 @@
 export type RaiseLevel = 'L6' | 'L5' | 'L4' | 'L3' | 'L2' | 'L1';
 export type Phase = 'Planning' | 'ATP' | 'ATS' | 'ATC' | 'Won' | 'Lost' | 'Handover';
 export type PhaseError = {
-    message: string;
-    code: string;
+  message: string;
+  code: string;
 };
 
 export interface TemplateLink {
-    name: string; // Nome del template (es. "MOD-092", "Slide Deck ATP")
-    url: string; // URL diretto al template
+  name: string; // Nome del template (es. "MOD-092", "Slide Deck ATP")
+  url: string; // URL diretto al template
 }
 
 export interface Checkpoint {
-    id: string;
-    label: string;
-    checked: boolean;
-    required: boolean;
-    order?: number; // Order number within phase (1, 2, 3...)
-    description?: string;
-    documentRef?: string; // ID of the required document
-    attachments?: File[]; // Serializable file representation (optional/unused in checklist mode)
-    templateRef?: string; // Link to template if applicable (legacy, kept for compatibility)
-    actionType?: 'document' | 'email' | 'notification' | 'task';
-    detailedDescription?: string; // Descrizione estesa/istruzioni dall'Excel
-    folderPath?: string; // Percorso cartella SharePoint dove salvare
-    templateLinks?: TemplateLink[]; // Array di link ai template (per documenti multipli)
-    mandatoryNotes?: string; // Note sulla mandatorietà dall'Excel (per pop-up)
+  id: string;
+  label: string;
+  checked: boolean;
+  required: boolean;
+  order?: number; // Order number within phase (1, 2, 3...)
+  description?: string;
+  documentRef?: string; // ID of the required document
+  attachments?: File[]; // Serializable file representation (optional/unused in checklist mode)
+  templateRef?: string; // Link to template if applicable (legacy, kept for compatibility)
+  actionType?: 'document' | 'email' | 'notification' | 'task';
+  detailedDescription?: string; // Descrizione estesa/istruzioni dall'Excel
+  folderPath?: string; // Percorso cartella SharePoint dove salvare
+  templateLinks?: TemplateLink[]; // Array di link ai template (per documenti multipli)
+  mandatoryNotes?: string; // Note sulla mandatorietà dall'Excel (per pop-up)
 }
 
 export interface KcpDeviation {
-    id: string;
-    type: 'Financial' | 'Legal' | 'Compliance' | 'Operations' | 'Other';
-    description: string;
-    expertOpinion?: 'Green' | 'Red' | 'Yellow';
-    expertName?: string;
+  id: string;
+  type: 'Financial' | 'Legal' | 'Compliance' | 'Operations' | 'Other';
+  description: string;
+  expertOpinion?: 'Green' | 'Red' | 'Yellow';
+  expertName?: string;
+}
+
+export interface Lot {
+  id: string;
+  name: string;
+  tcv: number;
+  raiseTcv: number;
+  marginPercent: number;
+  description?: string;
 }
 
 export interface Opportunity {
-    id: string;
-    title: string;
+  id: string;
+  title: string;
 
-    // Customer relationship (NEW - v1.1.0)
-    customerId?: string;     // Foreign key to Customer (will be required after migration)
+  // Multi-Lot Support
+  isMultiLot?: boolean;
+  areLotsMutuallyExclusive?: boolean;
+  lots?: Lot[];
 
-    // Deprecated fields (kept for backward compatibility)
-    clientName?: string;     // DEPRECATED: Use customerId instead
-    industry?: string;       // DEPRECATED: Derived from customer
+  // Customer relationship (NEW - v1.1.0)
+  customerId?: string;     // Foreign key to Customer (will be required after migration)
 
-    tcv: number; // Total Contract Value (committed value)
-    raiseTcv: number; // RAISE TCV (includes optional parts, must be >= tcv)
+  // Deprecated fields (kept for backward compatibility)
+  clientName?: string;     // DEPRECATED: Use customerId instead
+  industry?: string;       // DEPRECATED: Derived from customer
 
-    // Phase Status
-    currentPhase: Phase;
+  tcv: number; // Total Contract Value (committed value)
+  raiseTcv: number; // RAISE TCV (includes optional parts, must be >= tcv)
 
-    // Flags
-    hasKcpDeviations: boolean;
-    isFastTrack: boolean;
-    isRti: boolean; // Raggruppamento Temporaneo di Imprese
-    isMandataria?: boolean; // If true, Lutech is the leading mandatory
-    isPublicSector: boolean;
+  // Phase Status
+  currentPhase: Phase;
 
-    // Critical Risk Flags (PSQ-003 §5.4)
-    hasSocialClauses?: boolean; // Clausole sociali (impegno ad assumere personale) -> L1
-    isNonCoreBusiness?: boolean; // Attività NON nel core business Lutech -> L1
-    hasLowRiskServices?: boolean; // Servizi >= 200k con rischi < 3% -> L2
-    isSmallTicket?: boolean; // TCV < 5k€ -> Pre-approvazione Industry Head required
-    isNewCustomer?: boolean; // Nuovo cliente (aumenta livello di 1 fino a L4)
-    isChild?: boolean; // Opportunità child (eccezione per alcuni controlli)
+  // Flags
+  hasKcpDeviations: boolean;
+  isFastTrack: boolean;
+  isRti: boolean; // Raggruppamento Temporaneo di Imprese
+  isMandataria?: boolean; // If true, Lutech is the leading mandatory
+  isPublicSector: boolean;
 
-    // Reselling Management (PSQ-003 v17)
-    hasSuppliers?: boolean; // Presenza fornitori
-    supplierAlignment?: 'BackToBack' | 'ClientConditions' | 'SupplierConditions' | 'Misaligned';
+  // Critical Risk Flags (PSQ-003 §5.4)
+  hasSocialClauses?: boolean; // Clausole sociali (impegno ad assumere personale) -> L1
+  isNonCoreBusiness?: boolean; // Attività NON nel core business Lutech -> L1
+  hasLowRiskServices?: boolean; // Servizi >= 200k con rischi < 3% -> L2
+  isSmallTicket?: boolean; // TCV < 5k€ -> Pre-approvazione Industry Head required
+  isNewCustomer?: boolean; // Nuovo cliente (aumenta livello di 1 fino a L4)
+  isChild?: boolean; // Opportunità child (eccezione per alcuni controlli)
 
-    // Calculations
-    raiseLevel: RaiseLevel;
+  // Reselling Management (PSQ-003 v17)
+  hasSuppliers?: boolean; // Presenza fornitori
+  supplierAlignment?: 'BackToBack' | 'ClientConditions' | 'SupplierConditions' | 'Misaligned';
 
-    // Data
-    deviations: KcpDeviation[];
-    checkpoints: Record<string, Checkpoint[]>; // Keyed by Phase
+  // Calculations
+  raiseLevel: RaiseLevel;
 
-    // Financials
-    marginPercent?: number;
-    firstMarginPercent?: number; // First Margin % (per under-margin controls)
-    cashFlowNeutral?: boolean;
+  // Data
+  deviations: KcpDeviation[];
+  checkpoints: Record<string, Checkpoint[]>; // Keyed by Phase
 
-    // Services specific (for low risk check)
-    servicesValue?: number; // Valore dei servizi (ToW=Services)
+  // Financials
+  marginPercent?: number;
+  firstMarginPercent?: number; // First Margin % (per under-margin controls)
+  cashFlowNeutral?: boolean;
 
-    // Privacy Risk (for Expert DPM)
-    privacyRiskLevel?: 'Low' | 'Medium' | 'High' | 'VeryHigh';
+  // Services specific (for low risk check)
+  servicesValue?: number; // Valore dei servizi (ToW=Services)
 
-    // Date tracking (for congruence checks)
-    offerDate?: Date | string; // Data offerta
-    contractDate?: Date | string; // Data contratto
-    orderDate?: Date | string; // Data ordine
-    atsDate?: Date | string; // Data ATS da Salesforce
-    atcDate?: Date | string; // Data ATC da Salesforce
-    rcpDate?: Date | string; // Data RCP
+  // Privacy Risk (for Expert DPM)
+  privacyRiskLevel?: 'Low' | 'Medium' | 'High' | 'VeryHigh';
 
-    // Multi-user segregation
-    createdByEmail?: string; // User email (from SAP IAS JWT)
-    createdAt?: string; // ISO 8601 timestamp
-    updatedAt?: string; // ISO 8601 timestamp
+  // Date tracking (for congruence checks)
+  offerDate?: Date | string; // Data offerta
+  contractDate?: Date | string; // Data contratto
+  orderDate?: Date | string; // Data ordine
+  atsDate?: Date | string; // Data ATS da Salesforce
+  atcDate?: Date | string; // Data ATC da Salesforce
+  rcpDate?: Date | string; // Data RCP
+
+  // Multi-user segregation
+  createdByEmail?: string; // User email (from SAP IAS JWT)
+  createdAt?: string; // ISO 8601 timestamp
+  updatedAt?: string; // ISO 8601 timestamp
 }
 
 export const RAISE_LEVELS: Record<RaiseLevel, { min: number; max: number; label: string }> = {
-    L6: { min: 0, max: 250000, label: 'L6 (<250k)' },
-    L5: { min: 250000, max: 500000, label: 'L5 (250k-500k)' },
-    L4: { min: 500000, max: 1000000, label: 'L4 (500k-1M)' },
-    L3: { min: 1000000, max: 10000000, label: 'L3 (1M-10M)' },
-    L2: { min: 10000000, max: 20000000, label: 'L2 (10M-20M)' },
-    L1: { min: 20000000, max: Infinity, label: 'L1 (>20M)' },
+  L6: { min: 0, max: 250000, label: 'L6 (<250k)' },
+  L5: { min: 250000, max: 500000, label: 'L5 (250k-500k)' },
+  L4: { min: 500000, max: 1000000, label: 'L4 (500k-1M)' },
+  L3: { min: 1000000, max: 10000000, label: 'L3 (1M-10M)' },
+  L2: { min: 10000000, max: 20000000, label: 'L2 (10M-20M)' },
+  L1: { min: 20000000, max: Infinity, label: 'L1 (>20M)' },
 };
 
 export interface ControlConfig {
-    id: string;
-    label: string;
-    description: string;
-    phase: 'Planning' | 'ATP' | 'ATS' | 'ATC' | 'Handover' | 'ALL'; // ALL = applies to all phases
-    order?: number; // Position within phase (1, 2, 3...) - will be required after migration
-    isMandatory: boolean;
-    templateRef?: string; // Name or URL of the template (legacy)
-    actionType?: 'document' | 'email' | 'notification' | 'task';
-    condition?: string; // Logic string e.g. "tcv > 1000000" or "hasKcpDeviations"
-    detailedDescription?: string; // Descrizione estesa/istruzioni dall'Excel
-    folderPath?: string; // Percorso cartella dove salvare il documento (es. "/SharePoint/Documents/ATP/")
-    templateLinks?: TemplateLink[]; // Array di link ai template (supporta documenti multipli)
-    mandatoryNotes?: string; // Note sulla mandatorietà dall'Excel (per pop-up)
+  id: string;
+  label: string;
+  description: string;
+  phase: 'Planning' | 'ATP' | 'ATS' | 'ATC' | 'Handover' | 'ALL'; // ALL = applies to all phases
+  order?: number; // Position within phase (1, 2, 3...) - will be required after migration
+  isMandatory: boolean;
+  templateRef?: string; // Name or URL of the template (legacy)
+  actionType?: 'document' | 'email' | 'notification' | 'task';
+  condition?: string; // Logic string e.g. "tcv > 1000000" or "hasKcpDeviations"
+  detailedDescription?: string; // Descrizione estesa/istruzioni dall'Excel
+  folderPath?: string; // Percorso cartella dove salvare il documento (es. "/SharePoint/Documents/ATP/")
+  templateLinks?: TemplateLink[]; // Array di link ai template (supporta documenti multipli)
+  mandatoryNotes?: string; // Note sulla mandatorietà dall'Excel (per pop-up)
 }
 
 // Industry enum (10 predefined sectors)

@@ -4,7 +4,7 @@ import type { Opportunity, Phase } from '../../types';
 import { calculateRaiseLevel, isFastTrackEligible } from '../../lib/raiseLogic';
 import { useSettings } from '../../stores/SettingsStore';
 import { useOpportunities } from '../../stores/OpportunitiesStore';
-import { Check, AlertTriangle, ArrowLeft, Shield, Activity, Edit3 } from 'lucide-react';
+import { Check, AlertTriangle, ArrowLeft, Shield, Activity, Edit3, Layers } from 'lucide-react';
 import { clsx } from 'clsx';
 import { ErrorBoundary } from '../common/ErrorBoundary';
 import { showToast } from '../../lib/toast';
@@ -242,6 +242,36 @@ export const OpportunityWorkflow = ({ opp, onBack }: { opp: Opportunity; onBack:
                 <div className="bg-blue-500/20 border border-blue-400/30 px-3 py-1.5 rounded-lg text-xs font-medium text-blue-200 flex items-center gap-2">
                   <Activity size={12} />
                   {t('fastTrack.eligible')}
+                </div>
+              )}
+
+              {/* Multi-Lot Breakdown */}
+              {currentOpp.isMultiLot && (
+                <div className="w-full mt-2 pt-4 border-t border-slate-700/30">
+                  <div className="flex items-center gap-2 mb-3">
+                    <div className="p-1.5 bg-purple-500/20 rounded-lg">
+                      <Layers size={16} className="text-purple-300" />
+                    </div>
+                    <span className="text-sm font-semibold text-slate-300">
+                      Structure Breakdown
+                    </span>
+                    {currentOpp.areLotsMutuallyExclusive && (
+                      <span className="text-xs text-purple-200 bg-purple-500/20 border border-purple-500/30 px-2 py-0.5 rounded ml-2">
+                        Mutually Exclusive
+                      </span>
+                    )}
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                    {currentOpp.lots?.map((lot) => (
+                      <div key={lot.id} className="bg-slate-800/40 rounded-lg p-3 border border-slate-700/50 flex justify-between items-center text-sm hover:bg-slate-800/60 transition-colors">
+                        <span className="text-slate-400 font-medium">{lot.name}</span>
+                        <div className="text-right">
+                          <div className="text-slate-200 font-mono">€ {lot.raiseTcv.toLocaleString()}</div>
+                          <div className="text-[10px] text-slate-500">Margin: {lot.marginPercent}%</div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               )}
             </div>

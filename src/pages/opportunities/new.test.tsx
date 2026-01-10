@@ -439,4 +439,65 @@ describe('NewOpportunityPage', () => {
       expect(quickAddButton).toBeInTheDocument();
     });
   });
+  describe('Multi-Lot Functionality', () => {
+    it('should create opportunity with multiple lots and correctly identify the Main Lot', async () => {
+      render(<NewOpportunityPage />, { wrapper: AllProviders });
+
+      // Fill Basic Info
+      const titleInput = screen.getByPlaceholderText(/Cloud Migration Project/i);
+      const customerSelect = screen.getByRole('combobox');
+      // The TCV input is required for validation but will be overwritten
+      const tcvInput = screen.getByPlaceholderText('1000000');
+
+      fireEvent.change(titleInput, { target: { value: 'Multi-Lot Project' } });
+      fireEvent.change(customerSelect, { target: { value: 'CUST-001' } });
+      fireEvent.change(tcvInput, { target: { value: '1' } });
+
+      // Enable Multi-Lot
+      const multiLotToggle = screen.getByLabelText(/Abilita Multi-Lotto/i);
+      fireEvent.click(multiLotToggle);
+
+      // Verify Lot 1 inputs appear
+      const lot1Name = screen.getByPlaceholderText('Es. Lotto 1');
+      // Note: "Valore" is placeholder for Lot TCV, "Inc. Opzioni" for Raise TCV
+      const lotTCVs = screen.getAllByPlaceholderText('Valore');
+      const lotRaiseTCVs = screen.getAllByPlaceholderText('Inc. Opzioni');
+
+      // Fill Lot 1 (Small Lot)
+      fireEvent.change(lot1Name, { target: { value: 'Small Lot' } });
+      fireEvent.change(lotTCVs[0], { target: { value: '100000' } });     // 100k
+      fireEvent.change(lotRaiseTCVs[0], { target: { value: '120000' } }); // 120k
+
+      // Add Lot 2
+      fireEvent.click(screen.getByText('Aggiungi Lotto'));
+
+      // Fill Lot 2 (Big Lot - Main Lot)
+      const lotNames = screen.getAllByPlaceholderText('Es. Lotto 1');
+      const lotTCVsUpdated = screen.getAllByPlaceholderText('Valore');
+      const lotRaiseTCVsUpdated = screen.getAllByPlaceholderText('Inc. Opzioni');
+
+      fireEvent.change(lotNames[1], { target: { value: 'Big Lot' } });
+      fireEvent.change(lotTCVsUpdated[1], { target: { value: '500000' } });      // 500k
+      fireEvent.change(lotRaiseTCVsUpdated[1], { target: { value: '550000' } }); // 550k
+
+      // Submit
+      fireEvent.click(screen.getByText('Crea Opportunità'));
+
+      // Verify Submission
+      await waitFor(() => {
+        expect(mockAddOpportunity).toHaveBeenCalledWith(
+          expect.objectContaining({
+            isMultiLot: true,
+            tcv: 500000,          // From Main Lot (Lot 2)
+            raiseTcv: 550000,     // From Main Lot (Lot 2)
+            lots: expect.arrayContaining([
+              expect.objectContaining({ name: 'Small Lot', tcv: 100000 }),
+              expect.objectContaining({ name: 'Big Lot', tcv: 500000 })
+            ])
+          }),
+          mockUserEmail
+        );
+      });
+    });
+  });
 });
