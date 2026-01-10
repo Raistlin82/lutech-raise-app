@@ -229,182 +229,182 @@ export const Settings = () => {
             {activeTab === 'margins' && <UnderMarginPanel />}
 
             {activeTab === 'controls' && (
-            <>
-            {/* Filters */}
-            <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-4">
-                <div className="flex flex-wrap items-center gap-4">
-                    <div className="flex items-center gap-2 text-slate-500">
-                        <Filter size={18} />
-                        <span className="font-medium text-sm">Filtri:</span>
+                <>
+                    {/* Filters */}
+                    <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-4">
+                        <div className="flex flex-wrap items-center gap-4">
+                            <div className="flex items-center gap-2 text-slate-500">
+                                <Filter size={18} />
+                                <span className="font-medium text-sm">Filtri:</span>
+                            </div>
+
+                            {/* Phase Filter */}
+                            <div className="flex items-center gap-2">
+                                <label htmlFor="phase-filter" className="text-sm text-slate-600">
+                                    {t('controls.filters.phase')}:
+                                </label>
+                                <select
+                                    id="phase-filter"
+                                    value={phaseFilter}
+                                    onChange={(e) => setPhaseFilter(e.target.value)}
+                                    className="px-3 py-1.5 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                >
+                                    <option value="">{t('controls.filters.allPhases')}</option>
+                                    {PHASES.map(phase => (
+                                        <option key={phase} value={phase}>{phase}</option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            {/* Level Filter */}
+                            <div className="flex items-center gap-2">
+                                <label htmlFor="level-filter" className="text-sm text-slate-600">
+                                    {t('controls.filters.level')}:
+                                </label>
+                                <select
+                                    id="level-filter"
+                                    value={levelFilter}
+                                    onChange={(e) => setLevelFilter(e.target.value)}
+                                    className="px-3 py-1.5 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                >
+                                    <option value="">{t('controls.filters.allLevels')}</option>
+                                    {LEVELS.map(level => (
+                                        <option key={level} value={level}>{level}</option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            {/* Clear Filters Button */}
+                            {hasActiveFilters && (
+                                <button
+                                    onClick={clearFilters}
+                                    className="flex items-center gap-1 px-3 py-1.5 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                                >
+                                    <XCircle size={16} />
+                                    {t('controls.filters.clearFilters')}
+                                </button>
+                            )}
+
+                            {/* Results count */}
+                            <div className="ml-auto text-sm text-slate-500">
+                                {t('controls.filters.showing')} <span className="font-bold text-slate-700">{filteredControls.length}</span> {t('controls.filters.of')} <span className="font-bold text-slate-700">{controls.length}</span> {t('controls.filters.controls')}
+                            </div>
+                        </div>
                     </div>
 
-                    {/* Phase Filter */}
-                    <div className="flex items-center gap-2">
-                        <label htmlFor="phase-filter" className="text-sm text-slate-600">
-                            {t('controls.filters.phase')}:
-                        </label>
-                        <select
-                            id="phase-filter"
-                            value={phaseFilter}
-                            onChange={(e) => setPhaseFilter(e.target.value)}
-                            className="px-3 py-1.5 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                        >
-                            <option value="">{t('controls.filters.allPhases')}</option>
-                            {PHASES.map(phase => (
-                                <option key={phase} value={phase}>{phase}</option>
-                            ))}
-                        </select>
+                    <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                        <table className="w-full text-left text-sm">
+                            <thead className="bg-slate-50 border-b border-slate-200">
+                                <tr>
+                                    <th className="px-4 py-4 font-semibold text-slate-700 text-center w-16">#</th>
+                                    <th className="px-6 py-4 font-semibold text-slate-700">{t('controls.tableHeaders.phase')}</th>
+                                    <th className="px-6 py-4 font-semibold text-slate-700">{t('controls.tableHeaders.raiseLevels')}</th>
+                                    <th className="px-6 py-4 font-semibold text-slate-700">{t('controls.tableHeaders.label')}</th>
+                                    <th className="px-6 py-4 font-semibold text-slate-700">{t('controls.tableHeaders.description')}</th>
+                                    <th className="px-6 py-4 font-semibold text-slate-700 text-center">{t('controls.tableHeaders.mandatory')}</th>
+                                    <th className="px-6 py-4 font-semibold text-slate-700 text-right">{t('controls.tableHeaders.actions')}</th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y divide-slate-100">
+                                {filteredControls
+                                    .sort((a, b) => {
+                                        // Sort by phase order, then by control order
+                                        const phaseOrder = { 'Planning': 1, 'ATP': 2, 'ATS': 3, 'ATC': 4, 'Handover': 5, 'ALL': 6 };
+                                        const phaseA = phaseOrder[a.phase as keyof typeof phaseOrder] || 99;
+                                        const phaseB = phaseOrder[b.phase as keyof typeof phaseOrder] || 99;
+                                        if (phaseA !== phaseB) return phaseA - phaseB;
+                                        return (a.order || 0) - (b.order || 0);
+                                    })
+                                    .map((control) => {
+                                        const raiseLevels = extractRaiseLevels(control.condition);
+                                        return (
+                                            <tr key={control.id} className="hover:bg-slate-50/50 transition-colors">
+                                                <td className="px-4 py-3 text-center">
+                                                    <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-slate-100 text-slate-700 font-bold text-xs">
+                                                        {control.order || '-'}
+                                                    </span>
+                                                </td>
+                                                <td className="px-6 py-3">
+                                                    <span className={clsx(
+                                                        "px-2 py-1 rounded text-xs font-medium",
+                                                        {
+                                                            "bg-blue-50 text-blue-600": control.phase === 'Planning',
+                                                            "bg-indigo-50 text-indigo-600": control.phase === 'ATP',
+                                                            "bg-purple-50 text-purple-600": control.phase === 'ATS',
+                                                            "bg-emerald-50 text-emerald-600": control.phase === 'ATC',
+                                                            "bg-slate-100 text-slate-600": control.phase === 'Handover',
+                                                            "bg-amber-50 text-amber-700": control.phase === 'ALL',
+                                                        }
+                                                    )}>
+                                                        {control.phase}
+                                                    </span>
+                                                </td>
+                                                <td className="px-6 py-3">
+                                                    {raiseLevels === 'ALL' ? (
+                                                        <span className="px-2 py-1 bg-slate-100 text-slate-600 rounded text-xs font-medium">
+                                                            ALL
+                                                        </span>
+                                                    ) : (
+                                                        <div className="flex flex-wrap gap-1">
+                                                            {raiseLevels.map(level => (
+                                                                <span key={level} className={clsx(
+                                                                    "px-1.5 py-0.5 rounded text-xs font-bold",
+                                                                    {
+                                                                        "bg-red-100 text-red-700 border border-red-200": level === 'L1',
+                                                                        "bg-orange-100 text-orange-700 border border-orange-200": level === 'L2',
+                                                                        "bg-amber-100 text-amber-700 border border-amber-200": level === 'L3',
+                                                                        "bg-yellow-100 text-yellow-700 border border-yellow-200": level === 'L4',
+                                                                        "bg-lime-100 text-lime-700 border border-lime-200": level === 'L5',
+                                                                        "bg-emerald-100 text-emerald-700 border border-emerald-200": level === 'L6',
+                                                                    }
+                                                                )}>
+                                                                    {level}
+                                                                </span>
+                                                            ))}
+                                                        </div>
+                                                    )}
+                                                </td>
+                                                <td className="px-6 py-3 font-medium text-slate-900">{control.label}</td>
+                                                <td className="px-6 py-3 text-slate-500 max-w-md truncate" title={control.description}>{control.description}</td>
+                                                <td className="px-6 py-3 text-center">
+                                                    {control.isMandatory ? (
+                                                        <span className="text-xs font-bold text-red-600 bg-red-50 px-2 py-0.5 rounded border border-red-100">{t('controls.mandatory')}</span>
+                                                    ) : (
+                                                        <span className="text-xs text-slate-400">{t('controls.optional')}</span>
+                                                    )}
+                                                </td>
+                                                <td className="px-6 py-3 text-right">
+                                                    <div className="flex justify-end gap-1">
+                                                        <button
+                                                            onClick={() => openView(control)}
+                                                            className="p-1.5 text-slate-400 hover:text-cyan-600 hover:bg-cyan-50 rounded transition-colors"
+                                                            title={t('controls.actions.view')}
+                                                        >
+                                                            <Eye size={16} />
+                                                        </button>
+                                                        <button
+                                                            onClick={() => openEdit(control)}
+                                                            className="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors"
+                                                            title={t('controls.actions.edit')}
+                                                        >
+                                                            <Edit2 size={16} />
+                                                        </button>
+                                                        <button
+                                                            onClick={() => deleteControl(control.id)}
+                                                            className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
+                                                            title={t('controls.actions.delete')}
+                                                        >
+                                                            <Trash2 size={16} />
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        );
+                                    })}
+                            </tbody>
+                        </table>
                     </div>
-
-                    {/* Level Filter */}
-                    <div className="flex items-center gap-2">
-                        <label htmlFor="level-filter" className="text-sm text-slate-600">
-                            {t('controls.filters.level')}:
-                        </label>
-                        <select
-                            id="level-filter"
-                            value={levelFilter}
-                            onChange={(e) => setLevelFilter(e.target.value)}
-                            className="px-3 py-1.5 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                        >
-                            <option value="">{t('controls.filters.allLevels')}</option>
-                            {LEVELS.map(level => (
-                                <option key={level} value={level}>{level}</option>
-                            ))}
-                        </select>
-                    </div>
-
-                    {/* Clear Filters Button */}
-                    {hasActiveFilters && (
-                        <button
-                            onClick={clearFilters}
-                            className="flex items-center gap-1 px-3 py-1.5 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                        >
-                            <XCircle size={16} />
-                            {t('controls.filters.clearFilters')}
-                        </button>
-                    )}
-
-                    {/* Results count */}
-                    <div className="ml-auto text-sm text-slate-500">
-                        {t('controls.filters.showing')} <span className="font-bold text-slate-700">{filteredControls.length}</span> {t('controls.filters.of')} <span className="font-bold text-slate-700">{controls.length}</span> {t('controls.filters.controls')}
-                    </div>
-                </div>
-            </div>
-
-            <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-                <table className="w-full text-left text-sm">
-                    <thead className="bg-slate-50 border-b border-slate-200">
-                        <tr>
-                            <th className="px-4 py-4 font-semibold text-slate-700 text-center w-16">#</th>
-                            <th className="px-6 py-4 font-semibold text-slate-700">{t('controls.tableHeaders.phase')}</th>
-                            <th className="px-6 py-4 font-semibold text-slate-700">{t('controls.tableHeaders.raiseLevels')}</th>
-                            <th className="px-6 py-4 font-semibold text-slate-700">{t('controls.tableHeaders.label')}</th>
-                            <th className="px-6 py-4 font-semibold text-slate-700">{t('controls.tableHeaders.description')}</th>
-                            <th className="px-6 py-4 font-semibold text-slate-700 text-center">{t('controls.tableHeaders.mandatory')}</th>
-                            <th className="px-6 py-4 font-semibold text-slate-700 text-right">{t('controls.tableHeaders.actions')}</th>
-                        </tr>
-                    </thead>
-                    <tbody className="divide-y divide-slate-100">
-                        {filteredControls
-                            .sort((a, b) => {
-                                // Sort by phase order, then by control order
-                                const phaseOrder = { 'Planning': 1, 'ATP': 2, 'ATS': 3, 'ATC': 4, 'Handover': 5, 'ALL': 6 };
-                                const phaseA = phaseOrder[a.phase as keyof typeof phaseOrder] || 99;
-                                const phaseB = phaseOrder[b.phase as keyof typeof phaseOrder] || 99;
-                                if (phaseA !== phaseB) return phaseA - phaseB;
-                                return (a.order || 0) - (b.order || 0);
-                            })
-                            .map((control) => {
-                            const raiseLevels = extractRaiseLevels(control.condition);
-                            return (
-                            <tr key={control.id} className="hover:bg-slate-50/50 transition-colors">
-                                <td className="px-4 py-3 text-center">
-                                    <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-slate-100 text-slate-700 font-bold text-xs">
-                                        {control.order || '-'}
-                                    </span>
-                                </td>
-                                <td className="px-6 py-3">
-                                    <span className={clsx(
-                                        "px-2 py-1 rounded text-xs font-medium",
-                                        {
-                                            "bg-blue-50 text-blue-600": control.phase === 'Planning',
-                                            "bg-indigo-50 text-indigo-600": control.phase === 'ATP',
-                                            "bg-purple-50 text-purple-600": control.phase === 'ATS',
-                                            "bg-emerald-50 text-emerald-600": control.phase === 'ATC',
-                                            "bg-slate-100 text-slate-600": control.phase === 'Handover',
-                                            "bg-amber-50 text-amber-700": control.phase === 'ALL',
-                                        }
-                                    )}>
-                                        {control.phase}
-                                    </span>
-                                </td>
-                                <td className="px-6 py-3">
-                                    {raiseLevels === 'ALL' ? (
-                                        <span className="px-2 py-1 bg-slate-100 text-slate-600 rounded text-xs font-medium">
-                                            ALL
-                                        </span>
-                                    ) : (
-                                        <div className="flex flex-wrap gap-1">
-                                            {raiseLevels.map(level => (
-                                                <span key={level} className={clsx(
-                                                    "px-1.5 py-0.5 rounded text-xs font-bold",
-                                                    {
-                                                        "bg-red-100 text-red-700 border border-red-200": level === 'L1',
-                                                        "bg-orange-100 text-orange-700 border border-orange-200": level === 'L2',
-                                                        "bg-amber-100 text-amber-700 border border-amber-200": level === 'L3',
-                                                        "bg-yellow-100 text-yellow-700 border border-yellow-200": level === 'L4',
-                                                        "bg-lime-100 text-lime-700 border border-lime-200": level === 'L5',
-                                                        "bg-emerald-100 text-emerald-700 border border-emerald-200": level === 'L6',
-                                                    }
-                                                )}>
-                                                    {level}
-                                                </span>
-                                            ))}
-                                        </div>
-                                    )}
-                                </td>
-                                <td className="px-6 py-3 font-medium text-slate-900">{control.label}</td>
-                                <td className="px-6 py-3 text-slate-500 max-w-md truncate" title={control.description}>{control.description}</td>
-                                <td className="px-6 py-3 text-center">
-                                    {control.isMandatory ? (
-                                        <span className="text-xs font-bold text-red-600 bg-red-50 px-2 py-0.5 rounded border border-red-100">{t('controls.mandatory')}</span>
-                                    ) : (
-                                        <span className="text-xs text-slate-400">{t('controls.optional')}</span>
-                                    )}
-                                </td>
-                                <td className="px-6 py-3 text-right">
-                                    <div className="flex justify-end gap-1">
-                                        <button
-                                            onClick={() => openView(control)}
-                                            className="p-1.5 text-slate-400 hover:text-cyan-600 hover:bg-cyan-50 rounded transition-colors"
-                                            title={t('controls.actions.view')}
-                                        >
-                                            <Eye size={16} />
-                                        </button>
-                                        <button
-                                            onClick={() => openEdit(control)}
-                                            className="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors"
-                                            title={t('controls.actions.edit')}
-                                        >
-                                            <Edit2 size={16} />
-                                        </button>
-                                        <button
-                                            onClick={() => deleteControl(control.id)}
-                                            className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
-                                            title={t('controls.actions.delete')}
-                                        >
-                                            <Trash2 size={16} />
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                            );
-                        })}
-                    </tbody>
-                </table>
-            </div>
-            </>
+                </>
             )}
 
             {isModalOpen && (
@@ -439,7 +439,7 @@ const generateLevelCondition = (levels: RaiseLevel[]): string => {
 const extractNonLevelCondition = (condition?: string): string => {
     if (!condition) return '';
     // Remove RAISE level checks and clean up
-    let result = condition
+    const result = condition
         .replace(/\(?opp\.raiseLevel\s*===\s*["']?L[1-6]["']?\s*\)?/g, '')
         .replace(/\|\|\s*\|\|/g, '||')
         .replace(/&&\s*&&/g, '&&')
@@ -778,18 +778,18 @@ const ControlModal = ({ control, onSave, onClose }: { control: ControlConfig | n
     );
 };
 
+const DetailRow = ({ label, value, mono = false }: { label: string; value?: string | React.ReactNode; mono?: boolean }) => (
+    <div className="py-3 border-b border-slate-100 last:border-0">
+        <div className="text-xs font-medium text-slate-500 mb-1">{label}</div>
+        <div className={clsx("text-sm text-slate-900", mono && "font-mono text-xs bg-slate-50 p-2 rounded")}>
+            {value || <span className="text-slate-400 italic">-</span>}
+        </div>
+    </div>
+);
+
 const ViewControlModal = ({ control, onClose, onEdit }: { control: ControlConfig, onClose: () => void, onEdit: () => void }) => {
     const { t } = useTranslation('settings');
     const raiseLevels = extractRaiseLevels(control.condition);
-
-    const DetailRow = ({ label, value, mono = false }: { label: string; value?: string | React.ReactNode; mono?: boolean }) => (
-        <div className="py-3 border-b border-slate-100 last:border-0">
-            <div className="text-xs font-medium text-slate-500 mb-1">{label}</div>
-            <div className={clsx("text-sm text-slate-900", mono && "font-mono text-xs bg-slate-50 p-2 rounded")}>
-                {value || <span className="text-slate-400 italic">-</span>}
-            </div>
-        </div>
-    );
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4 overflow-y-auto">

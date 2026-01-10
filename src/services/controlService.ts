@@ -2,7 +2,7 @@
  * Control Service
  * Handles CRUD operations for controls (checkpoints configuration) with Supabase/localStorage fallback
  */
-import { supabase, isSupabaseConfigured } from '../lib/supabase';
+import { getSupabaseClient, isSupabaseConfigured } from '../lib/supabase';
 import { isUsingSupabase } from '../lib/supabaseUtils';
 import type { ControlConfig } from '../types';
 
@@ -76,39 +76,43 @@ export async function getControls(): Promise<ControlConfig[]> {
         !iasAuthority ||
         !iasClientId;
 
-    if (!isTestMode && isSupabaseConfigured() && supabase) {
-        const { data: controls, error } = await supabase
-            .from('controls')
-            .select('*')
-            .order('phase')
-            .order('sort_order');
+    if (!isTestMode && isSupabaseConfigured()) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const supabase = getSupabaseClient() as any;
+        if (supabase) {
+            const { data: controls, error } = await supabase
+                .from('controls')
+                .select('*')
+                .order('phase')
+                .order('sort_order');
 
-        if (error) {
-            console.error('Supabase error fetching controls:', error);
-            throw new Error(`Failed to fetch controls: ${error.message}`);
-        }
-
-        if (!controls || controls.length === 0) {
-            return [];
-        }
-
-        // Fetch template links for all controls
-        const controlIds = controls.map(c => c.id);
-        const { data: templateLinks } = await supabase
-            .from('control_template_links')
-            .select('*')
-            .in('control_id', controlIds)
-            .order('sort_order');
-
-        const linksByControl: Record<string, TemplateLinkRow[]> = {};
-        (templateLinks || []).forEach((tl) => {
-            if (!linksByControl[tl.control_id]) {
-                linksByControl[tl.control_id] = [];
+            if (error) {
+                console.error('Supabase error fetching controls:', error);
+                throw new Error(`Failed to fetch controls: ${error.message}`);
             }
-            linksByControl[tl.control_id].push(tl);
-        });
 
-        return controls.map(c => rowToControl(c, linksByControl[c.id] || []));
+            if (!controls || controls.length === 0) {
+                return [];
+            }
+
+            // Fetch template links for all controls
+            const controlIds = (controls as ControlRow[]).map(c => c.id);
+            const { data: templateLinks } = await supabase
+                .from('control_template_links')
+                .select('*')
+                .in('control_id', controlIds)
+                .order('sort_order');
+
+            const linksByControl: Record<string, TemplateLinkRow[]> = {};
+            ((templateLinks as TemplateLinkRow[]) || []).forEach((tl) => {
+                if (!linksByControl[tl.control_id]) {
+                    linksByControl[tl.control_id] = [];
+                }
+                linksByControl[tl.control_id].push(tl);
+            });
+
+            return (controls as ControlRow[]).map(c => rowToControl(c, linksByControl[c.id] || []));
+        }
     }
 
     // Fallback to localStorage
@@ -120,6 +124,8 @@ export async function getControls(): Promise<ControlConfig[]> {
  * Get a single control by ID
  */
 export async function getControl(id: string): Promise<ControlConfig | null> {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const supabase = getSupabaseClient() as any;
     if (isSupabaseConfigured() && supabase) {
         const [controlResult, linksResult] = await Promise.all([
             supabase.from('controls').select('*').eq('id', id).single(),
@@ -132,7 +138,7 @@ export async function getControl(id: string): Promise<ControlConfig | null> {
             throw new Error(`Failed to fetch control: ${controlResult.error.message}`);
         }
 
-        return rowToControl(controlResult.data, linksResult.data || []);
+        return rowToControl(controlResult.data as ControlRow, (linksResult.data as TemplateLinkRow[]) || []);
     }
 
     // Fallback to localStorage
@@ -144,6 +150,8 @@ export async function getControl(id: string): Promise<ControlConfig | null> {
  * Create a new control
  */
 export async function createControl(control: ControlConfig): Promise<ControlConfig> {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const supabase = getSupabaseClient() as any;
     if (isSupabaseConfigured() && supabase) {
         const { data, error } = await supabase
             .from('controls')
@@ -167,7 +175,7 @@ export async function createControl(control: ControlConfig): Promise<ControlConf
             await supabase.from('control_template_links').insert(linkData);
         }
 
-        return rowToControl(data);
+        return rowToControl(data as ControlRow);
     }
 
     // Fallback to localStorage
@@ -181,6 +189,8 @@ export async function createControl(control: ControlConfig): Promise<ControlConf
  * Update an existing control
  */
 export async function updateControl(control: ControlConfig): Promise<ControlConfig> {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const supabase = getSupabaseClient() as any;
     if (isSupabaseConfigured() && supabase) {
         const insertData = controlToInsert(control);
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -210,7 +220,7 @@ export async function updateControl(control: ControlConfig): Promise<ControlConf
             await supabase.from('control_template_links').insert(linkData);
         }
 
-        return rowToControl(data);
+        return rowToControl(data as ControlRow);
     }
 
     // Fallback to localStorage
@@ -228,6 +238,8 @@ export async function updateControl(control: ControlConfig): Promise<ControlConf
  * Delete a control
  */
 export async function deleteControl(id: string): Promise<void> {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const supabase = getSupabaseClient() as any;
     if (isSupabaseConfigured() && supabase) {
         // Delete template links first
         await supabase.from('control_template_links').delete().eq('control_id', id);
@@ -255,6 +267,8 @@ export async function deleteControl(id: string): Promise<void> {
  * Reset controls to defaults (bulk insert)
  */
 export async function resetControls(defaultControls: ControlConfig[]): Promise<void> {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const supabase = getSupabaseClient() as any;
     if (isSupabaseConfigured() && supabase) {
         // Delete all existing controls (cascade will handle template links)
         await supabase.from('control_template_links').delete().neq('id', '');

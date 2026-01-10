@@ -2,7 +2,7 @@
  * Customer Service
  * Handles CRUD operations for customers with Supabase/localStorage fallback
  */
-import { supabase, isSupabaseConfigured } from '../lib/supabase';
+import { getSupabaseClient, isSupabaseConfigured } from '../lib/supabase';
 import { isUsingSupabase } from '../lib/supabaseUtils';
 import type { Customer, Industry } from '../types';
 
@@ -43,6 +43,8 @@ function customerToInsert(customer: Omit<Customer, 'id'> & { id?: string }): Cus
  * Get all customers
  */
 export async function getCustomers(): Promise<Customer[]> {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const supabase = getSupabaseClient() as any;
     if (isSupabaseConfigured() && supabase) {
         const { data, error } = await supabase
             .from('customers')
@@ -54,7 +56,7 @@ export async function getCustomers(): Promise<Customer[]> {
             throw new Error(`Failed to fetch customers: ${error.message}`);
         }
 
-        return (data || []).map(rowToCustomer);
+        return ((data as CustomerRow[]) || []).map(rowToCustomer);
     }
 
     // Fallback to localStorage
@@ -66,6 +68,8 @@ export async function getCustomers(): Promise<Customer[]> {
  * Get a single customer by ID
  */
 export async function getCustomer(id: string): Promise<Customer | null> {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const supabase = getSupabaseClient() as any;
     if (isSupabaseConfigured() && supabase) {
         const { data, error } = await supabase
             .from('customers')
@@ -79,7 +83,7 @@ export async function getCustomer(id: string): Promise<Customer | null> {
             throw new Error(`Failed to fetch customer: ${error.message}`);
         }
 
-        return data ? rowToCustomer(data) : null;
+        return data ? rowToCustomer(data as CustomerRow) : null;
     }
 
     // Fallback to localStorage
@@ -93,19 +97,23 @@ export async function getCustomer(id: string): Promise<Customer | null> {
 export async function createCustomer(customer: Omit<Customer, 'id'>): Promise<Customer> {
     const id = crypto.randomUUID();
 
-    if (isSupabaseConfigured() && supabase) {
-        const { data, error } = await supabase
-            .from('customers')
-            .insert(customerToInsert({ ...customer, id }))
-            .select()
-            .single();
+    if (isSupabaseConfigured()) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const supabase = getSupabaseClient() as any;
+        if (supabase) {
+            const { data, error } = await supabase
+                .from('customers')
+                .insert(customerToInsert({ ...customer, id }))
+                .select()
+                .single();
 
-        if (error) {
-            console.error('Supabase error creating customer:', error);
-            throw new Error(`Failed to create customer: ${error.message}`);
+            if (error) {
+                console.error('Supabase error creating customer:', error);
+                throw new Error(`Failed to create customer: ${error.message}`);
+            }
+
+            return rowToCustomer(data);
         }
-
-        return rowToCustomer(data);
     }
 
     // Fallback to localStorage
@@ -120,6 +128,8 @@ export async function createCustomer(customer: Omit<Customer, 'id'>): Promise<Cu
  * Update an existing customer
  */
 export async function updateCustomer(customer: Customer): Promise<Customer> {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const supabase = getSupabaseClient() as any;
     if (isSupabaseConfigured() && supabase) {
         const updateData = {
             name: customer.name,
@@ -138,7 +148,7 @@ export async function updateCustomer(customer: Customer): Promise<Customer> {
             throw new Error(`Failed to update customer: ${error.message}`);
         }
 
-        return rowToCustomer(data);
+        return rowToCustomer(data as CustomerRow);
     }
 
     // Fallback to localStorage
@@ -156,6 +166,8 @@ export async function updateCustomer(customer: Customer): Promise<Customer> {
  * Delete a customer
  */
 export async function deleteCustomer(id: string): Promise<void> {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const supabase = getSupabaseClient() as any;
     if (isSupabaseConfigured() && supabase) {
         const { error } = await supabase
             .from('customers')

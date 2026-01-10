@@ -34,7 +34,7 @@ const initSupabase = (): SupabaseClient<Database> | null => {
         return null;
     }
 
-    return createClient<Database>(supabaseUrl, supabaseAnonKey, {
+    return createClient<Database, 'public'>(supabaseUrl, supabaseAnonKey, {
         auth: {
             autoRefreshToken: true,
             persistSession: false, // We use SAP IAS, not Supabase auth

@@ -34,7 +34,8 @@ export async function fetchCustomers(): Promise<Customer[]> {
   }
 
   // PRODUCTION: Read from Supabase
-  const supabase = getSupabaseClient();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const supabase = getSupabaseClient() as any;
 
   if (!supabase) {
     console.warn('Supabase not configured');
@@ -51,7 +52,7 @@ export async function fetchCustomers(): Promise<Customer[]> {
     throw new Error(`Failed to fetch customers: ${error.message}`);
   }
 
-  return (data || []).map(mapToCustomer);
+  return ((data as CustomerRow[]) || []).map(mapToCustomer);
 }
 
 /**
@@ -67,7 +68,8 @@ export async function createCustomer(customer: Customer): Promise<Customer> {
     return customer;
   }
 
-  const supabase = getSupabaseClient();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const supabase = getSupabaseClient() as any;
 
   if (!supabase) {
     throw new Error('Supabase not configured');
@@ -90,7 +92,7 @@ export async function createCustomer(customer: Customer): Promise<Customer> {
     throw new Error(`Failed to create customer: ${error.message}`);
   }
 
-  return mapToCustomer(data);
+  return mapToCustomer(data as CustomerRow);
 }
 
 /**
@@ -113,7 +115,8 @@ export async function updateCustomer(
     throw new Error(`Customer ${id} not found in localStorage`);
   }
 
-  const supabase = getSupabaseClient();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const supabase = getSupabaseClient() as any;
 
   if (!supabase) {
     throw new Error('Supabase not configured');
@@ -137,7 +140,7 @@ export async function updateCustomer(
     throw new Error(`Failed to update customer: ${error.message}`);
   }
 
-  return mapToCustomer(data);
+  return mapToCustomer(data as CustomerRow);
 }
 
 /**
@@ -153,7 +156,8 @@ export async function deleteCustomer(id: string): Promise<void> {
     return;
   }
 
-  const supabase = getSupabaseClient();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const supabase = getSupabaseClient() as any;
 
   if (!supabase) {
     throw new Error('Supabase not configured');

@@ -14,10 +14,7 @@ import {
 import type { Opportunity, Phase } from '../types';
 
 // Mock supabase module
-vi.mock('../lib/supabase', () => ({
-  supabase: null,
-  isSupabaseConfigured: () => false,
-}));
+// Mock supabase module handled in setup.ts
 
 const STORAGE_KEY = 'raise_opportunities';
 

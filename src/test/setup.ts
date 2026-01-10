@@ -2,19 +2,18 @@ import '@testing-library/jest-dom';
 import { beforeEach, vi } from 'vitest';
 
 // Mock Supabase to ensure tests use localStorage fallback
-vi.mock('../lib/supabase', () => ({
-  supabase: null,
-  isSupabaseConfigured: () => false,
-  getSupabase: () => {
-    throw new Error('Supabase is not configured in tests');
-  },
-  setSupabaseAuth: async () => {
-    // No-op in tests
-  },
-  clearSupabaseAuth: async () => {
-    // No-op in tests
-  },
-}));
+vi.mock('../lib/supabase', () => {
+  return {
+    supabase: null,
+    getSupabaseClient: vi.fn(() => null),
+    isSupabaseConfigured: vi.fn(() => false),
+    getSupabase: vi.fn(() => {
+      throw new Error('Supabase is not configured in tests');
+    }),
+    setSupabaseAuth: vi.fn(),
+    clearSupabaseAuth: vi.fn(),
+  };
+});
 
 // Mock localStorage for tests - use a class-based approach for proper reset
 class LocalStorageMock {

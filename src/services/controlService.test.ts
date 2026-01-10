@@ -15,10 +15,7 @@ import {
 import type { ControlConfig } from '../types';
 
 // Mock supabase module
-vi.mock('../lib/supabase', () => ({
-  supabase: null,
-  isSupabaseConfigured: () => false,
-}));
+// Mock supabase module handled in setup.ts
 
 const STORAGE_KEY = 'raise_controls';
 

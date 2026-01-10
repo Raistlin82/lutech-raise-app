@@ -42,6 +42,7 @@ function mapToInsert(opp: Opportunity, userEmail: string): OpportunityInsert {
   defaultDecisionDate.setDate(defaultDecisionDate.getDate() + 90);
 
   return {
+    id: opp.id,
     title: opp.title,
     customer_id: opp.customerId || null,
     tcv: opp.tcv,
@@ -81,14 +82,15 @@ export async function fetchOpportunities(): Promise<Opportunity[]> {
   }
 
   // PRODUCTION: Read from Supabase
-  const supabase = getSupabaseClient();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const supabase = getSupabaseClient() as any;
 
   if (!supabase) {
     console.warn('Supabase not configured');
     return [];
   }
 
-  const { data, error} = await supabase
+  const { data, error } = await supabase
     .from('opportunities')
     .select('*')
     .order('created_at', { ascending: false });
@@ -98,7 +100,7 @@ export async function fetchOpportunities(): Promise<Opportunity[]> {
     throw new Error(`Failed to fetch opportunities: ${error.message}`);
   }
 
-  return (data || []).map(mapToOpportunity);
+  return ((data as OpportunityRow[]) || []).map(mapToOpportunity);
 }
 
 /**
@@ -117,7 +119,8 @@ export async function createOpportunity(
     return opportunity;
   }
 
-  const supabase = getSupabaseClient();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const supabase = getSupabaseClient() as any;
 
   if (!supabase) {
     throw new Error('Supabase not configured');
@@ -136,7 +139,7 @@ export async function createOpportunity(
     throw new Error(`Failed to create opportunity: ${error.message}`);
   }
 
-  return mapToOpportunity(data);
+  return mapToOpportunity(data as OpportunityRow);
 }
 
 /**
@@ -160,7 +163,8 @@ export async function updateOpportunity(
     throw new Error(`Opportunity ${id} not found in localStorage`);
   }
 
-  const supabase = getSupabaseClient();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const supabase = getSupabaseClient() as any;
 
   if (!supabase) {
     throw new Error('Supabase not configured');
@@ -193,7 +197,7 @@ export async function updateOpportunity(
     throw new Error(`Failed to update opportunity: ${error.message}`);
   }
 
-  return mapToOpportunity(data);
+  return mapToOpportunity(data as OpportunityRow);
 }
 
 /**
@@ -210,7 +214,8 @@ export async function deleteOpportunity(id: string): Promise<void> {
     return;
   }
 
-  const supabase = getSupabaseClient();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const supabase = getSupabaseClient() as any;
 
   if (!supabase) {
     throw new Error('Supabase not configured');

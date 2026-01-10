@@ -2,7 +2,7 @@
  * Opportunity Service
  * Handles CRUD operations for opportunities with Supabase/localStorage fallback
  */
-import { supabase, isSupabaseConfigured } from '../lib/supabase';
+import { getSupabaseClient, isSupabaseConfigured } from '../lib/supabase';
 import { isUsingSupabase } from '../lib/supabaseUtils';
 import type { Opportunity, KcpDeviation, Checkpoint, Phase, RaiseLevel } from '../types';
 
@@ -46,7 +46,7 @@ function rowToOpportunity(
         clientName: row.client_name || undefined,
         industry: row.industry || undefined,
         tcv: row.tcv,
-        raiseTcv: row.raise_tcv,
+        raiseTcv: row.raise_tcv ?? row.tcv,
         marginPercent: row.margin_percent || undefined,
         firstMarginPercent: row.first_margin_percent || undefined,
         cashFlowNeutral: row.cash_flow_neutral || undefined,
@@ -129,6 +129,8 @@ function opportunityToDbRecord(opp: Opportunity) {
  * Get all opportunities
  */
 export async function getOpportunities(): Promise<Opportunity[]> {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const supabase = getSupabaseClient() as any;
     if (isSupabaseConfigured() && supabase) {
         const { data: opps, error: oppsError } = await supabase
             .from('opportunities')
@@ -145,7 +147,7 @@ export async function getOpportunities(): Promise<Opportunity[]> {
         }
 
         // Fetch all deviations and checkpoints for these opportunities
-        const oppIds = opps.map(o => o.id);
+        const oppIds = (opps as OpportunityRow[]).map(o => o.id);
 
         const [deviationsResult, checkpointsResult] = await Promise.all([
             supabase.from('kcp_deviations').select('*').in('opportunity_id', oppIds),
@@ -153,7 +155,7 @@ export async function getOpportunities(): Promise<Opportunity[]> {
         ]);
 
         const deviationsByOpp: Record<string, KcpDeviationRow[]> = {};
-        (deviationsResult.data || []).forEach((d) => {
+        ((deviationsResult.data as KcpDeviationRow[]) || []).forEach((d) => {
             if (!deviationsByOpp[d.opportunity_id]) {
                 deviationsByOpp[d.opportunity_id] = [];
             }
@@ -161,14 +163,14 @@ export async function getOpportunities(): Promise<Opportunity[]> {
         });
 
         const checkpointsByOpp: Record<string, CheckpointRow[]> = {};
-        (checkpointsResult.data || []).forEach((cp) => {
+        ((checkpointsResult.data as CheckpointRow[]) || []).forEach((cp) => {
             if (!checkpointsByOpp[cp.opportunity_id]) {
                 checkpointsByOpp[cp.opportunity_id] = [];
             }
             checkpointsByOpp[cp.opportunity_id].push(cp);
         });
 
-        return opps.map((opp) =>
+        return (opps as OpportunityRow[]).map((opp) =>
             rowToOpportunity(
                 opp,
                 deviationsByOpp[opp.id] || [],
@@ -186,6 +188,8 @@ export async function getOpportunities(): Promise<Opportunity[]> {
  * Get a single opportunity by ID
  */
 export async function getOpportunity(id: string): Promise<Opportunity | null> {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const supabase = getSupabaseClient() as any;
     if (isSupabaseConfigured() && supabase) {
         const [oppResult, deviationsResult, checkpointsResult] = await Promise.all([
             supabase.from('opportunities').select('*').eq('id', id).single(),
@@ -200,9 +204,9 @@ export async function getOpportunity(id: string): Promise<Opportunity | null> {
         }
 
         return rowToOpportunity(
-            oppResult.data,
-            deviationsResult.data || [],
-            checkpointsResult.data || []
+            oppResult.data as OpportunityRow,
+            (deviationsResult.data as KcpDeviationRow[]) || [],
+            (checkpointsResult.data as CheckpointRow[]) || []
         );
     }
 
@@ -215,6 +219,8 @@ export async function getOpportunity(id: string): Promise<Opportunity | null> {
  * Create a new opportunity
  */
 export async function createOpportunity(opp: Opportunity): Promise<Opportunity> {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const supabase = getSupabaseClient() as any;
     if (isSupabaseConfigured() && supabase) {
         // Insert opportunity
         const { data, error } = await supabase
@@ -293,6 +299,8 @@ export async function createOpportunity(opp: Opportunity): Promise<Opportunity> 
  * Update an existing opportunity
  */
 export async function updateOpportunity(opp: Opportunity): Promise<Opportunity> {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const supabase = getSupabaseClient() as any;
     if (isSupabaseConfigured() && supabase) {
         // Update main opportunity record
         const dbRecord = opportunityToDbRecord(opp);
@@ -369,6 +377,8 @@ export async function updateOpportunity(opp: Opportunity): Promise<Opportunity> 
  * Delete an opportunity
  */
 export async function deleteOpportunity(id: string): Promise<void> {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const supabase = getSupabaseClient() as any;
     if (isSupabaseConfigured() && supabase) {
         // Delete related records first (cascade should handle this, but being explicit)
         await Promise.all([
