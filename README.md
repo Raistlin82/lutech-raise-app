@@ -69,11 +69,28 @@ Per un'analisi dettagliata del design di sistema, dei modelli dati e della logic
 ### Struttura Progetto
 ```text
 src/
-├── components/   # UI & Process Components
-├── stores/       # State Management (Zustand)
-├── lib/          # Business Logic (RAISE engine)
-├── i18n/         # Multi-namespace translation files
-└── __tests__/    # Vitest & RTL Test suites
+├── components/        # UI Components (modular structure)
+│   ├── auth/          # Authentication components
+│   ├── common/        # Reusable UI components
+│   ├── customers/     # Customer management
+│   ├── dashboard/     # Dashboard & analytics
+│   ├── layout/        # App layout & navigation
+│   ├── opportunities/ # Opportunity modals
+│   ├── settings/      # Settings & controls config
+│   └── workflow/      # Phase workflow (modular)
+├── stores/            # State Management (Zustand)
+├── services/          # Data layer (Supabase/localStorage)
+├── hooks/             # Custom React hooks
+├── lib/               # Business Logic (RAISE engine)
+├── i18n/              # Multi-namespace translations
+├── pages/             # Route pages
+├── types/             # TypeScript definitions
+└── __tests__/         # Vitest & RTL test suites
+
+supabase/              # Database scripts
+├── cleanup_database.sql      # Clear data (keep controls)
+├── truncate_all_except_controls.sql  # Fast cleanup
+└── reset_controls_only.sql   # Full reset with defaults
 ```
 
 ---
@@ -103,8 +120,8 @@ Il sistema è predisposto per diverse topologie di rilascio, come dettagliato ne
 
 Garantiamo l'integrità del sistema con una copertura test totale e automatizzata.
 
-- **Unit/Integration:** 339 test eseguiti con Vitest + React Testing Library.
-- **End-to-End:** Suite completa con Playwright (workflow completi, navigazione, regressioni).
+- **Unit/Integration:** 502 test eseguiti con Vitest + React Testing Library (65%+ coverage).
+- **End-to-End:** 96 test Playwright (workflow completi, navigazione, regressioni).
 - **Cross-Browser:** Test automatici su Chrome, Firefox, Safari (Desktop + Mobile).
 - **CI/CD:** Pipeline automatizzata su GitHub Actions per ogni PR/Push con JUnit reporting.
 
@@ -131,6 +148,10 @@ Consulta la guida completa: **[TESTING_GUIDE.md](docs/TESTING_GUIDE.md)** per de
 - [x] Fix Handover completion workflow (2026-01-01)
 - [x] Infrastruttura E2E Testing completa con Playwright
 - [x] CI/CD pipeline con test multi-browser automatici
+- [x] Refactoring codebase: modular components (2026-01-10)
+- [x] Mobile/iPhone optimization con safe-area support
+- [x] Type safety improvements (eliminazione `any` types)
+- [x] SQL scripts per database cleanup/reset
 
 ### In Sviluppo 🚧
 - [ ] Reporting Avanzato & Business Intelligence

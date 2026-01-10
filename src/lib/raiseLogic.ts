@@ -1,9 +1,11 @@
 import type { Opportunity, RaiseLevel, Checkpoint, ControlConfig } from '../types';
 import { evaluateCondition as evaluateConditionSafe } from './ruleEngine';
+import { calculateLevelFromTcv } from '../services/authorizationMatrixService';
 
 /**
  * Calculate RAISE Level according to PSQ-003 v17 §5.4 Matrice di Autorizzazione
  * Uses RAISE TCV (not regular TCV) as it includes optional parts
+ * Now reads TCV thresholds from configurable Authorization Matrix
  */
 export const calculateRaiseLevel = (opp: Opportunity): RaiseLevel => {
     // PSQ-003 §5.4: Clausole sociali o attività NON core business -> L1 DIRETTO
@@ -15,13 +17,8 @@ export const calculateRaiseLevel = (opp: Opportunity): RaiseLevel => {
     const v = opp.raiseTcv;
 
     // PSQ-003 §5.4: Base level calculation from TCV RAISE ranges
-    let level: RaiseLevel = 'L6';
-    if (v > 20000000) level = 'L1';
-    else if (v >= 10000000) level = 'L2';
-    else if (v >= 1000000) level = 'L3';
-    else if (v >= 500000) level = 'L4';
-    else if (v >= 250000) level = 'L5';
-    else level = 'L6';
+    // Now uses configurable Authorization Matrix instead of hardcoded values
+    let level = calculateLevelFromTcv(v);
 
     // PSQ-003 §5.4: Servizi >= 200k con componenti rischi < 3% -> aumenta a L2
     if (opp.hasLowRiskServices && (opp.servicesValue || 0) >= 200000) {

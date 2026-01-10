@@ -3,7 +3,11 @@
  * Handles CRUD operations for customers with Supabase/localStorage fallback
  */
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
+import { isUsingSupabase } from '../lib/supabaseUtils';
 import type { Customer, Industry } from '../types';
+
+// Re-export for backward compatibility
+export { isUsingSupabase };
 import type { Database } from '../lib/database.types';
 
 type CustomerRow = Database['public']['Tables']['customers']['Row'];
@@ -92,7 +96,6 @@ export async function createCustomer(customer: Omit<Customer, 'id'>): Promise<Cu
     if (isSupabaseConfigured() && supabase) {
         const { data, error } = await supabase
             .from('customers')
-            // @ts-expect-error - Supabase generated types issue
             .insert(customerToInsert({ ...customer, id }))
             .select()
             .single();
@@ -125,7 +128,6 @@ export async function updateCustomer(customer: Customer): Promise<Customer> {
         };
         const { data, error } = await supabase
             .from('customers')
-            // @ts-expect-error - Supabase generated types issue
             .update(updateData)
             .eq('id', customer.id)
             .select()
@@ -174,9 +176,3 @@ export async function deleteCustomer(id: string): Promise<void> {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(filtered));
 }
 
-/**
- * Check if the service is using Supabase or localStorage
- */
-export function isUsingSupabase(): boolean {
-    return isSupabaseConfigured();
-}

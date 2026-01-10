@@ -3,7 +3,7 @@ import type { ControlConfig } from '../types';
 import { showToast } from '../lib/toast';
 import * as controlService from '../services/controlService';
 
-interface SettingsContextType {
+export interface SettingsContextType {
     controls: ControlConfig[];
     loading: boolean;
     addControl: (control: ControlConfig) => Promise<void>;
@@ -957,3 +957,11 @@ export const useSettings = () => {
     }
     return context;
 };
+
+// New names - Controls is more accurate than Settings
+// since this store only manages controls/checkpoints
+/* eslint-disable react-refresh/only-export-components */
+export const ControlsProvider = SettingsProvider;
+export const useControls = useSettings;
+export type ControlsContextType = SettingsContextType;
+/* eslint-enable react-refresh/only-export-components */

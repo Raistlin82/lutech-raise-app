@@ -1,5 +1,6 @@
 import { AlertTriangle, X } from 'lucide-react';
 import { useRef, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useFocusTrap } from '../../hooks/useFocusTrap';
 
 interface ConfirmModalProps {
@@ -17,13 +18,17 @@ export const ConfirmModal = ({
     isOpen,
     title,
     message,
-    confirmLabel = 'Conferma',
-    cancelLabel = 'Annulla',
+    confirmLabel,
+    cancelLabel,
     onConfirm,
     onCancel,
     variant = 'warning'
 }: ConfirmModalProps) => {
+    const { t } = useTranslation();
     const modalRef = useRef<HTMLDivElement>(null);
+
+    const finalConfirmLabel = confirmLabel || t('button.confirm');
+    const finalCancelLabel = cancelLabel || t('button.cancel');
 
     // Trap focus within modal
     useFocusTrap(modalRef, isOpen);
@@ -101,7 +106,7 @@ export const ConfirmModal = ({
                         <button
                             onClick={onCancel}
                             className="p-2 hover:bg-white/50 rounded-lg transition-colors text-slate-600 hover:text-slate-900"
-                            aria-label="Chiudi dialogo"
+                            aria-label={t('button.close')}
                         >
                             <X size={20} strokeWidth={2.5} />
                         </button>
@@ -123,16 +128,14 @@ export const ConfirmModal = ({
                     <button
                         onClick={onCancel}
                         className="px-6 py-3 text-slate-700 font-semibold rounded-xl border-2 border-slate-200 hover:border-slate-300 hover:bg-white transition-all"
-                        aria-label={`${cancelLabel} e chiudi dialogo`}
                     >
-                        {cancelLabel}
+                        {finalCancelLabel}
                     </button>
                     <button
                         onClick={onConfirm}
                         className={`px-6 py-3 text-white font-semibold rounded-xl ${styles.button} shadow-lg transition-all`}
-                        aria-label={`${confirmLabel} l'azione`}
                     >
-                        {confirmLabel}
+                        {finalConfirmLabel}
                     </button>
                 </div>
             </div>

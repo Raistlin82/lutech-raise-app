@@ -1,5 +1,5 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
-import type { Database } from '@/types/supabase';
+import type { Database } from './database.types';
 
 // Get runtime config from window global (set by main.tsx after loading /config.json)
 const getRuntimeConfig = (): Partial<RuntimeConfig> => {

@@ -148,3 +148,107 @@ export interface Customer {
   industry: Industry;      // Enum
   isPublicSector: boolean; // Public Administration flag
 }
+
+// Authorization Matrix Configuration (PSQ-003 §5.4)
+export type WorkflowType = 'Classic' | 'Simplified' | 'FastTrack';
+
+export interface AuthorizationLevel {
+  level: RaiseLevel;
+  tcvMin: number;           // Minimum TCV in euros (inclusive)
+  tcvMax: number;           // Maximum TCV in euros (exclusive, use Infinity for unbounded)
+  tcvLabel: string;         // Display label (e.g., "> 20 M€", "10-20 M€")
+  authorizersAtp: string;   // Authorizers for ATP phase
+  authorizersAtsAtcHnd: string; // Authorizers for ATS, ATC, Handover
+  workflowType: WorkflowType;
+  notes?: string;           // Additional notes
+}
+
+export interface AuthorizationMatrixConfig {
+  id: string;
+  name: string;             // Configuration name (e.g., "Default", "2024 Rules")
+  isActive: boolean;        // Only one config can be active
+  levels: AuthorizationLevel[];
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+// Expert Involvement Configuration (PSQ-003 §5.5)
+export type ExpertFunction =
+  | 'Finance'
+  | 'Procurement'
+  | 'CMCIO'
+  | 'Legal'
+  | 'Compliance231'
+  | 'ComplianceAnticorruzione'
+  | 'ComplianceESG'
+  | 'ComplianceSistemiGestione'
+  | 'ComplianceAltro'
+  | 'DataPrivacy'
+  | 'Risk'
+  | 'Security'
+  | 'HSE'
+  | 'HR';
+
+export interface ExpertConfig {
+  id: string;
+  function: ExpertFunction;
+  displayName: string;           // Human-readable name
+  applicableLevels: RaiseLevel[]; // Which RAISE levels require this expert
+  involvementCondition: string;  // When to involve (from Excel)
+  email?: string;                // Contact email
+  notes?: string;
+}
+
+export interface ExpertInvolvementConfig {
+  id: string;
+  name: string;
+  isActive: boolean;
+  experts: ExpertConfig[];
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+// Key Financial Targets Configuration (PSQ-003)
+export type FinancialTargetCategory = 'CashFlow' | 'Margins' | 'Deviations' | 'IFRS15';
+
+export interface FinancialTarget {
+  id: string;
+  category: FinancialTargetCategory;
+  scope: string;           // Ambito (es. "termini di pagamento", "RIVENDITA DI PRODOTTI")
+  rule: string;            // Controlli / TO DO
+  threshold?: number;      // Soglia numerica (es. 16% per margine)
+  thresholdUnit?: 'percent' | 'days' | 'months';
+  notes?: string;
+}
+
+export interface FinancialTargetsConfig {
+  id: string;
+  name: string;
+  isActive: boolean;
+  targets: FinancialTarget[];
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+// Under-margin Configuration (PSQ-003)
+export type MarginType = 'Products' | 'Services' | 'Practice';
+
+export interface MarginThreshold {
+  id: string;
+  type: MarginType;
+  name: string;                  // Name (es. "Rivendita Prodotti", "Practice DevOps")
+  targetMargin: number;          // Target margin percentage
+  minimumMargin: number;         // Minimum acceptable margin
+  approvalRequired: boolean;     // Requires under-margin approval
+  approverLevel?: RaiseLevel;    // Minimum level for approval
+  notes?: string;
+}
+
+export interface UnderMarginConfig {
+  id: string;
+  name: string;
+  isActive: boolean;
+  thresholds: MarginThreshold[];
+  createdAt?: string;
+  updatedAt?: string;
+}

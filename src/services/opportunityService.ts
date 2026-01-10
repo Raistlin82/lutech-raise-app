@@ -3,7 +3,11 @@
  * Handles CRUD operations for opportunities with Supabase/localStorage fallback
  */
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
+import { isUsingSupabase } from '../lib/supabaseUtils';
 import type { Opportunity, KcpDeviation, Checkpoint, Phase, RaiseLevel } from '../types';
+
+// Re-export for backward compatibility
+export { isUsingSupabase };
 import type { Database } from '../lib/database.types';
 
 type OpportunityRow = Database['public']['Tables']['opportunities']['Row'];
@@ -141,7 +145,6 @@ export async function getOpportunities(): Promise<Opportunity[]> {
         }
 
         // Fetch all deviations and checkpoints for these opportunities
-        // @ts-expect-error - Missing table definition in Supabase types
         const oppIds = opps.map(o => o.id);
 
         const [deviationsResult, checkpointsResult] = await Promise.all([
@@ -150,8 +153,7 @@ export async function getOpportunities(): Promise<Opportunity[]> {
         ]);
 
         const deviationsByOpp: Record<string, KcpDeviationRow[]> = {};
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (deviationsResult.data || []).forEach((d: any) => {
+        (deviationsResult.data || []).forEach((d) => {
             if (!deviationsByOpp[d.opportunity_id]) {
                 deviationsByOpp[d.opportunity_id] = [];
             }
@@ -159,16 +161,14 @@ export async function getOpportunities(): Promise<Opportunity[]> {
         });
 
         const checkpointsByOpp: Record<string, CheckpointRow[]> = {};
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (checkpointsResult.data || []).forEach((cp: any) => {
+        (checkpointsResult.data || []).forEach((cp) => {
             if (!checkpointsByOpp[cp.opportunity_id]) {
                 checkpointsByOpp[cp.opportunity_id] = [];
             }
             checkpointsByOpp[cp.opportunity_id].push(cp);
         });
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        return (opps as any[]).map((opp: any) =>
+        return opps.map((opp) =>
             rowToOpportunity(
                 opp,
                 deviationsByOpp[opp.id] || [],
@@ -216,10 +216,9 @@ export async function getOpportunity(id: string): Promise<Opportunity | null> {
  */
 export async function createOpportunity(opp: Opportunity): Promise<Opportunity> {
     if (isSupabaseConfigured() && supabase) {
-        // Insert opportunity - using type assertion for Supabase compatibility
+        // Insert opportunity
         const { data, error } = await supabase
             .from('opportunities')
-            // @ts-expect-error - Supabase generated types issue
             .insert(opportunityToDbRecord(opp))
             .select()
             .single();
@@ -242,7 +241,6 @@ export async function createOpportunity(opp: Opportunity): Promise<Opportunity> 
 
             const { error: devError } = await supabase
                 .from('kcp_deviations')
-                // @ts-expect-error - Missing table definition in Supabase types
                 .insert(deviationData);
 
             if (devError) {
@@ -274,7 +272,6 @@ export async function createOpportunity(opp: Opportunity): Promise<Opportunity> 
         if (checkpointData.length > 0) {
             const { error: cpError } = await supabase
                 .from('opportunity_checkpoints')
-                // @ts-expect-error - Missing table definition in Supabase types
                 .insert(checkpointData);
 
             if (cpError) {
@@ -304,7 +301,6 @@ export async function updateOpportunity(opp: Opportunity): Promise<Opportunity> 
 
         const { data, error } = await supabase
             .from('opportunities')
-            // @ts-expect-error - Supabase generated types issue
             .update(updateData)
             .eq('id', opp.id)
             .select()
@@ -326,7 +322,6 @@ export async function updateOpportunity(opp: Opportunity): Promise<Opportunity> 
                 expert_opinion: d.expertOpinion || null,
                 expert_name: d.expertName || null,
             }));
-            // @ts-expect-error - Missing table definition in Supabase types
             await supabase.from('kcp_deviations').insert(deviationData);
         }
 
@@ -353,7 +348,6 @@ export async function updateOpportunity(opp: Opportunity): Promise<Opportunity> 
         });
 
         if (checkpointData.length > 0) {
-            // @ts-expect-error - Missing table definition in Supabase types
             await supabase.from('opportunity_checkpoints').insert(checkpointData);
         }
 
@@ -401,9 +395,3 @@ export async function deleteOpportunity(id: string): Promise<void> {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(filtered));
 }
 
-/**
- * Check if the service is using Supabase or localStorage
- */
-export function isUsingSupabase(): boolean {
-    return isSupabaseConfigured();
-}

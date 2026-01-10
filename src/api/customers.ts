@@ -1,6 +1,6 @@
 import { getSupabaseClient } from '@/lib/supabase';
 import type { Customer, Industry } from '@/types';
-import type { Database } from '@/types/supabase';
+import type { Database } from '@/lib/database.types';
 
 type CustomerRow = Database['public']['Tables']['customers']['Row'];
 type CustomerInsert = Database['public']['Tables']['customers']['Insert'];
@@ -81,8 +81,7 @@ export async function createCustomer(customer: Customer): Promise<Customer> {
 
   const { data, error } = await supabase
     .from('customers')
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    .insert(insert as any)
+    .insert(insert)
     .select()
     .single();
 
@@ -128,7 +127,6 @@ export async function updateCustomer(
 
   const { data, error } = await supabase
     .from('customers')
-    // @ts-expect-error - Supabase generated types issue
     .update(update)
     .eq('id', id)
     .select()

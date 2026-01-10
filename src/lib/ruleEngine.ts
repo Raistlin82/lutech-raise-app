@@ -3,31 +3,53 @@ import type { Opportunity } from '../types';
 /**
  * Safe rule evaluation engine
  * Replaces dangerous new Function() approach with declarative rules
- *
- * Note: This is a generic rule engine that evaluates conditions on any opportunity.
- * The use of 'any' types in operators is intentional to support multiple value types.
  */
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/**
+ * Valid types for rule values
+ * Supports primitives, arrays, and special match values
+ */
+export type RuleValue = string | number | boolean | null | undefined | string[] | number[];
 
-// Predefined safe operators
-const SAFE_OPERATORS = {
-  equals: (a: any, b: any) => a === b,
-  notEquals: (a: any, b: any) => a !== b,
-  greaterThan: (a: number, b: number) => a > b,
-  lessThan: (a: number, b: number) => a < b,
-  greaterThanOrEqual: (a: number, b: number) => a >= b,
-  lessThanOrEqual: (a: number, b: number) => a <= b,
-  includes: (arr: any[], val: any) => arr.includes(val),
-  in: (val: any, arr: any[]) => arr.includes(val),
-  exists: (a: any) => a !== undefined && a !== null,
-  notExists: (a: any) => a === undefined || a === null,
+/**
+ * Supported operator names
+ */
+export type OperatorName =
+  | 'equals'
+  | 'notEquals'
+  | 'greaterThan'
+  | 'lessThan'
+  | 'greaterThanOrEqual'
+  | 'lessThanOrEqual'
+  | 'includes'
+  | 'in'
+  | 'exists'
+  | 'notExists';
+
+/**
+ * Generic operator function type
+ * Uses unknown for flexibility since operators handle runtime type checking
+ */
+type OperatorFn = (a: unknown, b?: unknown) => boolean;
+
+// Predefined safe operators with proper typing
+const SAFE_OPERATORS: Record<OperatorName, OperatorFn> = {
+  equals: (a, b) => a === b,
+  notEquals: (a, b) => a !== b,
+  greaterThan: (a, b) => typeof a === 'number' && typeof b === 'number' && a > b,
+  lessThan: (a, b) => typeof a === 'number' && typeof b === 'number' && a < b,
+  greaterThanOrEqual: (a, b) => typeof a === 'number' && typeof b === 'number' && a >= b,
+  lessThanOrEqual: (a, b) => typeof a === 'number' && typeof b === 'number' && a <= b,
+  includes: (arr, val) => Array.isArray(arr) && arr.includes(val),
+  in: (val, arr) => Array.isArray(arr) && arr.includes(val),
+  exists: (a) => a !== undefined && a !== null,
+  notExists: (a) => a === undefined || a === null,
 };
 
 export interface ConditionRule {
   field: keyof Opportunity;
-  operator: keyof typeof SAFE_OPERATORS;
-  value: any;
+  operator: OperatorName;
+  value: RuleValue;
 }
 
 export interface CompoundCondition {

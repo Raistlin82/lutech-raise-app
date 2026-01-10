@@ -2,16 +2,16 @@
  * useFormValidation Hook
  * Manages form validation state and field-level errors
  * Provides real-time validation on blur
- *
- * Note: This is a generic utility hook that works with any form shape.
- * The use of 'any' types is intentional to provide maximum flexibility.
  */
-
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useCallback } from 'react';
 
+/**
+ * Valid form field value types
+ */
+export type FieldValue = string | number | boolean | null | undefined;
+
 export interface FieldValidation {
-  value: any;
+  value: FieldValue;
   error?: string;
   touched: boolean;
 }
@@ -20,13 +20,16 @@ export interface FormValidationState {
   [fieldName: string]: FieldValidation;
 }
 
-export interface ValidationRules {
-  [fieldName: string]: (value: any, formData?: any) => string | undefined;
+/**
+ * Validation rules mapping field names to validator functions
+ */
+export interface ValidationRules<T extends Record<string, FieldValue> = Record<string, FieldValue>> {
+  [fieldName: string]: (value: FieldValue, formData?: T) => string | undefined;
 }
 
-export const useFormValidation = <T extends Record<string, any>>(
+export const useFormValidation = <T extends Record<string, FieldValue>>(
   initialData: T,
-  validationRules: ValidationRules
+  validationRules: ValidationRules<T>
 ) => {
   const [formState, setFormState] = useState<FormValidationState>(() => {
     const state: FormValidationState = {};
@@ -41,7 +44,7 @@ export const useFormValidation = <T extends Record<string, any>>(
   });
 
   const validateField = useCallback(
-    (fieldName: string, value: any, allFormData?: any): string | undefined => {
+    (fieldName: string, value: FieldValue, allFormData?: T): string | undefined => {
       const validator = validationRules[fieldName];
       if (!validator) return undefined;
       return validator(value, allFormData);
@@ -49,7 +52,7 @@ export const useFormValidation = <T extends Record<string, any>>(
     [validationRules]
   );
 
-  const handleChange = useCallback((fieldName: string, value: any) => {
+  const handleChange = useCallback((fieldName: string, value: FieldValue) => {
     setFormState(prev => ({
       ...prev,
       [fieldName]: {
@@ -64,9 +67,9 @@ export const useFormValidation = <T extends Record<string, any>>(
   const handleBlur = useCallback(
     (fieldName: string) => {
       const formData = Object.keys(formState).reduce((acc, key) => {
-        acc[key] = formState[key].value;
+        acc[key as keyof T] = formState[key].value as T[keyof T];
         return acc;
-      }, {} as any);
+      }, {} as T);
 
       const error = validateField(fieldName, formState[fieldName].value, formData);
 
@@ -84,9 +87,9 @@ export const useFormValidation = <T extends Record<string, any>>(
 
   const validateAll = useCallback((): boolean => {
     const formData = Object.keys(formState).reduce((acc, key) => {
-      acc[key] = formState[key].value;
+      acc[key as keyof T] = formState[key].value as T[keyof T];
       return acc;
-    }, {} as any);
+    }, {} as T);
 
     let hasErrors = false;
     const newState = { ...formState };
@@ -108,7 +111,9 @@ export const useFormValidation = <T extends Record<string, any>>(
   const getFormData = useCallback((): T => {
     const data = {} as T;
     Object.keys(formState).forEach(key => {
-      data[key as keyof T] = formState[key].value;
+      // Type assertion needed as formState stores generic FieldValue
+      // but T may have more specific types for each field
+      (data as Record<string, FieldValue>)[key] = formState[key].value;
     });
     return data;
   }, [formState]);

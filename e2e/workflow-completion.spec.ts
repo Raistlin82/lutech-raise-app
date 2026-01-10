@@ -8,7 +8,7 @@
  */
 
 import { test, expect, Page } from '@playwright/test';
-import { setupTestEnvironment, createTestCustomer, createOpportunityViaUI, waitForAppReady, reloadWithTestMode } from './helpers';
+import { setupTestEnvironment, createTestCustomer, createOpportunityViaUI, reloadWithTestMode } from './helpers';
 
 // Shared test customer - created once per test
 let testCustomer: ReturnType<typeof createTestCustomer>;
@@ -191,9 +191,7 @@ test.describe('Critical User Journeys', () => {
     await page.click('button:has-text("Modifica Dettagli")');
     await expect(page.locator('text=Modifica Dettagli Opportunità')).toBeVisible();
 
-    // Toggle KCP Deviations checkbox
-    const kcpCheckbox = page.locator('input[type="checkbox"]').filter({ has: page.locator('text=Deviazioni KCP').locator('..') }).first();
-    // Click the checkbox label area
+    // Toggle KCP Deviations checkbox by clicking the label
     await page.locator('text=Deviazioni KCP').first().click();
 
     // Close modal
