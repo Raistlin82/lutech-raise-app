@@ -1,5 +1,5 @@
 import { getSupabaseClient } from '@/lib/supabase';
-import type { Opportunity, Phase, RaiseLevel, Checkpoint } from '@/types';
+import type { Opportunity, Phase, RaiseLevel } from '@/types';
 import type { Database } from '@/lib/database.types';
 
 type OpportunityRow = Database['public']['Tables']['opportunities']['Row'];
@@ -25,8 +25,12 @@ function mapToOpportunity(row: OpportunityRow): Opportunity {
     isPublicSector: row.is_public_sector || false,
     raiseLevel: row.raise_level as RaiseLevel,
     deviations: [], // TODO: Load from separate table
-    checkpoints: (row.checkpoints as unknown as Record<string, Checkpoint[]>) || {},
-    firstMarginPercent: row.first_margin_percentage || undefined,
+    checkpoints: {}, // Now handled via separate table or on-the-fly
+    marginPercent: row.margin_percent || undefined,
+    firstMarginPercent: row.first_margin_percent || undefined,
+    isMultiLot: row.is_multi_lot || false,
+    areLotsMutuallyExclusive: row.are_lots_mutually_exclusive || false,
+    lots: (row.lots as unknown as any[]) || [],
     createdByEmail: row.created_by_email,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
@@ -46,7 +50,8 @@ function mapToInsert(opp: Opportunity, userEmail: string): OpportunityInsert {
     title: opp.title,
     customer_id: opp.customerId || null,
     tcv: opp.tcv,
-    first_margin_percentage: opp.firstMarginPercent ?? 0,
+    margin_percent: opp.marginPercent || null,
+    first_margin_percent: opp.firstMarginPercent || null,
     raise_tcv: opp.raiseTcv,
     industry: opp.industry || null,
     is_public_sector: opp.isPublicSector,
@@ -54,7 +59,9 @@ function mapToInsert(opp: Opportunity, userEmail: string): OpportunityInsert {
     raise_level: opp.raiseLevel,
     is_fast_track: opp.isFastTrack,
     current_phase: opp.currentPhase,
-    checkpoints: opp.checkpoints as Record<string, unknown>,
+    is_multi_lot: opp.isMultiLot || false,
+    are_lots_mutually_exclusive: opp.areLotsMutuallyExclusive || false,
+    lots: opp.lots || [],
     created_by_email: userEmail,
     expected_decision_date: defaultDecisionDate.toISOString(),
   };
@@ -174,7 +181,8 @@ export async function updateOpportunity(
     title: updates.title,
     customer_id: updates.customerId || null,
     tcv: updates.tcv,
-    first_margin_percentage: updates.firstMarginPercent,
+    first_margin_percent: updates.firstMarginPercent || null,
+    margin_percent: updates.marginPercent || null,
     raise_tcv: updates.raiseTcv,
     industry: updates.industry || null,
     is_public_sector: updates.isPublicSector,
@@ -182,7 +190,9 @@ export async function updateOpportunity(
     raise_level: updates.raiseLevel,
     is_fast_track: updates.isFastTrack,
     current_phase: updates.currentPhase,
-    checkpoints: updates.checkpoints as Record<string, unknown>,
+    is_multi_lot: updates.isMultiLot,
+    are_lots_mutually_exclusive: updates.areLotsMutuallyExclusive,
+    lots: updates.lots,
   };
 
   const { data, error } = await supabase

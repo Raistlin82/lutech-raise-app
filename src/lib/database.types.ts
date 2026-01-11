@@ -42,7 +42,6 @@ export interface Database {
                     tcv: number;
                     raise_tcv: number | null;
                     margin_percent: number | null;
-                    first_margin_percentage: number;
                     first_margin_percent: number | null;
                     cash_flow_neutral: boolean | null;
                     services_value: number | null;
@@ -73,7 +72,9 @@ export interface Database {
                     ats_date: string | null;
                     atc_date: string | null;
                     rcp_date: string | null;
-                    checkpoints: Record<string, unknown>;
+                    is_multi_lot: boolean;
+                    are_lots_mutually_exclusive: boolean;
+                    lots: any[] | null;
                     created_by_email: string;
                     created_at: string;
                     updated_at: string;
@@ -88,7 +89,6 @@ export interface Database {
                     tcv: number;
                     raise_tcv?: number | null;
                     margin_percent?: number | null;
-                    first_margin_percentage: number;
                     first_margin_percent?: number | null;
                     cash_flow_neutral?: boolean | null;
                     services_value?: number | null;
@@ -119,7 +119,9 @@ export interface Database {
                     ats_date?: string | null;
                     atc_date?: string | null;
                     rcp_date?: string | null;
-                    checkpoints?: Record<string, unknown>;
+                    is_multi_lot?: boolean;
+                    are_lots_mutually_exclusive?: boolean;
+                    lots?: any[] | null;
                     created_by_email: string;
                     created_at?: string;
                     updated_at?: string;

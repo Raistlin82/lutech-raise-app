@@ -211,6 +211,7 @@ export const NewOpportunityPage = () => {
                 checkpoints: {},
 
                 marginPercent: finalMargin,
+                firstMarginPercent: finalMargin, // Initial margin at Planning
                 cashFlowNeutral: true,
                 isNewCustomer: formData.isNewCustomer,
                 createdByEmail: userEmail,

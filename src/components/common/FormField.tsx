@@ -57,8 +57,8 @@ export const FormField = ({
     hasError
       ? 'border-red-300 bg-red-50 focus:border-red-500 focus:ring-4 focus:ring-red-100'
       : isValid && showValidIndicator
-      ? 'border-emerald-300 bg-emerald-50 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100'
-      : 'border-slate-200 bg-white focus:border-cyan-500 focus:ring-4 focus:ring-cyan-100',
+        ? 'border-emerald-300 bg-emerald-50 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100'
+        : 'border-slate-200 bg-white focus:border-cyan-500 focus:ring-4 focus:ring-cyan-100',
     className
   );
 
@@ -122,6 +122,7 @@ export const FormField = ({
             id={id}
             name={name}
             type={type}
+            step={type === 'number' ? 'any' : undefined}
             value={value}
             onChange={handleChange}
             onBlur={onBlur}
