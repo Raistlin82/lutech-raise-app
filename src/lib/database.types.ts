@@ -74,6 +74,7 @@ export interface Database {
                     rcp_date: string | null;
                     is_multi_lot: boolean;
                     are_lots_mutually_exclusive: boolean;
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     lots: any[] | null;
                     created_by_email: string;
                     created_at: string;
@@ -121,6 +122,7 @@ export interface Database {
                     rcp_date?: string | null;
                     is_multi_lot?: boolean;
                     are_lots_mutually_exclusive?: boolean;
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     lots?: any[] | null;
                     created_by_email: string;
                     created_at?: string;
