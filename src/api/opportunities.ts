@@ -131,7 +131,6 @@ export async function createOpportunity(
 
   const insert = mapToInsert(opportunity, userEmail);
 
-  // @ts-expect-error - unblock CI from complex type inference issues
   const { data, error } = await supabase
     .from('opportunities')
     .insert(insert)
@@ -192,7 +191,6 @@ export async function updateOpportunity(
     lots: updates.lots,
   };
 
-  // @ts-expect-error - unblock CI from complex type inference issues
   const { data, error } = await supabase
     .from('opportunities')
     .update(update)
