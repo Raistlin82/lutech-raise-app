@@ -1,5 +1,5 @@
 import { getSupabaseClient } from '@/lib/supabase';
-import type { Opportunity, Phase, RaiseLevel } from '@/types';
+import type { Opportunity, Phase, RaiseLevel, Lot } from '@/types';
 import type { Database } from '@/lib/database.types';
 
 type OpportunityRow = Database['public']['Tables']['opportunities']['Row'];
@@ -30,7 +30,7 @@ function mapToOpportunity(row: OpportunityRow): Opportunity {
     firstMarginPercent: row.first_margin_percent || undefined,
     isMultiLot: row.is_multi_lot || false,
     areLotsMutuallyExclusive: row.are_lots_mutually_exclusive || false,
-    lots: (row.lots as unknown as any[]) || [],
+    lots: (row.lots as unknown as Lot[]) || [],
     createdByEmail: row.created_by_email,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
@@ -76,21 +76,15 @@ export async function fetchOpportunities(): Promise<Opportunity[]> {
   if (typeof window !== 'undefined' && localStorage.getItem('testMode') === 'true') {
     const stored = localStorage.getItem('raise_opportunities');
     if (stored) {
-      try {
-        const opportunities = JSON.parse(stored) as Opportunity[];
-        console.log('[TEST MODE] Loaded opportunities from localStorage:', opportunities.length);
-        return opportunities;
-      } catch (e) {
-        console.error('[TEST MODE] Failed to parse opportunities from localStorage', e);
-      }
+      const opportunities = JSON.parse(stored) as Opportunity[];
+      console.log('[TEST MODE] Loaded opportunities from localStorage:', opportunities.length);
+      return opportunities;
     }
     console.log('[TEST MODE] No opportunities in localStorage, returning empty array');
     return [];
   }
 
-  // PRODUCTION: Read from Supabase
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const supabase = getSupabaseClient() as any;
+  const supabase = getSupabaseClient();
 
   if (!supabase) {
     console.warn('Supabase not configured');
@@ -126,8 +120,7 @@ export async function createOpportunity(
     return opportunity;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const supabase = getSupabaseClient() as any;
+  const supabase = getSupabaseClient();
 
   if (!supabase) {
     throw new Error('Supabase not configured');
@@ -170,8 +163,7 @@ export async function updateOpportunity(
     throw new Error(`Opportunity ${id} not found in localStorage`);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const supabase = getSupabaseClient() as any;
+  const supabase = getSupabaseClient();
 
   if (!supabase) {
     throw new Error('Supabase not configured');
@@ -224,8 +216,7 @@ export async function deleteOpportunity(id: string): Promise<void> {
     return;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const supabase = getSupabaseClient() as any;
+  const supabase = getSupabaseClient();
 
   if (!supabase) {
     throw new Error('Supabase not configured');
