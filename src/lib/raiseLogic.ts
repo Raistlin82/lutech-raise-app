@@ -87,7 +87,9 @@ export const getRequiredCheckpoints = (
     }
 
     // In E2E mode, bypass mandatory checkpoints to enable phase completion testing
-    const isE2EMode = typeof __E2E_MODE__ !== 'undefined' && __E2E_MODE__;
+    // Check both compile-time flag AND runtime testMode (for Kyma production E2E tests)
+    const isE2EMode = (typeof __E2E_MODE__ !== 'undefined' && __E2E_MODE__) ||
+        (typeof window !== 'undefined' && localStorage.getItem('testMode') === 'true');
 
     return customControls
         // Include controls for current phase OR controls marked as "ALL" (cross-phase)

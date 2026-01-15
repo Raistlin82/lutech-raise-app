@@ -72,11 +72,11 @@ test.describe('Opportunity Creation', () => {
       raiseTcv: '2500000',
     });
 
-    // Check some flag checkboxes if visible
+    // Check some flag checkboxes if visible (use force:true for styled checkboxes with overlays)
     const checkboxes = page.locator('input[type="checkbox"]');
     const count = await checkboxes.count();
     if (count > 0) {
-      await checkboxes.first().check();
+      await checkboxes.first().check({ force: true });
     }
 
     // Submit
