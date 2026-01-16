@@ -37,12 +37,17 @@ export function getTypedClient(): TypedSupabaseClient | null {
  * Base error type for repository operations
  */
 export class RepositoryError extends Error {
+  public readonly operation: string;
+  public readonly cause?: unknown;
+
   constructor(
     message: string,
-    public readonly operation: string,
-    public readonly cause?: unknown
+    operation: string,
+    cause?: unknown
   ) {
     super(message);
     this.name = 'RepositoryError';
+    this.operation = operation;
+    this.cause = cause;
   }
 }
