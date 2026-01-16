@@ -39,6 +39,7 @@ describe('CustomerRepository', () => {
         industry: 'Finance' as const,
         isPublicSector: false
       };
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const result = await repo.create(newCustomer as any);
 
       expect(result.id).toBe('cust-new');
@@ -61,6 +62,7 @@ describe('CustomerRepository', () => {
         industry: 'Healthcare' as const,
         isPublicSector: true
       };
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       await repo.create(newCustomer as any);
 
       const stored = JSON.parse(localStorage.getItem('raise_customers') || '[]');

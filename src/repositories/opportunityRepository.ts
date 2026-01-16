@@ -88,6 +88,7 @@ export class OpportunityRepository {
 
     // Note: We cast the client to 'any' to work around TypeScript's limitation
     // with Supabase generic chain inference. The client is properly typed.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { data, error } = await (client as any)
       .from('opportunities')
       .select('*')
@@ -119,6 +120,7 @@ export class OpportunityRepository {
     }
 
     // Note: Client cast needed for TypeScript generic inference
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { data, error } = await (client as any)
       .from('opportunities')
       .select('*')
@@ -156,6 +158,7 @@ export class OpportunityRepository {
     // struggles with the Supabase generic chain in strict mode, even though
     // the client is properly typed as SupabaseClient<Database>
     // The insert data is type-checked by mapOpportunityToInsert()
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { data, error } = await (client as any)
       .from('opportunities')
       .insert(insert)
@@ -211,6 +214,7 @@ export class OpportunityRepository {
     // Note: We cast the client to 'any' here because TypeScript's type inference
     // struggles with the Supabase generic chain in strict mode
     // The update data is type-checked by the dbUpdates object construction above
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { data, error } = await (client as any)
       .from('opportunities')
       .update(dbUpdates)
@@ -243,6 +247,7 @@ export class OpportunityRepository {
     }
 
     // Note: Client cast needed for TypeScript generic inference
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { error } = await (client as any)
       .from('opportunities')
       .delete()

@@ -81,6 +81,7 @@ export class CustomerRepository {
     }
 
     // Note: Client cast needed for TypeScript generic inference
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { data, error } = await (client as any)
       .from('customers')
       .select('*')
@@ -118,6 +119,7 @@ export class CustomerRepository {
     // struggles with the Supabase generic chain in strict mode, even though
     // the client is properly typed as SupabaseClient<Database>
     // The insert data is type-checked by mapCustomerToInsert()
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { data, error } = await (client as any)
       .from('customers')
       .insert(insert)
@@ -162,6 +164,7 @@ export class CustomerRepository {
     });
 
     // Note: Client cast needed for TypeScript generic inference
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { data, error } = await (client as any)
       .from('customers')
       .update(dbUpdates)
@@ -194,6 +197,7 @@ export class CustomerRepository {
     }
 
     // Note: Client cast needed for TypeScript generic inference
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { error } = await (client as any)
       .from('customers')
       .delete()

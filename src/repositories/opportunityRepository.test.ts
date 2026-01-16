@@ -4,7 +4,9 @@ import * as baseRepo from './baseRepository';
 
 describe('OpportunityRepository', () => {
   let repo: OpportunityRepository;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let mockClient: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let mockFrom: any;
 
   beforeEach(() => {
@@ -88,6 +90,7 @@ describe('OpportunityRepository', () => {
       localStorage.setItem('raise_opportunities', '[]');
 
       const newOpp = { id: 'opp-new', title: 'New Opp', tcv: 50000 };
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const result = await repo.create(newOpp as any, 'test@example.com');
 
       expect(result.id).toBe('opp-new');

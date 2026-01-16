@@ -28,6 +28,7 @@ describe('baseRepository', () => {
 
     it('should return client when configured', () => {
       const mockClient = { from: vi.fn() };
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       vi.spyOn(supabaseModule, 'getSupabaseClient').mockReturnValue(mockClient as any);
 
       const result = assertSupabaseClient();
