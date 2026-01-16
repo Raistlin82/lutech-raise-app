@@ -538,7 +538,7 @@ const ControlModal = ({ control, onSave, onClose }: { control: ControlConfig | n
             <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl animate-in zoom-in-95 duration-200 my-8">
                 <div className="p-6 border-b border-slate-100 flex justify-between items-center">
                     <h3 className="text-lg font-bold text-slate-900">{t('form.title')}</h3>
-                    <button onClick={onClose} className="text-slate-400 hover:text-slate-600"><X size={20} /></button>
+                    <button onClick={onClose} className="text-slate-400 hover:text-slate-600" aria-label={t('form.close')}><X size={20} /></button>
                 </div>
                 <form onSubmit={handleSubmit} className="p-6 space-y-4 max-h-[70vh] overflow-y-auto">
                     <div>

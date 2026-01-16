@@ -31,12 +31,18 @@ export default defineConfig(({ mode }) => {
       rollupOptions: {
         output: {
           manualChunks: {
-            // Vendor chunk for React and related libraries
+            // Core React libraries
             'react-vendor': ['react', 'react-dom', 'react-router-dom'],
-            // UI libraries chunk
+            // UI libraries
             'ui-vendor': ['lucide-react', 'react-hot-toast', 'clsx'],
-            // Validation chunk
+            // Validation library
             'validation': ['zod'],
+            // Internationalization
+            'i18n': ['i18next', 'react-i18next'],
+            // Authentication (SAP IAS)
+            'auth': ['oidc-client-ts', 'react-oidc-context'],
+            // Supabase client
+            'supabase': ['@supabase/supabase-js'],
           },
         },
       },

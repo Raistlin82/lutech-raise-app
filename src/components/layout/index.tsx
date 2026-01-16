@@ -9,8 +9,17 @@ import { LoginButton } from '../auth/LoginButton';
 import lutechLogo from '/assets/lutech-logo.png';
 import lutechIcon from '/assets/lutech-icon.png';
 
+/** Fallback icon component when Lutech icon fails to load */
+const FallbackIcon = () => (
+    <div className="w-10 h-10 bg-gradient-to-br from-cyan-500 via-blue-600 to-indigo-600 rounded-xl flex items-center justify-center font-bold text-xl shadow-glow-accent relative">
+        <span className="relative z-10 text-white">R</span>
+        <div className="absolute inset-0 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-xl blur opacity-50" />
+    </div>
+);
+
 export const Sidebar = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) => {
     const { t } = useTranslation();
+    const [iconError, setIconError] = useState(false);
 
     return (
         <>
@@ -35,22 +44,18 @@ export const Sidebar = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => v
                     <div className="flex items-center justify-between mb-4">
                         <div className="flex items-center gap-3">
                             {/* Lutech Icon */}
-                            <div className="w-10 h-10 rounded-xl flex items-center justify-center overflow-hidden bg-white shadow-lg relative">
-                                <img
-                                    src={lutechIcon}
-                                    alt="Lutech"
-                                    className="w-full h-full object-contain"
-                                    onError={(e) => {
-                                        // Fallback to gradient "R" if icon fails to load
-                                        e.currentTarget.style.display = 'none';
-                                        const parent = e.currentTarget.parentElement;
-                                        if (parent) {
-                                            parent.className = "w-10 h-10 bg-gradient-to-br from-cyan-500 via-blue-600 to-indigo-600 rounded-xl flex items-center justify-center font-bold text-xl shadow-glow-accent relative";
-                                            parent.innerHTML = '<span class="relative z-10 text-white">R</span><div class="absolute inset-0 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-xl blur opacity-50"></div>';
-                                        }
-                                    }}
-                                />
-                            </div>
+                            {iconError ? (
+                                <FallbackIcon />
+                            ) : (
+                                <div className="w-10 h-10 rounded-xl flex items-center justify-center overflow-hidden bg-white shadow-lg relative">
+                                    <img
+                                        src={lutechIcon}
+                                        alt="Lutech"
+                                        className="w-full h-full object-contain"
+                                        onError={() => setIconError(true)}
+                                    />
+                                </div>
+                            )}
                             <div className="flex flex-col">
                                 <span className="text-lg font-bold tracking-tight">RAISE</span>
                                 <span className="text-[10px] text-cyan-400 font-semibold uppercase tracking-widest">Compliance</span>
