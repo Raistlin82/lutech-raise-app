@@ -34,3 +34,6 @@ coverage/
 e2e/.auth/
 playwright-report-kyma/
 test-results-kyma.json
+
+# Kubernetes credentials (security)
+kubeconfig*.yaml

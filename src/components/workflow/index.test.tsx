@@ -331,15 +331,15 @@ describe('OpportunityWorkflow', () => {
       }, { timeout: 1000 });
     });
 
-    it('should show outcome modal after ATC completion', async () => {
-      const opp = createMockOpportunity({ currentPhase: 'ATC' });
+    it('should show outcome modal after ATS completion (Win/Lost decision happens before ATC)', async () => {
+      const opp = createMockOpportunity({ currentPhase: 'ATS' });
       renderWorkflow(opp);
 
       // Check all checkpoints
       const checkboxes = screen.getAllByRole('checkbox');
       checkboxes.forEach(checkbox => fireEvent.click(checkbox));
 
-      const completeButton = screen.getByRole('button', { name: /Completa ATC/i });
+      const completeButton = screen.getByRole('button', { name: /Completa ATS/i });
       fireEvent.click(completeButton);
 
       // Wait for outcome modal to appear after async operation
@@ -350,15 +350,15 @@ describe('OpportunityWorkflow', () => {
       expect(screen.getByText('LOST')).toBeInTheDocument();
     });
 
-    it('should handle Won outcome correctly', async () => {
-      const opp = createMockOpportunity({ currentPhase: 'ATC' });
+    it('should handle Won outcome correctly - goes to ATC for contract authorization', async () => {
+      const opp = createMockOpportunity({ currentPhase: 'ATS' });
       renderWorkflow(opp);
 
       // Trigger outcome modal
       const checkboxes = screen.getAllByRole('checkbox');
       checkboxes.forEach(checkbox => fireEvent.click(checkbox));
 
-      const completeButton = screen.getByRole('button', { name: /Completa ATC/i });
+      const completeButton = screen.getByRole('button', { name: /Completa ATS/i });
       fireEvent.click(completeButton);
 
       // Wait for outcome modal to appear
@@ -370,21 +370,21 @@ describe('OpportunityWorkflow', () => {
       const wonButton = screen.getByRole('button', { name: /WON/i });
       fireEvent.click(wonButton);
 
-      // Should update to Handover phase
+      // Should update to ATC phase (Authorization To Contract, after winning)
       expect(mockUpdateOpportunity).toHaveBeenCalledWith(
-        expect.objectContaining({ currentPhase: 'Handover' })
+        expect.objectContaining({ currentPhase: 'ATC' })
       );
     });
 
     it('should handle Lost outcome correctly', async () => {
-      const opp = createMockOpportunity({ currentPhase: 'ATC' });
+      const opp = createMockOpportunity({ currentPhase: 'ATS' });
       renderWorkflow(opp);
 
       // Trigger outcome modal
       const checkboxes = screen.getAllByRole('checkbox');
       checkboxes.forEach(checkbox => fireEvent.click(checkbox));
 
-      const completeButton = screen.getByRole('button', { name: /Completa ATC/i });
+      const completeButton = screen.getByRole('button', { name: /Completa ATS/i });
       fireEvent.click(completeButton);
 
       // Wait for outcome modal to appear
@@ -400,6 +400,25 @@ describe('OpportunityWorkflow', () => {
       expect(mockUpdateOpportunity).toHaveBeenCalledWith(
         expect.objectContaining({ currentPhase: 'Lost' })
       );
+    });
+
+    it('should advance from ATC to Handover after contract authorization', async () => {
+      const opp = createMockOpportunity({ currentPhase: 'ATC' });
+      renderWorkflow(opp);
+
+      // Check all checkpoints
+      const checkboxes = screen.getAllByRole('checkbox');
+      checkboxes.forEach(checkbox => fireEvent.click(checkbox));
+
+      const completeButton = screen.getByRole('button', { name: /Completa ATC/i });
+      fireEvent.click(completeButton);
+
+      // Wait for phase to advance to Handover
+      await waitFor(() => {
+        expect(mockUpdateOpportunity).toHaveBeenCalledWith(
+          expect.objectContaining({ currentPhase: 'Handover' })
+        );
+      }, { timeout: 1000 });
     });
   });
 

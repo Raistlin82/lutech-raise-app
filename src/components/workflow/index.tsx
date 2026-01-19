@@ -69,9 +69,20 @@ export const OpportunityWorkflow = ({ opp, onBack }: { opp: Opportunity; onBack:
       // Simulate async operation
       await new Promise((resolve) => setTimeout(resolve, 500));
 
-      // After ATC, ask user for Won/Lost outcome
-      if (phase === 'ATC') {
+      // After ATS (or Planning for Fast Track), ask user for Won/Lost outcome
+      // ATC happens ONLY AFTER winning a tender
+      if (phase === 'ATS' || (isFastTrack && phase === 'Planning')) {
         setShowOutcomeModal(true);
+        return;
+      }
+
+      // After ATC, move to Handover
+      if (phase === 'ATC') {
+        const updatedOpp = { ...currentOpp, currentPhase: 'Handover' as Phase };
+        setCurrentOpp(updatedOpp);
+        updateOpportunity(updatedOpp);
+        setActiveTab('Handover');
+        showToast.success(t('completion.successAdvance', { phase: 'ATC', nextPhase: 'Handover' }));
         return;
       }
 
@@ -99,11 +110,12 @@ export const OpportunityWorkflow = ({ opp, onBack }: { opp: Opportunity; onBack:
 
   const handleOpportunityOutcome = (outcome: 'Won' | 'Lost') => {
     if (outcome === 'Won') {
-      // Won -> go to Handover phase
-      const updatedOpp: Opportunity = { ...currentOpp, currentPhase: 'Handover' };
+      // Won -> go to ATC phase (Authorization To Contract)
+      // ATC is where we get approval to sign the contract after winning
+      const updatedOpp: Opportunity = { ...currentOpp, currentPhase: 'ATC' };
       setCurrentOpp(updatedOpp);
       updateOpportunity(updatedOpp);
-      setActiveTab('Handover');
+      setActiveTab('ATC');
       setShowOutcomeModal(false);
       showToast.success(t('outcome.wonSuccess'));
     } else {
@@ -128,13 +140,30 @@ export const OpportunityWorkflow = ({ opp, onBack }: { opp: Opportunity; onBack:
     showToast.success(t('completion.changesSaved'));
   };
 
-  const handleSaveDraft = (checkpoints: typeof currentOpp.checkpoints[string]) => {
+  const handleSaveDraft = (
+    phaseCheckpoints: typeof currentOpp.checkpoints[string],
+    crossPhaseCheckpoints?: typeof currentOpp.checkpoints[string]
+  ) => {
+    const updatedCheckpoints = {
+      ...currentOpp.checkpoints,
+      [activeTab]: phaseCheckpoints,
+    };
+
+    // If there are cross-phase checkpoints, merge them into the 'ALL' key
+    if (crossPhaseCheckpoints && crossPhaseCheckpoints.length > 0) {
+      const existingAll = currentOpp.checkpoints?.['ALL'] || [];
+      // Create a map of existing cross-phase checkpoints
+      const allMap = new Map(existingAll.map(cp => [cp.id, cp]));
+      // Update with new values
+      crossPhaseCheckpoints.forEach(cp => {
+        allMap.set(cp.id, cp);
+      });
+      updatedCheckpoints['ALL'] = Array.from(allMap.values());
+    }
+
     const updatedOpp = {
       ...currentOpp,
-      checkpoints: {
-        ...currentOpp.checkpoints,
-        [activeTab]: checkpoints,
-      },
+      checkpoints: updatedCheckpoints,
     };
     setCurrentOpp(updatedOpp);
     updateOpportunity(updatedOpp);
@@ -164,7 +193,7 @@ export const OpportunityWorkflow = ({ opp, onBack }: { opp: Opportunity; onBack:
           <EditOpportunityModal opp={currentOpp} onSave={handleEditSave} onClose={() => setShowEditModal(false)} />
         )}
 
-        {/* Opportunity Outcome Modal (Won/Lost) - Shown after ATC */}
+        {/* Opportunity Outcome Modal (Won/Lost) - Shown after ATS (or after Planning for Fast Track) */}
         {showOutcomeModal && (
           <OutcomeModal onSelectOutcome={handleOpportunityOutcome} onClose={() => setShowOutcomeModal(false)} />
         )}

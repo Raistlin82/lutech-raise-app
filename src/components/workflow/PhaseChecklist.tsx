@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Save, CheckCircle } from 'lucide-react';
 import { clsx } from 'clsx';
@@ -12,10 +12,15 @@ interface PhaseChecklistProps {
   currentOpp: Opportunity;
   controls: ControlConfig[];
   onAuthorize: () => void;
-  onSaveDraft: (checkpoints: Checkpoint[]) => void;
+  onSaveDraft: (checkpoints: Checkpoint[], crossPhaseCheckpoints: Checkpoint[]) => void;
   isCurrentPhase: boolean;
   isCompleting: boolean;
 }
+
+// Get IDs of controls that are cross-phase (phase: 'ALL')
+const getCrossPhaseControlIds = (controls: ControlConfig[]): Set<string> => {
+  return new Set(controls.filter(c => c.phase === 'ALL').map(c => c.id));
+};
 
 export const PhaseChecklist = ({
   phase,
@@ -28,17 +33,45 @@ export const PhaseChecklist = ({
 }: PhaseChecklistProps) => {
   const { t } = useTranslation('workflow');
   const [isSaving, setIsSaving] = useState(false);
+
+  // Get cross-phase control IDs
+  const crossPhaseControlIds = useMemo(() => getCrossPhaseControlIds(controls), [controls]);
+
   const [localCheckpoints, setLocalCheckpoints] = useState<Checkpoint[]>(() => {
-    // First check if there are saved checkpoints for this phase
+    // Get saved checkpoints for this phase
     const savedCheckpoints = currentOpp.checkpoints?.[phase];
+    // Get saved cross-phase checkpoints (stored under 'ALL' key)
+    const savedCrossPhaseCheckpoints = currentOpp.checkpoints?.['ALL'] || [];
+
+    // Build a map of cross-phase checkpoint states
+    const crossPhaseStates = new Map<string, boolean>();
+    savedCrossPhaseCheckpoints.forEach(cp => {
+      crossPhaseStates.set(cp.id, cp.checked);
+    });
+
     if (savedCheckpoints && savedCheckpoints.length > 0) {
-      return savedCheckpoints;
+      // Merge saved phase checkpoints with cross-phase states
+      return savedCheckpoints.map(cp => {
+        // If this is a cross-phase control and we have a saved state, use it
+        if (crossPhaseControlIds.has(cp.id) && crossPhaseStates.has(cp.id)) {
+          return { ...cp, checked: crossPhaseStates.get(cp.id) || false };
+        }
+        return cp;
+      });
     }
-    // Otherwise compute from controls
-    return getRequiredCheckpoints(phase, currentOpp, controls);
+
+    // Compute fresh from controls and apply cross-phase states
+    const freshCheckpoints = getRequiredCheckpoints(phase, currentOpp, controls);
+    return freshCheckpoints.map(cp => {
+      // If this is a cross-phase control and we have a saved state, use it
+      if (crossPhaseControlIds.has(cp.id) && crossPhaseStates.has(cp.id)) {
+        return { ...cp, checked: crossPhaseStates.get(cp.id) || false };
+      }
+      return cp;
+    });
   });
 
-  const toggleCheck = (cpId: string) => {
+  const toggleCheck = useCallback((cpId: string) => {
     setLocalCheckpoints((prev) =>
       prev.map((cp) => {
         if (cp.id === cpId) {
@@ -47,14 +80,19 @@ export const PhaseChecklist = ({
         return cp;
       })
     );
-  };
+  }, []);
 
   const handleSaveDraft = async () => {
     setIsSaving(true);
     try {
       // Simulate async save operation
       await new Promise((resolve) => setTimeout(resolve, 300));
-      onSaveDraft(localCheckpoints);
+
+      // Separate cross-phase checkpoints from phase-specific ones
+      const crossPhaseCheckpoints = localCheckpoints.filter(cp => crossPhaseControlIds.has(cp.id));
+      const phaseCheckpoints = localCheckpoints;
+
+      onSaveDraft(phaseCheckpoints, crossPhaseCheckpoints);
     } finally {
       setIsSaving(false);
     }
