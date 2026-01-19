@@ -4,6 +4,7 @@
     "planning": "Planning",
     "atp": "ATP",
     "ats": "ATS",
+    "awaiting": "In Attesa Esito",
     "atc": "ATC",
     "handover": "Handover"
   },
@@ -46,7 +47,7 @@
   "outcome": {
     "title": "Esito Opportunità",
     "selectOutcome": "Seleziona esito",
-    "selectOutcomeMessage": "Seleziona l'esito finale dell'opportunità dopo l'Authorization To Commit (ATC).",
+    "selectOutcomeMessage": "Seleziona l'esito finale dell'opportunità. Se VINTA, procederai alla fase ATC per la firma del contratto.",
     "won": "Vinta",
     "lost": "Persa",
     "wonLabel": "WON",
@@ -55,7 +56,7 @@
     "lostMessage": "Opportunità Persa",
     "confirmWon": "Conferma Vittoria",
     "confirmLost": "Conferma Perdita",
-    "wonSuccess": "Opportunità VINTA! Avanzamento a Handover.",
+    "wonSuccess": "Opportunità VINTA! Avanzamento ad ATC per la firma del contratto.",
     "lostInfo": "Opportunità segnata come PERSA."
   },
   "details": {

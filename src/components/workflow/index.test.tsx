@@ -192,6 +192,7 @@ describe('OpportunityWorkflow', () => {
       expect(screen.getAllByText('Planning').length).toBeGreaterThan(0);
       expect(screen.getAllByText('ATP').length).toBeGreaterThan(0);
       expect(screen.getAllByText('ATS').length).toBeGreaterThan(0);
+      expect(screen.getAllByText('Awaiting').length).toBeGreaterThan(0);
       expect(screen.getAllByText('ATC').length).toBeGreaterThan(0);
       expect(screen.getAllByText('Handover').length).toBeGreaterThan(0);
     });
@@ -331,7 +332,7 @@ describe('OpportunityWorkflow', () => {
       }, { timeout: 1000 });
     });
 
-    it('should show outcome modal after ATS completion (Win/Lost decision happens before ATC)', async () => {
+    it('should advance from ATS to Awaiting phase', async () => {
       const opp = createMockOpportunity({ currentPhase: 'ATS' });
       renderWorkflow(opp);
 
@@ -340,6 +341,22 @@ describe('OpportunityWorkflow', () => {
       checkboxes.forEach(checkbox => fireEvent.click(checkbox));
 
       const completeButton = screen.getByRole('button', { name: /Completa ATS/i });
+      fireEvent.click(completeButton);
+
+      // Wait for phase to advance to Awaiting
+      await waitFor(() => {
+        expect(mockUpdateOpportunity).toHaveBeenCalledWith(
+          expect.objectContaining({ currentPhase: 'Awaiting' })
+        );
+      }, { timeout: 1000 });
+    });
+
+    it('should show outcome modal after Awaiting completion (Win/Lost decision)', async () => {
+      const opp = createMockOpportunity({ currentPhase: 'Awaiting' });
+      renderWorkflow(opp);
+
+      // Awaiting phase may have no mandatory checkpoints, just complete it
+      const completeButton = screen.getByRole('button', { name: /Completa Awaiting/i });
       fireEvent.click(completeButton);
 
       // Wait for outcome modal to appear after async operation
@@ -351,14 +368,11 @@ describe('OpportunityWorkflow', () => {
     });
 
     it('should handle Won outcome correctly - goes to ATC for contract authorization', async () => {
-      const opp = createMockOpportunity({ currentPhase: 'ATS' });
+      const opp = createMockOpportunity({ currentPhase: 'Awaiting' });
       renderWorkflow(opp);
 
-      // Trigger outcome modal
-      const checkboxes = screen.getAllByRole('checkbox');
-      checkboxes.forEach(checkbox => fireEvent.click(checkbox));
-
-      const completeButton = screen.getByRole('button', { name: /Completa ATS/i });
+      // Complete Awaiting phase to trigger outcome modal
+      const completeButton = screen.getByRole('button', { name: /Completa Awaiting/i });
       fireEvent.click(completeButton);
 
       // Wait for outcome modal to appear
@@ -377,14 +391,11 @@ describe('OpportunityWorkflow', () => {
     });
 
     it('should handle Lost outcome correctly', async () => {
-      const opp = createMockOpportunity({ currentPhase: 'ATS' });
+      const opp = createMockOpportunity({ currentPhase: 'Awaiting' });
       renderWorkflow(opp);
 
-      // Trigger outcome modal
-      const checkboxes = screen.getAllByRole('checkbox');
-      checkboxes.forEach(checkbox => fireEvent.click(checkbox));
-
-      const completeButton = screen.getByRole('button', { name: /Completa ATS/i });
+      // Complete Awaiting phase to trigger outcome modal
+      const completeButton = screen.getByRole('button', { name: /Completa Awaiting/i });
       fireEvent.click(completeButton);
 
       // Wait for outcome modal to appear

@@ -18,7 +18,8 @@ import { OutcomeModal } from './OutcomeModal';
 import { WorkflowSidebar } from './WorkflowSidebar';
 
 // Workflow phases (excluding outcome phases Won/Lost)
-const WORKFLOW_PHASES: Phase[] = ['Planning', 'ATP', 'ATS', 'ATC', 'Handover'];
+// Flow: Planning → ATP → ATS → Awaiting (wait for decision) → Win/Lost → ATC → Handover
+const WORKFLOW_PHASES: Phase[] = ['Planning', 'ATP', 'ATS', 'Awaiting', 'ATC', 'Handover'];
 
 export const OpportunityWorkflow = ({ opp, onBack }: { opp: Opportunity; onBack: () => void }) => {
   const { t } = useTranslation('workflow');
@@ -45,9 +46,9 @@ export const OpportunityWorkflow = ({ opp, onBack }: { opp: Opportunity; onBack:
     if (currentIndex < WORKFLOW_PHASES.length - 1) {
       let nextPhase = WORKFLOW_PHASES[currentIndex + 1];
 
-      // Fast Track: skip ATP and ATS phases (go directly from Planning to ATC)
+      // Fast Track: skip ATP, ATS, and Awaiting phases (go directly from Planning to Win/Lost decision)
       if (isFastTrack) {
-        while (nextPhase === 'ATP' || nextPhase === 'ATS') {
+        while (nextPhase === 'ATP' || nextPhase === 'ATS' || nextPhase === 'Awaiting') {
           const nextIndex = WORKFLOW_PHASES.indexOf(nextPhase);
           if (nextIndex < WORKFLOW_PHASES.length - 1) {
             nextPhase = WORKFLOW_PHASES[nextIndex + 1];
@@ -69,9 +70,9 @@ export const OpportunityWorkflow = ({ opp, onBack }: { opp: Opportunity; onBack:
       // Simulate async operation
       await new Promise((resolve) => setTimeout(resolve, 500));
 
-      // After ATS (or Planning for Fast Track), ask user for Won/Lost outcome
+      // After Awaiting (or Planning for Fast Track), ask user for Won/Lost outcome
       // ATC happens ONLY AFTER winning a tender
-      if (phase === 'ATS' || (isFastTrack && phase === 'Planning')) {
+      if (phase === 'Awaiting' || (isFastTrack && phase === 'Planning')) {
         setShowOutcomeModal(true);
         return;
       }
@@ -193,7 +194,7 @@ export const OpportunityWorkflow = ({ opp, onBack }: { opp: Opportunity; onBack:
           <EditOpportunityModal opp={currentOpp} onSave={handleEditSave} onClose={() => setShowEditModal(false)} />
         )}
 
-        {/* Opportunity Outcome Modal (Won/Lost) - Shown after ATS (or after Planning for Fast Track) */}
+        {/* Opportunity Outcome Modal (Won/Lost) - Shown after Awaiting (or after Planning for Fast Track) */}
         {showOutcomeModal && (
           <OutcomeModal onSelectOutcome={handleOpportunityOutcome} onClose={() => setShowOutcomeModal(false)} />
         )}

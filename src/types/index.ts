@@ -1,5 +1,5 @@
 export type RaiseLevel = 'L6' | 'L5' | 'L4' | 'L3' | 'L2' | 'L1';
-export type Phase = 'Planning' | 'ATP' | 'ATS' | 'ATC' | 'Won' | 'Lost' | 'Handover';
+export type Phase = 'Planning' | 'ATP' | 'ATS' | 'Awaiting' | 'ATC' | 'Won' | 'Lost' | 'Handover';
 export type PhaseError = {
   message: string;
   code: string;
