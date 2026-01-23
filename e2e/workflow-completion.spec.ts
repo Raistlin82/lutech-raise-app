@@ -38,7 +38,7 @@ test.beforeEach(async ({ page }) => {
 
 test.describe('Complete Workflow Lifecycle', () => {
 
-  test('should complete full workflow: Planning → ATP → ATS → ATC → Won → Handover', async ({ page }) => {
+  test('should complete full workflow: Planning → ATP → ATS → Awaiting → Won → ATC → Handover', async ({ page }) => {
     // Step 1: Create new opportunity
     await createTestOpportunity(page, {
       title: 'E2E Test Opportunity',
@@ -58,25 +58,29 @@ test.describe('Complete Workflow Lifecycle', () => {
     await expect(page.locator('text=ATS Checklist')).toBeVisible({ timeout: 2000 });
     await expect(page.locator('text=Fase ATP completata!')).toBeVisible();
 
-    // Step 5: Complete ATS → ATC
+    // Step 5: Complete ATS → Awaiting (waiting for client decision)
     await page.click('button:has-text("Completa ATS")');
-    await expect(page.locator('text=ATC Checklist')).toBeVisible({ timeout: 2000 });
+    await expect(page.locator('text=Awaiting Checklist')).toBeVisible({ timeout: 2000 });
     await expect(page.locator('text=Fase ATS completata!')).toBeVisible();
 
-    // Step 6: Complete ATC → Shows Won/Lost Modal
-    await page.click('button:has-text("Completa ATC")');
+    // Step 6: Complete Awaiting → Shows Won/Lost Modal
+    await page.click('button:has-text("Completa Awaiting")');
     await expect(page.locator('text=Esito Opportunità')).toBeVisible({ timeout: 2000 });
 
-    // Step 7: Select "Won" → Handover
+    // Step 7: Select "Won" → ATC (Authorization To Contract)
     await page.click('button:has-text("WON")');
-    await expect(page.locator('text=Handover Checklist')).toBeVisible({ timeout: 2000 });
+    await expect(page.locator('text=ATC Checklist')).toBeVisible({ timeout: 2000 });
     await expect(page.locator('text=Opportunità VINTA!')).toBeVisible();
 
-    // Step 8: Complete Handover (CRITICAL FIX TEST)
+    // Step 8: Complete ATC → Handover
+    await page.click('button:has-text("Completa ATC")');
+    await expect(page.locator('text=Handover Checklist')).toBeVisible({ timeout: 2000 });
+
+    // Step 9: Complete Handover (CRITICAL FIX TEST)
     await page.click('button:has-text("Completa Handover")');
     await expect(page.locator('text=Workflow completato!')).toBeVisible({ timeout: 2000 });
 
-    // Step 9: Verify terminal state
+    // Step 10: Verify terminal state
     const opportunity = await page.evaluate(() => {
       const opps = JSON.parse(localStorage.getItem('raise_opportunities') || '[]');
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -91,7 +95,7 @@ test.describe('Complete Workflow Lifecycle', () => {
       tcv: 500000,
     });
 
-    // Navigate through phases to ATC
+    // Navigate through phases to Awaiting
     await page.click('button:has-text("Completa Planning")');
     await page.waitForTimeout(500);
     await page.click('button:has-text("Completa ATP")');
@@ -99,8 +103,8 @@ test.describe('Complete Workflow Lifecycle', () => {
     await page.click('button:has-text("Completa ATS")');
     await page.waitForTimeout(500);
 
-    // Complete ATC and select Lost
-    await page.click('button:has-text("Completa ATC")');
+    // Complete Awaiting and select Lost
+    await page.click('button:has-text("Completa Awaiting")');
     await expect(page.locator('text=Esito Opportunità')).toBeVisible();
     await page.click('button:has-text("LOST")');
 
@@ -217,15 +221,22 @@ test.describe('Critical User Journeys', () => {
     // Verify Fast Track indicator
     await expect(page.locator('text=Fast Track Eligible')).toBeVisible();
 
-    // Verify ATP and ATS are skipped (shown with line-through)
+    // Verify ATP, ATS and Awaiting are skipped (shown with line-through)
     const atpButton = page.locator('button:has-text("ATP")').first();
     await expect(atpButton).toHaveClass(/line-through/);
 
     const atsButton = page.locator('button:has-text("ATS")').first();
     await expect(atsButton).toHaveClass(/line-through/);
 
-    // Complete Planning → Should skip to ATC
+    const awaitingButton = page.locator('button:has-text("Awaiting")').first();
+    await expect(awaitingButton).toHaveClass(/line-through/);
+
+    // Complete Planning → Should show Won/Lost modal (skips ATP, ATS, Awaiting)
     await page.click('button:has-text("Completa Planning")');
+    await expect(page.locator('text=Esito Opportunità')).toBeVisible({ timeout: 2000 });
+
+    // Select Won → Should go to ATC
+    await page.click('button:has-text("WON")');
     await expect(page.locator('text=ATC Checklist')).toBeVisible({ timeout: 2000 });
   });
 });
@@ -295,6 +306,8 @@ test.describe('Regression Tests for Bug Fixes', () => {
      * Fixed: Shows "Workflow completato!" success message
      *
      * Commit: 54d66f8 - fix: add Handover phase completion handler
+     *
+     * Flow: Planning → ATP → ATS → Awaiting → Won/Lost → ATC → Handover
      */
     await createTestOpportunity(page, {
       title: 'Handover Regression Test',
@@ -308,9 +321,11 @@ test.describe('Regression Tests for Bug Fixes', () => {
     await page.waitForTimeout(500);
     await page.click('button:has-text("Completa ATS")');
     await page.waitForTimeout(500);
-    await page.click('button:has-text("Completa ATC")');
+    await page.click('button:has-text("Completa Awaiting")');
     await page.waitForTimeout(500);
     await page.click('button:has-text("WON")');
+    await page.waitForTimeout(500);
+    await page.click('button:has-text("Completa ATC")');
     await expect(page.locator('text=Handover Checklist')).toBeVisible();
 
     // CRITICAL: Complete Handover should show success message
